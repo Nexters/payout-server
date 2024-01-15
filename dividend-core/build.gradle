@@ -7,6 +7,9 @@ plugins {
 group = 'nexters'
 version = '0.0.1-SNAPSHOT'
 
+bootJar.enabled = false
+jar.enabled = true
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
