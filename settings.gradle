@@ -1,0 +1,6 @@
+rootProject.name = 'dividend'
+
+include(":dividend-api-server")
+include(":dividend-batch")
+include(":dividend-core")
+include(":domain")
