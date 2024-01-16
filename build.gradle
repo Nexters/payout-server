@@ -1,0 +1,10 @@
+allprojects {
+	apply plugin: 'java'
+	group = 'nexters'
+
+	sourceCompatibility = '17'
+
+	repositories {
+		mavenCentral()
+	}
+}
