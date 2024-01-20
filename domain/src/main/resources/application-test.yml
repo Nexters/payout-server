@@ -6,9 +6,11 @@ spring:
     password:
 
   jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
     show-sql: true
+
