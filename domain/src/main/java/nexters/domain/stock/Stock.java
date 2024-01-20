@@ -32,10 +32,10 @@ class Stock {
 
     @Column(length = 10)
     private String exchange;
-    
+
     private String industry;
 
-    private double price;
+    private Double price;
 
-    private Double volume;
+    private Integer volume;
 }
