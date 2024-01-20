@@ -6,7 +6,6 @@ on:
       - main
       - develop
 
-    paths: ["backend/**"]
     types: [opened, synchronize]
 
 jobs:
