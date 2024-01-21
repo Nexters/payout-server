@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -31,6 +32,15 @@ public class BaseEntity {
     @Column(name = "last_modified_at")
     @LastModifiedDate
     private Instant lastModifiedAt;
+
+    /**
+     * 엔티티 클래스의 hash code 함수를 재정의한 메서드입니다.
+     * @return object의 id 기반으로 생성된 hash code
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     /**
      * 엔티티 클래스의 equals 함수를 재정의한 메서드입니다.
