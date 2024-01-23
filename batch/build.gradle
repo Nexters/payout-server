@@ -4,9 +4,6 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
-group = 'nexters'
-version = '0.0.1-SNAPSHOT'
-
 dependencies {
     implementation(project(":core"))
 
@@ -17,3 +14,16 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+String jarName = "batch.jar";
+
+tasks.named("bootJar") {
+    bootJar.getArchiveFileName().set(jarName);
+
+    bootJar.doLast(task -> {
+        copy(copySpec -> {
+            copySpec.from("build/libs/" + jarName);
+            copySpec.into("../build/libs");
+        });
+    });
+};
