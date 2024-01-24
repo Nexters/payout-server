@@ -1,4 +1,4 @@
-package nexters.domain.base;
+package nexters.dividend.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

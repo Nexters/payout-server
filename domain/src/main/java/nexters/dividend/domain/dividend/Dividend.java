@@ -1,11 +1,11 @@
-package nexters.domain.dividend;
+package nexters.dividend.domain.dividend;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nexters.domain.base.BaseEntity;
+import nexters.dividend.domain.BaseEntity;
 
 import java.time.Instant;
 import java.util.UUID;

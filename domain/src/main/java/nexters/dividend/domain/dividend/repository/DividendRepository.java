@@ -1,6 +1,6 @@
-package nexters.domain.dividend.repository;
+package nexters.dividend.domain.dividend.repository;
 
-import nexters.domain.dividend.Dividend;
+import nexters.dividend.domain.dividend.Dividend;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
