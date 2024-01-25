@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    include: console-logging
+    active: dev
+
+financial:
+  fmp:
+    api-key: ${FMP_API_KEY}
+    base-url: https://financialmodelingprep.com
+    stock-list-path: /api/v3/stock/list
