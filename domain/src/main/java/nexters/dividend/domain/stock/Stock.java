@@ -23,9 +23,6 @@ class Stock extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Sector sector;
 
-    @ElementCollection
-    private List<String> dividendCycle = new ArrayList<>();
-
     @Column(length = 10)
     private String exchange;
 
@@ -35,11 +32,10 @@ class Stock extends BaseEntity {
 
     private Integer volume;
 
-    public Stock(String ticker, String name, Sector sector, List<String> dividendCycle, String exchange, String industry, Double price, Integer volume) {
+    public Stock(String ticker, String name, Sector sector, String exchange, String industry, Double price, Integer volume) {
         this.ticker = ticker;
         this.name = name;
         this.sector = sector;
-        this.dividendCycle = dividendCycle;
         this.exchange = exchange;
         this.industry = industry;
         this.price = price;
