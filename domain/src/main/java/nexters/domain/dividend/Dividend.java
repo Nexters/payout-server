@@ -29,10 +29,8 @@ public class Dividend extends BaseEntity {
     @Column(nullable = false, updatable = false)
     private Instant exDividendDate;
 
-    @Column(nullable = false)
     private Instant paymentDate;
 
-    @Column(nullable = false)
     private Instant declarationDate;
 
     private Dividend(
