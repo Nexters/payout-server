@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/nexters
+    username: test
+    password: test
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+schedules:
+  cron:
+    dividend: "0 0 0 * * *"
+
+fmp:
+  key: ${FMP_API_KEY}

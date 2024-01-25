@@ -1,0 +1,6 @@
+schedules:
+  cron:
+    dividend: "0 0 0 * * *"
+
+fmp:
+  key: ${FMP_API_KEY}

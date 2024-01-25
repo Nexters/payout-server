@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/dividend;MODE=MYSQL
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+schedules:
+  cron:
+    dividend: "0/2 * * * * ?"
+
+fmp:
+  key: ${FMP_API_KEY}
