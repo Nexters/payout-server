@@ -3,6 +3,7 @@ package nexters.domain.dividend.repository;
 import nexters.domain.dividend.Dividend;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -10,6 +11,7 @@ import java.util.UUID;
  *
  * @author Min Ho CHO
  */
-public interface DividendRepository extends JpaRepository<Dividend, UUID> {
+public interface DividendRepository extends JpaRepository<Dividend, UUID>, DividendRepositoryCustom {
 
+    Optional<Dividend> findByStockId(UUID stockId);
 }
