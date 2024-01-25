@@ -1,6 +1,6 @@
-rootProject.name = 'dividend'
+rootProject.name = 'dividend-server'
 
-include(":dividend-api-server")
-include(":dividend-batch")
-include(":dividend-core")
+include(":api-server")
+include(":batch")
+include(":core")
 include(":domain")
