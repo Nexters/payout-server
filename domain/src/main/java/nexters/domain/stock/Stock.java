@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-class Stock extends BaseEntity {
+public class Stock extends BaseEntity {
 
     @Column(unique = true, nullable = false, length = 10)
     private String ticker;
