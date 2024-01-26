@@ -1,6 +1,7 @@
-package nexters.domain.dividend.repository;
+package nexters.dividend.domain.dividend.repository;
 
-import nexters.domain.dividend.Dividend;
+
+import nexters.dividend.domain.dividend.Dividend;
 
 import java.time.Instant;
 import java.util.Optional;
