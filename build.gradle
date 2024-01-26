@@ -1,10 +1,14 @@
 allprojects {
-	apply plugin: 'java'
-	group = 'nexters'
+    apply plugin: 'java'
+    group = 'nexters'
 
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 
-	repositories {
-		mavenCentral()
-	}
+    repositories {
+        mavenCentral()
+    }
+}
+
+jar {
+    enabled = false
 }
