@@ -1,6 +1,6 @@
 package nexters.dividend.batch.infra.fmp;
 
-import nexters.dividend.batch.service.FinancialClient;
+import nexters.dividend.batch.application.FinancialClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

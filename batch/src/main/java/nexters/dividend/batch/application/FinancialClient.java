@@ -1,4 +1,4 @@
-package nexters.dividend.batch.service;
+package nexters.dividend.batch.application;
 
 import java.util.List;
 
