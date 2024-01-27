@@ -35,8 +35,11 @@ public class DividendBatchService {
 
     @Value("${fmp.key}")
     private String FMP_API_KEY;
-    private final String FMP_API_BASE_URL = "https://financialmodelingprep.com/api/v3";
-    private final String FMP_API_STOCK_DIVIDEND_CALENDAR_POSTFIX = "/stock_dividend_calendar";
+    @Value("${fmp.base-url}")
+    private String FMP_API_BASE_URL;
+    @Value("${fmp.stock-dividend-calendar-postfix}")
+    private String FMP_API_STOCK_DIVIDEND_CALENDAR_POSTFIX;
+
     private final DividendRepository dividendRepository;
     private final StockRepository stockRepository;
 
@@ -116,6 +119,7 @@ public class DividendBatchService {
      */
     private Instant parseInstant(String date) {
 
+        if (date == null) return null;
         return Instant.parse(date + "T00:00:00Z");
     }
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.TimeUnit;
@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @Transactional
-@TestPropertySource(properties = { "spring.config.location=classpath:application-test.yml" })
+@ActiveProfiles("test")
 @DisplayName("배당금 스케쥴러 서비스 테스트")
 class DividendBatchServiceTest {
 
