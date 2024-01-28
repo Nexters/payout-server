@@ -11,4 +11,6 @@ public class FmpProperties {
     final String apiKey;
     final String baseUrl;
     final String stockListPath;
+    final String stockScreenerPath;
+    final String exchangeSymbolsStockListPath;
 }
