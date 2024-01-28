@@ -1,14 +1,3 @@
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/nexters
-    username: test
-    password: test
-
-  jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-    show-sql: true
+  profiles:
+    active: test
