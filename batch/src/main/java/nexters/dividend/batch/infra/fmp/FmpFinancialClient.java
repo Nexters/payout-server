@@ -44,11 +44,11 @@ public class FmpFinancialClient implements FinancialClient {
 
                     return new LatestStock(
                             tickerName,
-                            stockData.exchangeShortName(),
-                            stockData.price(),
                             stockData.companyName(),
+                            stockData.exchangeShortName(),
                             Sector.fromValue(stockData.sector()),
                             stockData.industry(),
+                            stockData.price(),
                             volumeData.volume(),
                             volumeData.avgVolume()
                     );
@@ -70,7 +70,7 @@ public class FmpFinancialClient implements FinancialClient {
                 .block();
     }
 
-    private List<VolumeData> getVolumeList(Exchange exchange) {
+    private List<VolumeData> getVolumeList(final Exchange exchange) {
         return fmpWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(fmpProperties.getExchangeSymbolsStockListPath() + exchange.name())

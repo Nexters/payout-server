@@ -11,11 +11,11 @@ public interface FinancialClient {
 
     record LatestStock(
             String ticker,
-            String exchange,
-            Double price,
             String name,
+            String exchange,
             Sector sector,
             String industry,
+            Double price,
             Integer volume,
             Integer avgVolume
     ) {

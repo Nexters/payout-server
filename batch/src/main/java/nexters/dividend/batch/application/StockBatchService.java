@@ -18,9 +18,12 @@ public class StockBatchService {
     private final FinancialClient financialClient;
     private final StockRepository stockRepository;
 
+    /**
+     * UTC 기준 매일 자정 모든 종목의 현재가와 거래량을 업데이트합니다.
+     */
     @Transactional
-    @Scheduled(cron = "0 0 0 * * *", zone = "UTC")
-    void updateStock() {
+    @Scheduled(cron = "${schedules.stock}", zone = "UTC")
+    void run() {
         log.info("update stock start..");
         List<LatestStock> stockList = financialClient.getLatestStockList();
 
@@ -31,7 +34,6 @@ public class StockBatchService {
                             () -> stockRepository.save(latestStock.toDomain())
                     );
         }
-
         log.info("update stock end..");
     }
 }

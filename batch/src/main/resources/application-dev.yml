@@ -11,3 +11,6 @@ financial:
     stock-list-path: /api/v3/stock/list
     exchange-symbols-stock-list-path: /api/v3/symbol/
     stock-screener-path: /api/v3/stock-screener
+
+schedules:
+  stock: 0 0/10 * * * *
