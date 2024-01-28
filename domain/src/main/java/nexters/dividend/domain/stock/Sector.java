@@ -1,5 +1,8 @@
 package nexters.dividend.domain.stock;
 
+import lombok.Getter;
+
+@Getter
 public enum Sector {
     TECHNOLOGY("Technology"),
     COMMUNICATION_SERVICES("Communication Services"),
@@ -18,5 +21,14 @@ public enum Sector {
 
     Sector(final String value) {
         this.value = value;
+    }
+
+    public static Sector fromValue(String value) {
+        for (Sector sector : Sector.values()) {
+            if (sector.getValue().equalsIgnoreCase(value)) {
+                return sector;
+            }
+        }
+        return null;
     }
 }

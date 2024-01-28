@@ -12,12 +12,11 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-class Stock extends BaseEntity {
+public class Stock extends BaseEntity {
 
-    @Column(unique = true, nullable = false, length = 10)
+    @Column(unique = true, nullable = false, length = 50)
     private String ticker;
 
-    @Column(nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -38,6 +37,11 @@ class Stock extends BaseEntity {
         this.sector = sector;
         this.exchange = exchange;
         this.industry = industry;
+        this.price = price;
+        this.volume = volume;
+    }
+
+    public void update(Double price, Integer volume) {
         this.price = price;
         this.volume = volume;
     }
