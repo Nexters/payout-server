@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/nexters
+    username: test
+    password: test
+
+financial:
+  fmp:
+    api-key: ${FMP_API_KEY}
+    base-url: https://financialmodelingprep.com
+    stock-list-path: /api/v3/stock/list
+    exchange-symbols-stock-list-path: /api/v3/symbol/
+    stock-screener-path: /api/v3/stock-screener
