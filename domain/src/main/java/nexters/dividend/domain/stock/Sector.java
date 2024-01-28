@@ -29,6 +29,6 @@ public enum Sector {
                 return sector;
             }
         }
-        return null;
+        return ETC;
     }
 }
