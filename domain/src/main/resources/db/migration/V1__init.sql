@@ -9,7 +9,7 @@ create table if not exists stock
     ticker           varchar(50) not null unique,
     industry         varchar(255),
     name             varchar(255),
-    sector           enum ('technology', 'communication_services', 'healthcare', 'consumer_cyclical', 'consumer_defensive', 'basic_materials', 'financial_services', 'industrials', 'real_estate', 'energy', 'utilities', 'etc')
+    sector           enum ('TECHNOLOGY', 'COMMUNICATION_SERVICES', 'HEALTHCARE', 'CONSUMER_CYCLICAL', 'CONSUMER_DEFENSIVE', 'BASIC_MATERIALS', 'FINANCIAL_SERVICES', 'INDUSTRIALS', 'REAL_ESTATE', 'ENERGY', 'UTILITIES', 'ETC')
 ) engine = innodb
   default charset = utf8mb4;
 
