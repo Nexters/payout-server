@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;MODE=MySQL
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+schedules:
+  cron:
+    dividend: "0/2 * * * * ?"
+
+financial:
+  fmp:
+    key: ${FMP_API_KEY}
+    base-url: "https://financialmodelingprep.com"
+    stock-dividend-calendar-postfix: "/api/v3/stock_dividend_calendar"

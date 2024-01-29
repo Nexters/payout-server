@@ -27,3 +27,5 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
