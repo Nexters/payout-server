@@ -31,15 +31,15 @@ public class FmpFinancialClient implements FinancialClient {
 
     @Override
     public List<StockData> getLatestStockList() {
-        Map<String, FmpStockData> stockDataMap = getFmpDataList()
+        Map<String, FmpStockData> stockDataMap = fetchStockList()
                 .stream()
                 .distinct()
                 .collect(Collectors.toMap(FmpStockData::symbol, fmpStockData -> fmpStockData, (first, second) -> first));
 
-        Map<String, FmpVolumeData> volumeDataMap = Arrays.stream(Exchange.values())
-                .flatMap(exchange -> getVolumeList(exchange).stream().distinct())
+        Map<String, FmpVolumeData> volumeDataMap = Arrays
+                .stream(Exchange.values())
+                .flatMap(exchange -> fetchVolumeList(exchange).stream().distinct())
                 .collect(Collectors.toMap(FmpVolumeData::symbol, fmpVolumeData -> fmpVolumeData));
-
 
         return stockDataMap.entrySet().stream()
                 .map(entry -> {
@@ -62,7 +62,7 @@ public class FmpFinancialClient implements FinancialClient {
                 .toList();
     }
 
-    private List<FmpStockData> getFmpDataList() {
+    private List<FmpStockData> fetchStockList() {
         return fmpWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(fmpProperties.getStockScreenerPath())
@@ -76,7 +76,7 @@ public class FmpFinancialClient implements FinancialClient {
                 .block();
     }
 
-    private List<FmpVolumeData> getVolumeList(final Exchange exchange) {
+    private List<FmpVolumeData> fetchVolumeList(final Exchange exchange) {
         return fmpWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(fmpProperties.getExchangeSymbolsStockListPath() + exchange.name())
