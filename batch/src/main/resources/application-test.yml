@@ -16,3 +16,11 @@ spring:
 
 schedules:
   stock: 0 0 0 * * *
+  cron:
+    dividend: "0/2 * * * * ?"
+
+financial:
+  fmp:
+    key: ${FMP_API_KEY}
+    base-url: "https://financialmodelingprep.com"
+    stock-dividend-calendar-postfix: "/api/v3/stock_dividend_calendar"

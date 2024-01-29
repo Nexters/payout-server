@@ -3,6 +3,14 @@ spring:
     url: jdbc:mysql://localhost:3306/nexters
     username: test
     password: test
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
 
 financial:
   fmp:
@@ -11,6 +19,11 @@ financial:
     stock-list-path: /api/v3/stock/list
     exchange-symbols-stock-list-path: /api/v3/symbol/
     stock-screener-path: /api/v3/stock-screener
-
+    stock-dividend-calendar-postfix: "/api/v3/stock_dividend_calendar"
+    
 schedules:
   stock: 0 0/10 * * * *
+  cron:
+    dividend: "0 0 0 * * *"
+    
+
