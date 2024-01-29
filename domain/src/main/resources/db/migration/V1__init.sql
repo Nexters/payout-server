@@ -23,6 +23,7 @@ create table if not exists dividend
     ex_dividend_date datetime(6) not null,
     payment_date     datetime(6) not null,
     stock_id         binary(16)  not null,
+    FOREIGN KEY (stock_id) REFERENCES stock (id),
     primary key (id)
 ) engine = innodb
   default charset = utf8mb4;
