@@ -6,10 +6,13 @@ import nexters.dividend.domain.stock.Exchange;
 import nexters.dividend.domain.stock.Sector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,36 +30,39 @@ public class FmpFinancialClient implements FinancialClient {
     }
 
     @Override
-    public List<LatestStock> getLatestStockList() {
-        Map<String, StockData> stockDataMap = getFmpDataList().stream().distinct()
-                .collect(Collectors.toMap(StockData::symbol, stockData -> stockData, (first, second) -> first));
+    public List<StockData> getLatestStockList() {
+        Map<String, FmpStockData> stockDataMap = getFmpDataList()
+                .stream()
+                .distinct()
+                .collect(Collectors.toMap(FmpStockData::symbol, fmpStockData -> fmpStockData, (first, second) -> first));
 
-        Map<String, VolumeData> volumeDataMap = Arrays.stream(Exchange.values())
+        Map<String, FmpVolumeData> volumeDataMap = Arrays.stream(Exchange.values())
                 .flatMap(exchange -> getVolumeList(exchange).stream().distinct())
-                .collect(Collectors.toMap(VolumeData::symbol, volumeData -> volumeData));
+                .collect(Collectors.toMap(FmpVolumeData::symbol, fmpVolumeData -> fmpVolumeData));
 
 
         return stockDataMap.entrySet().stream()
                 .map(entry -> {
                     String tickerName = entry.getKey();
-                    StockData stockData = entry.getValue();
-                    VolumeData volumeData = volumeDataMap.getOrDefault(tickerName, new VolumeData(tickerName, null, null));
+                    FmpStockData fmpStockData = entry.getValue();
+                    FmpVolumeData fmpVolumeData = volumeDataMap
+                            .getOrDefault(tickerName, new FmpVolumeData(tickerName, null, null));
 
-                    return new LatestStock(
+                    return new StockData(
                             tickerName,
-                            stockData.companyName(),
-                            stockData.exchangeShortName(),
-                            Sector.fromValue(stockData.sector()),
-                            stockData.industry(),
-                            stockData.price(),
-                            volumeData.volume(),
-                            volumeData.avgVolume()
+                            fmpStockData.companyName(),
+                            fmpStockData.exchangeShortName(),
+                            Sector.fromValue(fmpStockData.sector()),
+                            fmpStockData.industry(),
+                            fmpStockData.price(),
+                            fmpVolumeData.volume(),
+                            fmpVolumeData.avgVolume()
                     );
                 })
                 .toList();
     }
 
-    private List<StockData> getFmpDataList() {
+    private List<FmpStockData> getFmpDataList() {
         return fmpWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(fmpProperties.getStockScreenerPath())
@@ -65,20 +71,78 @@ public class FmpFinancialClient implements FinancialClient {
                         .queryParam("limit", MAX_LIMIT)
                         .build())
                 .retrieve()
-                .bodyToFlux(StockData.class)
+                .bodyToFlux(FmpStockData.class)
                 .collectList()
                 .block();
     }
 
-    private List<VolumeData> getVolumeList(final Exchange exchange) {
+    private List<FmpVolumeData> getVolumeList(final Exchange exchange) {
         return fmpWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(fmpProperties.getExchangeSymbolsStockListPath() + exchange.name())
                         .queryParam("apikey", fmpProperties.getApiKey())
                         .build())
                 .retrieve()
-                .bodyToFlux(VolumeData.class)
+                .bodyToFlux(FmpVolumeData.class)
                 .collectList()
                 .block();
+    }
+
+    /**
+     * 배당금 관련 정보를 업데이트하는 메서드입니다.
+     */
+    @Override
+    public List<DividendData> getDividendList() {
+
+        WebClient client =
+                WebClient
+                        .builder()
+                        .baseUrl(fmpProperties.getBaseUrl())
+                        .build();
+
+        // 3개월 간 총 4번의 데이터를 조회함으로써 기준 날짜로부터 이전 1년 간의 데이터를 조회
+        List<DividendData> result = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+
+            Instant date = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1).minusMonths(i).toInstant();
+
+            List<DividendData> dividendResponses =
+                    client.get()
+                            .uri(uriBuilder ->
+                                    uriBuilder
+                                            .path(fmpProperties.getDividendCalenderPath())
+                                            .queryParam("to", formatInstant(date))
+                                            .queryParam("apikey", fmpProperties.getApiKey())
+                                            .build())
+                            .retrieve()
+                            .bodyToFlux(DividendData.class)
+                            .onErrorResume(throwable -> {
+                                log.error("FmpClient updateDividendData 수행 중 에러 발생: {}", throwable.getMessage());
+                                return Mono.empty();
+                            })
+                            .collectList()
+                            .block();
+
+            if (dividendResponses == null) {
+                log.error("FmpClient updateDividendData 수행 중 에러 발생: dividendResponses is null");
+                continue;
+            }
+
+            result.addAll(dividendResponses);
+        }
+
+        return result;
+    }
+
+    /**
+     * Instant를 yyyy-MM-dd 형식의 String으로 변환하는 메서드입니다.
+     *
+     * @param instant instant 데이터
+     * @return 날짜 String 데이터
+     */
+    private String formatInstant(Instant instant) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(Date.from(instant));
     }
 }

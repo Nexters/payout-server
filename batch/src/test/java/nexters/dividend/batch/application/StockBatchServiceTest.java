@@ -3,7 +3,7 @@ package nexters.dividend.batch.application;
 import nexters.dividend.domain.stock.Stock;
 import nexters.dividend.domain.stock.StockRepository;
 import nexters.dividend.domain.StockFixture;
-import nexters.dividend.batch.application.FinancialClient.LatestStock;
+import nexters.dividend.batch.application.FinancialClient.StockData;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,15 +41,15 @@ class StockBatchServiceTest {
     void runTest() {
         // given
         Stock stock = stockRepository.save(StockFixture.createStock(StockFixture.TESLA, 10.0, 1234));
-        LatestStock latestStock = LatestStockFixture.createLatestStock(stock.getTicker(), 30.0, 4321);
-        given(financialClient.getLatestStockList()).willReturn(List.of(latestStock));
+        StockData stockData = LatestStockFixture.createLatestStock(stock.getTicker(), 30.0, 4321);
+        given(financialClient.getLatestStockList()).willReturn(List.of(stockData));
 
         // when
         stockBatchService.run();
 
         // then
         Stock actual = stockRepository.findByTicker(stock.getTicker()).get();
-        assertThat(actual.getPrice()).isEqualTo(latestStock.price());
-        assertThat(actual.getVolume()).isEqualTo(latestStock.volume());
+        assertThat(actual.getPrice()).isEqualTo(stockData.price());
+        assertThat(actual.getVolume()).isEqualTo(stockData.volume());
     }
 }

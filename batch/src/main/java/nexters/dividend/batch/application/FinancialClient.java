@@ -7,9 +7,11 @@ import java.util.List;
 
 public interface FinancialClient {
 
-    List<LatestStock> getLatestStockList();
+    List<StockData> getLatestStockList();
 
-    record LatestStock(
+    List<DividendData> getDividendList();
+
+    record StockData(
             String ticker,
             String name,
             String exchange,
@@ -22,5 +24,17 @@ public interface FinancialClient {
         Stock toDomain() {
             return new Stock(ticker, name, sector, exchange, industry, price, volume);
         }
+    }
+
+    record DividendData(
+            String date,
+            String label,
+            Double adjDividend,
+            String symbol,
+            Double dividend,
+            String recordDate,
+            String paymentDate,
+            String declarationDate
+    ) {
     }
 }

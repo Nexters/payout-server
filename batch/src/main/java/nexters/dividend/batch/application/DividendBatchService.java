@@ -1,9 +1,10 @@
-package nexters.dividend.batch.dividend.service;
+package nexters.dividend.batch.application;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nexters.dividend.batch.dividend.dto.FmpDividendResponse;
+
+import nexters.dividend.batch.application.FinancialClient.DividendData;
 import nexters.dividend.domain.dividend.Dividend;
 import nexters.dividend.domain.dividend.repository.DividendRepository;
 import nexters.dividend.domain.stock.Stock;
@@ -38,28 +39,28 @@ public class DividendBatchService {
     @Scheduled(cron = "${schedules.cron.dividend}", zone = "America/New_York")
     public void run() {
 
-        List<FmpDividendResponse> dividendResponses = financialClient.getDividendData();
+        List<DividendData> dividendResponses = financialClient.getDividendList();
 
-        for (FmpDividendResponse response : dividendResponses) {
+        for (DividendData response : dividendResponses) {
 
-            Optional<Stock> findStock = stockRepository.findByTicker(response.getSymbol());
+            Optional<Stock> findStock = stockRepository.findByTicker(response.symbol());
             if (findStock.isEmpty()) continue;  // NYSE, NASDAQ, AMEX 이외의 주식인 경우 continue
 
             Optional<Dividend> findDividend = dividendRepository.findByStockId(findStock.get().getId());
             if (findDividend.isPresent()) {
                 // 기존의 Dividend 엔티티가 존재할 경우 정보 갱신
                 findDividend.get().update(
-                        response.getDividend(),
-                        parseInstant(response.getPaymentDate()),
-                        parseInstant(response.getDeclarationDate()));
+                        response.dividend(),
+                        parseInstant(response.paymentDate()),
+                        parseInstant(response.declarationDate()));
             } else {
                 // 기존의 Dividend 엔티티가 존재하지 않을 경우 새로 생성
                 dividendRepository.save(createDividend(
                         findStock.get().getId(),
-                        response.getDividend(),
-                        parseInstant(response.getDate()),
-                        parseInstant(response.getPaymentDate()),
-                        parseInstant(response.getDeclarationDate())));
+                        response.dividend(),
+                        parseInstant(response.date()),
+                        parseInstant(response.paymentDate()),
+                        parseInstant(response.declarationDate())));
             }
         }
     }

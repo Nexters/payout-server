@@ -53,7 +53,6 @@ public class Dividend extends BaseEntity {
      * @param declarationDate 갱신할 배당 지급 선언일
      */
     public void update(Double dividend, Instant paymentDate, Instant declarationDate) {
-
         this.dividend = dividend;
         this.paymentDate = paymentDate;
         this.declarationDate = declarationDate;

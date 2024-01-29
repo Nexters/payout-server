@@ -1,7 +1,7 @@
 package nexters.dividend.batch.infra.fmp;
 
 
-record StockData(
+record FmpStockData(
         String symbol,
         String companyName,
         String exchangeShortName,
@@ -12,17 +12,9 @@ record StockData(
 ) {
 }
 
-record VolumeData(
+record FmpVolumeData(
         String symbol,
         Integer volume,
         Integer avgVolume
 ) {
-}
-
-record SectorData(
-        String ticker,
-        String sector,
-        String industry
-) {
-
 }

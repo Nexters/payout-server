@@ -2,6 +2,10 @@ package nexters.dividend.domain.stock;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 public enum Sector {
     TECHNOLOGY("Technology"),
@@ -15,12 +19,18 @@ public enum Sector {
     REAL_ESTATE("Real Estate"),
     ENERGY("Energy"),
     UTILITIES("Utilities"),
-    ETC("ETC");
+    ETC("");
 
     private final String value;
 
     Sector(final String value) {
         this.value = value;
+    }
+
+    public static List<String> getNames() {
+        return Arrays.stream(Sector.values())
+                .map(it -> it.value)
+                .toList();
     }
 
     public static Sector fromValue(String value) {

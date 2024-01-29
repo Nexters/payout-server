@@ -6,3 +6,6 @@ alter table stock
 
 alter table stock
     modify name varchar(255) null;
+
+alter table dividend
+    modify dividend double null;
