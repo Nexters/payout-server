@@ -110,7 +110,7 @@ public class FmpFinancialClient implements FinancialClient {
                     client.get()
                             .uri(uriBuilder ->
                                     uriBuilder
-                                            .path(fmpProperties.getDividendCalenderPath())
+                                            .path(fmpProperties.getStockDividendCalenderPath())
                                             .queryParam("to", formatInstant(date))
                                             .queryParam("apikey", fmpProperties.getApiKey())
                                             .build())

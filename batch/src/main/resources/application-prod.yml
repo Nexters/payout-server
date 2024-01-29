@@ -4,6 +4,9 @@ schedules:
 
 financial:
   fmp:
-    key: ${FMP_API_KEY}
-    base-url: "https://financialmodelingprep.com"
-    stock-dividend-calendar-postfix: "/api/v3/stock_dividend_calendar"
+    api-key: ${FMP_API_KEY}
+    base-url: https://financialmodelingprep.com
+    stock-list-path: /api/v3/stock/list
+    exchange-symbols-stock-list-path: /api/v3/symbol/
+    stock-screener-path: /api/v3/stock-screener
+    stock-dividend-calender-path: "/api/v3/stock_dividend_calendar"

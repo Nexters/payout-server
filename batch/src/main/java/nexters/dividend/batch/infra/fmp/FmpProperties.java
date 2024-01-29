@@ -13,5 +13,5 @@ public class FmpProperties {
     final String stockListPath;
     final String stockScreenerPath;
     final String exchangeSymbolsStockListPath;
-    final String dividendCalenderPath;
+    final String stockDividendCalenderPath;
 }
