@@ -3,14 +3,16 @@ package nexters.payout.batch.common;
 import nexters.payout.batch.application.DividendBatchService;
 import nexters.payout.batch.application.FinancialClient;
 import nexters.payout.batch.application.StockBatchService;
-import nexters.payout.batch.common.annotation.BatchServiceTest;
 import nexters.payout.domain.dividend.repository.DividendRepository;
 import nexters.payout.domain.stock.repository.StockRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
-@BatchServiceTest
+@SpringBootTest
+@ActiveProfiles("test")
 public abstract class AbstractBatchServiceTest {
     @MockBean
     public FinancialClient financialClient;

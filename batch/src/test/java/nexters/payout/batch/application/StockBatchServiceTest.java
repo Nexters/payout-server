@@ -5,7 +5,6 @@ import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.stock.Stock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
