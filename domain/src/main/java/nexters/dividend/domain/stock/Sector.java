@@ -1,5 +1,11 @@
 package nexters.dividend.domain.stock;
 
+import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Getter
 public enum Sector {
     TECHNOLOGY("Technology"),
     COMMUNICATION_SERVICES("Communication Services"),
@@ -12,11 +18,30 @@ public enum Sector {
     REAL_ESTATE("Real Estate"),
     ENERGY("Energy"),
     UTILITIES("Utilities"),
-    ETC("ETC");
+    INDUSTRIAL_GOODS("Industrial Goods"),
+    FINANCIAL("Financial"),
+    SERVICES("Services"),
+    CONGLOMERATES("Conglomerates"),
+    ETC("");
 
     private final String value;
 
     Sector(final String value) {
         this.value = value;
+    }
+
+    public static List<String> getNames() {
+        return Arrays.stream(Sector.values())
+                .map(it -> it.value)
+                .toList();
+    }
+
+    public static Sector fromValue(String value) {
+        for (Sector sector : Sector.values()) {
+            if (sector.getValue().equalsIgnoreCase(value)) {
+                return sector;
+            }
+        }
+        return ETC;
     }
 }

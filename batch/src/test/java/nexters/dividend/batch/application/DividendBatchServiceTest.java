@@ -1,6 +1,6 @@
-package nexters.dividend.batch.dividend.service;
+package nexters.dividend.batch.application;
 
-import nexters.dividend.batch.dividend.dto.FmpDividendResponse;
+import nexters.dividend.batch.application.FinancialClient.DividendData;
 import nexters.dividend.domain.dividend.Dividend;
 import nexters.dividend.domain.dividend.repository.DividendRepository;
 import nexters.dividend.domain.stock.Sector;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import static nexters.dividend.domain.dividend.Dividend.createDividend;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest
 @Transactional
@@ -65,7 +65,7 @@ class DividendBatchServiceTest {
                 Instant.parse("2023-12-23T00:00:00Z"),
                 Instant.parse("2023-12-22T00:00:00Z"));
 
-        FmpDividendResponse response = new FmpDividendResponse(
+        FinancialClient.DividendData response = new DividendData(
                 "2023-12-21",
                 "May 31, 23",
                 12.21,
@@ -75,10 +75,10 @@ class DividendBatchServiceTest {
                 "2023-12-23",
                 "2023-12-22");
 
-        List<FmpDividendResponse> responses = new ArrayList<>();
+        List<DividendData> responses = new ArrayList<>();
         responses.add(response);
 
-        doReturn(responses).when(financialClient).getDividendData();
+        doReturn(responses).when(financialClient).getDividendList();
 
 
         // when
@@ -113,7 +113,7 @@ class DividendBatchServiceTest {
                 null,
                 null));
 
-        FmpDividendResponse response = new FmpDividendResponse(
+        DividendData response = new DividendData(
                 "2023-12-21",
                 "May 31, 23",
                 12.21,
@@ -123,10 +123,10 @@ class DividendBatchServiceTest {
                 "2023-12-23",
                 "2023-12-22");
 
-        List<FmpDividendResponse> responses = new ArrayList<>();
+        List<DividendData> responses = new ArrayList<>();
         responses.add(response);
 
-        doReturn(responses).when(financialClient).getDividendData();
+        doReturn(responses).when(financialClient).getDividendList();
 
         // when
         dividendBatchService.run();

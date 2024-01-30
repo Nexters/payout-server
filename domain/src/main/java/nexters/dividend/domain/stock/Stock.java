@@ -14,17 +14,13 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Stock extends BaseEntity {
 
-    @Column(unique = true, nullable = false, length = 10)
+    @Column(unique = true, nullable = false, length = 50)
     private String ticker;
 
-    @Column(nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
     private Sector sector;
-
-    @ElementCollection
-    private List<String> dividendCycle = new ArrayList<>();
 
     @Column(length = 10)
     private String exchange;
@@ -41,6 +37,11 @@ public class Stock extends BaseEntity {
         this.sector = sector;
         this.exchange = exchange;
         this.industry = industry;
+        this.price = price;
+        this.volume = volume;
+    }
+
+    public void update(Double price, Integer volume) {
         this.price = price;
         this.volume = volume;
     }

@@ -3,6 +3,8 @@ spring:
     url: jdbc:mysql://localhost:3306/nexters
     username: test
     password: test
+  profiles:
+    include: console-logging
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect

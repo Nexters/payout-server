@@ -8,6 +8,7 @@ group = 'nexters'
 version = '0.0.1-SNAPSHOT'
 
 dependencies {
+
     // include other modules
     implementation project(":domain")
     implementation project(":core")
@@ -21,12 +22,13 @@ dependencies {
 
     // Spring boot
     implementation 'org.springframework.boot:spring-boot-starter'
-
+    
     // Webflux
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     // Spring boot starter
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation(testFixtures(project(":domain")))
 
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
