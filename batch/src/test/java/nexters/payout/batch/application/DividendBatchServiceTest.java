@@ -1,15 +1,12 @@
 package nexters.payout.batch.application;
 
+import nexters.payout.batch.common.AbstractBatchServiceTest;
 import nexters.payout.batch.common.annotation.BatchServiceTest;
 import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.dividend.repository.DividendRepository;
 import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.Stock;
-import nexters.payout.domain.stock.repository.StockRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,19 +18,7 @@ import static org.mockito.Mockito.doReturn;
 
 @BatchServiceTest
 @DisplayName("배당금 스케쥴러 서비스 테스트")
-class DividendBatchServiceTest {
-
-    @MockBean
-    private FinancialClient financialClient;
-
-    @Autowired
-    private StockRepository stockRepository;
-
-    @Autowired
-    private DividendRepository dividendRepository;
-
-    @Autowired
-    private DividendBatchService dividendBatchService;
+class DividendBatchServiceTest extends AbstractBatchServiceTest {
 
     @Test
     @DisplayName("새로운 배당금 정보를 생성한다")
