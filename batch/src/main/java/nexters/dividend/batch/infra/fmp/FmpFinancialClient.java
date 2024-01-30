@@ -32,13 +32,12 @@ public class FmpFinancialClient implements FinancialClient {
     @Override
     public List<StockData> getLatestStockList() {
         Map<String, FmpStockData> stockDataMap = Sector.getNames().stream()
-                .flatMap(it -> fetchStockList(it).stream().distinct())
-                .distinct()
-                .collect(Collectors.toMap(FmpStockData::symbol, fmpStockData -> fmpStockData));
+                .flatMap(it -> fetchStockList(it).stream())
+                .collect(Collectors.toMap(FmpStockData::symbol, fmpStockData -> fmpStockData, (first, second) -> first));
 
         Map<String, FmpVolumeData> volumeDataMap = Arrays
                 .stream(Exchange.values())
-                .flatMap(exchange -> fetchVolumeList(exchange).stream().distinct())
+                .flatMap(exchange -> fetchVolumeList(exchange).stream())
                 .collect(Collectors.toMap(FmpVolumeData::symbol, fmpVolumeData -> fmpVolumeData));
 
         return stockDataMap.entrySet().stream()
