@@ -4,7 +4,6 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public enum Sector {
@@ -19,6 +18,10 @@ public enum Sector {
     REAL_ESTATE("Real Estate"),
     ENERGY("Energy"),
     UTILITIES("Utilities"),
+    INDUSTRIAL_GOODS("Industrial Goods"),
+    FINANCIAL("Financial"),
+    SERVICES("Services"),
+    CONGLOMERATES("Conglomerates"),
     ETC("");
 
     private final String value;
