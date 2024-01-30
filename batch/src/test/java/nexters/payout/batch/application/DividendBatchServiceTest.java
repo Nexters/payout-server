@@ -1,5 +1,6 @@
 package nexters.payout.batch.application;
 
+import nexters.payout.batch.common.annotation.BatchServiceTest;
 import nexters.payout.domain.dividend.Dividend;
 import nexters.payout.domain.dividend.repository.DividendRepository;
 import nexters.payout.domain.stock.Sector;
@@ -7,13 +8,8 @@ import nexters.payout.domain.stock.Stock;
 import nexters.payout.domain.stock.repository.StockRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,10 +19,7 @@ import static nexters.payout.domain.dividend.Dividend.createDividend;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
-@SpringBootTest
-@Transactional
-@ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
+@BatchServiceTest
 @DisplayName("배당금 스케쥴러 서비스 테스트")
 class DividendBatchServiceTest {
 
@@ -43,8 +36,8 @@ class DividendBatchServiceTest {
     private DividendBatchService dividendBatchService;
 
     @Test
-    @DisplayName("배당금 스케쥴러 테스트: 새로운 배당금 정보 생성")
-    void createDividendTest() {
+    @DisplayName("새로운 배당금 정보를 생성한다")
+    void 새로운_배당금_정보를_생성한다() {
 
         // given
         Stock stock = stockRepository.save(
@@ -91,8 +84,8 @@ class DividendBatchServiceTest {
     }
 
     @Test
-    @DisplayName("배당금 스케쥴러 테스트: 기존의 배당금 정보 갱신")
-    void updateDividendTest() {
+    @DisplayName("기존의 배당금 정보를 갱신한다.")
+    void 기존의_배당금_정보를_갱신한다() {
 
         // given
         Stock stock = stockRepository.save(
