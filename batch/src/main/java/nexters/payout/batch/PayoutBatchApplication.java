@@ -9,7 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConfigurationPropertiesScan
 @SpringBootApplication(scanBasePackages = {
         "nexters.payout.core",
-        "nexters.payout.domain"
+        "nexters.payout.domain",
+        "nexters.payout.batch"
 })
 @EnableScheduling
 public class PayoutBatchApplication {
