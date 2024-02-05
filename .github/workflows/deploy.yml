@@ -30,18 +30,18 @@ jobs:
       - name: Docker build and push to NCP container registry
         run: |
           cd ./api-server
-          sudo docker build --build-arg DEPENDENCY=build/dependency -t payout-api.kr.ncr.ntruss.com/payout-api --platform linux/amd64 .
-          sudo docker login payout-api.kr.ncr.ntruss.com -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
-          sudo docker push payout-api.kr.ncr.ntruss.com/payout-api
+          sudo docker build --build-arg DEPENDENCY=build/dependency -t ${{ secrets.NCP_CONTAINER_REGISTRY_API }} --platform linux/amd64 .
+          sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
+          sudo docker push ${{ secrets.NCP_CONTAINER_REGISTRY_API }}
           
           cd ../batch
-          sudo docker build --build-arg DEPENDENCY=build/dependency -t payout-batch.kr.ncr.ntruss.com/payout-batch --platform linux/amd64 .
-          sudo docker login payout-batch.kr.ncr.ntruss.com -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
-          sudo docker push payout-batch.kr.ncr.ntruss.com/payout-batch
+          sudo docker build --build-arg DEPENDENCY=build/dependency -t ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }} --platform linux/amd64 .
+          sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
+          sudo docker push ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}
         shell: bash
 
   deploy-to-api-server:
-    name: Connect server ssh and pull from container registry
+    name: Connect api server ssh and pull from container registry
     needs: build-and-deploy
     runs-on: ubuntu-latest
     steps:
@@ -49,10 +49,9 @@ jobs:
       - name: Deploy to api server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          password: ${{ secrets.DEV_PASSWORD }}
-          key: ${{ secrets.KEY }}
+          host: ${{ secrets.API_SERVER_HOST }}
+          username: ${{ secrets.API_SERVER_USERNAME }}
+          password: ${{ secrets.API_SERVER_PASSWORD }}
           script: |
             export DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}
             export DB_PORT=${{ secrets.DB_PORT }}
@@ -60,21 +59,24 @@ jobs:
             export DB_USERNAME=${{ secrets.DB_USERNAME }}
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             export FMP_API_KEY=${{ secrets.FMP_API_KEY }}
-            export NCP_CONTAINER_REGISTRY_API=${{ secrets.NCP_CONTAINER_REGISTRY_API }}
-            export NCP_CONTAINER_REGISTRY_BATCH=${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}
             
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_API }}/payout-api
             docker-compose -f docker-compose-api.yml up -d
             docker image prune -f
 
+  deploy-to-batch-server:
+    name: Connect batch server ssh and pull from container registry
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      ## docker compose up
       - name: Deploy to batch server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          password: ${{ secrets.DEV_PASSWORD }}
-          key: ${{ secrets.KEY }}
+          host: ${{ secrets.BATCH_SERVER_HOST }}
+          username: ${{ secrets.BATCH_SERVER_USERNAME }}
+          password: ${{ secrets.BATCH_SERVER_PASSWORD }}
           script: |
             export DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}
             export DB_PORT=${{ secrets.DB_PORT }}
@@ -82,10 +84,8 @@ jobs:
             export DB_USERNAME=${{ secrets.DB_USERNAME }}
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             export FMP_API_KEY=${{ secrets.FMP_API_KEY }}
-            export NCP_CONTAINER_REGISTRY_API=${{ secrets.NCP_CONTAINER_REGISTRY_API }}
-            export NCP_CONTAINER_REGISTRY_BATCH=${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}
             
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch
-            docker-compose -f docker-compose-batch up -d
+            docker-compose -f docker-compose-batch.yml up -d
             docker image prune -f
