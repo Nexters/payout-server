@@ -1,0 +1,91 @@
+name: Backend CD
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Execute Gradle build
+        run: ./gradlew clean build -x test
+
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker build and push to NCP container registry
+        run: |
+          cd ./api-server
+          sudo docker build --build-arg DEPENDENCY=build/dependency -t payout-api.kr.ncr.ntruss.com/payout-api --platform linux/amd64 .
+          sudo docker login payout-api.kr.ncr.ntruss.com -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
+          sudo docker push payout-api.kr.ncr.ntruss.com/payout-api
+          
+          cd ../batch
+          sudo docker build --build-arg DEPENDENCY=build/dependency -t payout-batch.kr.ncr.ntruss.com/payout-batch --platform linux/amd64 .
+          sudo docker login payout-batch.kr.ncr.ntruss.com -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
+          sudo docker push payout-batch.kr.ncr.ntruss.com/payout-batch
+        shell: bash
+
+  deploy-to-api-server:
+    name: Connect server ssh and pull from container registry
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      ## docker compose up
+      - name: Deploy to api server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          password: ${{ secrets.DEV_PASSWORD }}
+          key: ${{ secrets.KEY }}
+          script: |
+            export DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}
+            export DB_PORT=${{ secrets.DB_PORT }}
+            export DB_DATABASE=${{ secrets.DB_DATABASE }}
+            export DB_USERNAME=${{ secrets.DB_USERNAME }}
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export FMP_API_KEY=${{ secrets.FMP_API_KEY }}
+            export NCP_CONTAINER_REGISTRY_API=${{ secrets.NCP_CONTAINER_REGISTRY_API }}
+            export NCP_CONTAINER_REGISTRY_BATCH=${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}
+            
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_API }}/payout-api
+            docker-compose -f docker-compose-api.yml up -d
+            docker image prune -f
+
+      - name: Deploy to batch server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          password: ${{ secrets.DEV_PASSWORD }}
+          key: ${{ secrets.KEY }}
+          script: |
+            export DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}
+            export DB_PORT=${{ secrets.DB_PORT }}
+            export DB_DATABASE=${{ secrets.DB_DATABASE }}
+            export DB_USERNAME=${{ secrets.DB_USERNAME }}
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export FMP_API_KEY=${{ secrets.FMP_API_KEY }}
+            export NCP_CONTAINER_REGISTRY_API=${{ secrets.NCP_CONTAINER_REGISTRY_API }}
+            export NCP_CONTAINER_REGISTRY_BATCH=${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}
+            
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch
+            docker-compose -f docker-compose-batch up -d
+            docker image prune -f
