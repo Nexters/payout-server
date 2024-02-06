@@ -46,7 +46,12 @@ public class DividendBatchService {
             Optional<Stock> findStock = stockRepository.findByTicker(response.symbol());
             if (findStock.isEmpty()) continue;  // NYSE, NASDAQ, AMEX 이외의 주식인 경우 continue
 
-            Optional<Dividend> findDividend = dividendRepository.findByStockId(findStock.get().getId());
+            Optional<Dividend> findDividend =
+                    dividendRepository.findByStockIdAndExDividendDate(
+                            findStock.get().getId(),
+                            parseInstant(response.date())
+                    );
+
             if (findDividend.isPresent()) {
                 // 기존의 Dividend 엔티티가 존재할 경우 정보 갱신
                 findDividend.get().update(
