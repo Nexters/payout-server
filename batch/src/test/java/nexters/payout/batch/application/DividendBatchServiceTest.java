@@ -110,9 +110,8 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
         assertThat(dividendRepository.findByStockId(stock.getId())).isPresent();
         assertThat(dividendRepository.findByStockId(stock.getId()).get().getDividend()).isEqualTo(dividend.getDividend());
         assertThat(dividendRepository.findByStockId(stock.getId()).get().getExDividendDate()).isEqualTo(dividend.getExDividendDate());
-//        TODO (갑자기 아래 테스트가 깨져요! 로직상 원래 실패했어야 맞는 것 같은데 갑자기 실패하는게 이상해서 확인 부탁드립니다!)
-//        assertThat(dividendRepository.findByStockId(stock.getId()).get().getPaymentDate()).isEqualTo(dividend.getPaymentDate());
-//        assertThat(dividendRepository.findByStockId(stock.getId()).get().getDeclarationDate()).isEqualTo(dividend.getDeclarationDate());
+        assertThat(dividendRepository.findByStockId(stock.getId()).get().getPaymentDate()).isEqualTo(Instant.parse("2023-12-23T00:00:00Z"));
+        assertThat(dividendRepository.findByStockId(stock.getId()).get().getDeclarationDate()).isEqualTo(Instant.parse("2023-12-22T00:00:00Z"));
         assertThat(dividendRepository.findAll().size()).isEqualTo(1);
     }
 }
