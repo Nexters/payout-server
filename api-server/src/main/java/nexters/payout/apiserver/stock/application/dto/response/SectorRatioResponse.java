@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record SectorRatioResponse(
-        String stockName,
+        String sectorName,
         Double sectorRatio
 ) {
     public static List<SectorRatioResponse> createResponseList(Map<Sector, Double> sectorRatioMap) {

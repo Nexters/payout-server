@@ -1,15 +1,17 @@
-package nexters.payout.domain.stock;
+package nexters.payout.domain.stock.service;
 
 import nexters.payout.domain.common.config.DomainService;
+import nexters.payout.domain.stock.Sector;
+import nexters.payout.domain.stock.Stock;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @DomainService
-public class PortfolioService {
+public class SectorAnalyzer {
 
-    public Map<Sector, Double> calculateSectorRatios(List<Stock> stocks) {
+    public Map<Sector, Double> calculateSectorRatios(final List<Stock> stocks) {
         Map<Sector, Integer> sectorCountMap = new HashMap<>();
         for (Stock stock : stocks) {
             sectorCountMap.put(stock.getSector(), sectorCountMap.getOrDefault(stock.getSector(), 0) + 1);
