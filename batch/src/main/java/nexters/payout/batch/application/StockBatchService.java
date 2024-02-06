@@ -21,7 +21,7 @@ public class StockBatchService {
      * UTC 기준 매일 자정 모든 종목의 현재가와 거래량을 업데이트합니다.
      */
     @Transactional
-    @Scheduled(fixedDelay = 1000000, zone = "UTC")
+    @Scheduled(cron = "${schedules.cron.stock}", zone = "UTC")
     void run() {
         log.info("update stock start..");
         List<FinancialClient.StockData> stockList = financialClient.getLatestStockList();
