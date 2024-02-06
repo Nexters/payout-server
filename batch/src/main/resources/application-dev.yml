@@ -19,8 +19,8 @@ financial:
     stock-list-path: /api/v3/stock/list
     exchange-symbols-stock-list-path: /api/v3/symbol/
     stock-screener-path: /api/v3/stock-screener
-    stock-dividend-calender-path: "/api/v3/stock_dividend_calendar"
-    
+    stock-dividend-calender-path: /api/v3/stock_dividend_calendar
+
 schedules:
   cron:
     dividend: 0 0 0 * * *
