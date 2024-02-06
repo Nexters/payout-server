@@ -36,7 +36,7 @@ public class DividendBatchService {
     /**
      * New York 시간대 기준으로 매일 00:00에 배당금 정보를 갱신하는 스케쥴러 메서드입니다.
      */
-    @Scheduled(cron = "${schedules.cron.dividend}", zone = "America/New_York")
+    @Scheduled(cron = "${schedules.cron.dividend}", zone = "UTC")
     public void run() {
 
         List<DividendData> dividendResponses = financialClient.getDividendList();
