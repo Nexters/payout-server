@@ -13,6 +13,7 @@ import java.util.List;
 
 import static nexters.payout.domain.dividend.Dividend.createDividend;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.doReturn;
 
 @DisplayName("배당금 스케쥴러 서비스 테스트")
@@ -60,21 +61,23 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
         dividendBatchService.run();
 
         // then
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
+        assertAll(
+                () -> assertThat(dividendRepository.findByStockIdAndExDividendDate(
                         stock.getId(),
                         Instant.parse("2023-12-21T00:00:00Z")))
-                .isPresent();
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
-                        stock.getId(),
-                        Instant.parse("2023-12-21T00:00:00Z"))
-                .get().getDividend())
-                .isEqualTo(dividend.getDividend());
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
-                        stock.getId(),
-                        Instant.parse("2023-12-21T00:00:00Z"))
-                .get().getExDividendDate())
-                .isEqualTo(dividend.getExDividendDate());
-        assertThat(dividendRepository.findAll().size()).isEqualTo(1);
+                        .isPresent(),
+                () -> assertThat(dividendRepository.findByStockIdAndExDividendDate(
+                                stock.getId(),
+                                Instant.parse("2023-12-21T00:00:00Z"))
+                        .get().getDividend())
+                        .isEqualTo(dividend.getDividend()),
+                () -> assertThat(dividendRepository.findByStockIdAndExDividendDate(
+                                stock.getId(),
+                                Instant.parse("2023-12-21T00:00:00Z"))
+                        .get().getExDividendDate())
+                        .isEqualTo(dividend.getExDividendDate()),
+                () -> assertThat(dividendRepository.findAll().size()).isEqualTo(1)
+        );
     }
 
     @Test
@@ -118,31 +121,33 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
         dividendBatchService.run();
 
         // then
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
+        assertAll(
+                () -> assertThat(dividendRepository.findByStockIdAndExDividendDate(
                         stock.getId(),
                         Instant.parse("2023-12-21T00:00:00Z")))
-                .isPresent();
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
-                        stock.getId(),
-                        Instant.parse("2023-12-21T00:00:00Z"))
-                .get().getDividend())
-                .isEqualTo(dividend.getDividend());
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
-                        stock.getId(),
-                        Instant.parse("2023-12-21T00:00:00Z"))
-                .get().getExDividendDate())
-                .isEqualTo(dividend.getExDividendDate());
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
-                        stock.getId(),
-                        Instant.parse("2023-12-21T00:00:00Z"))
-                .get().getPaymentDate())
-                .isEqualTo(Instant.parse("2023-12-23T00:00:00Z"));
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
-                        stock.getId(),
-                        Instant.parse("2023-12-21T00:00:00Z"))
-                .get().getDeclarationDate())
-                .isEqualTo(Instant.parse("2023-12-22T00:00:00Z"));
-        assertThat(dividendRepository.findAll().size())
-                .isEqualTo(1);
+                        .isPresent(),
+                () -> assertThat(dividendRepository.findByStockIdAndExDividendDate(
+                                stock.getId(),
+                                Instant.parse("2023-12-21T00:00:00Z"))
+                        .get().getDividend())
+                        .isEqualTo(dividend.getDividend()),
+                () -> assertThat(dividendRepository.findByStockIdAndExDividendDate(
+                                stock.getId(),
+                                Instant.parse("2023-12-21T00:00:00Z"))
+                        .get().getExDividendDate())
+                        .isEqualTo(dividend.getExDividendDate()),
+                () -> assertThat(dividendRepository.findByStockIdAndExDividendDate(
+                                stock.getId(),
+                                Instant.parse("2023-12-21T00:00:00Z"))
+                        .get().getPaymentDate())
+                        .isEqualTo(Instant.parse("2023-12-23T00:00:00Z")),
+                () -> assertThat(dividendRepository.findByStockIdAndExDividendDate(
+                                stock.getId(),
+                                Instant.parse("2023-12-21T00:00:00Z"))
+                        .get().getDeclarationDate())
+                        .isEqualTo(Instant.parse("2023-12-22T00:00:00Z")),
+                () -> assertThat(dividendRepository.findAll().size())
+                        .isEqualTo(1)
+        );
     }
 }
