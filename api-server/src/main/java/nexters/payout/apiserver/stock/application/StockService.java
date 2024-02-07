@@ -22,6 +22,6 @@ public class StockService {
         List<Stock> stocks = stockRepository.findAllByTickerIn(tickers);
         Map<Sector, Double> sectorRatioMap = sectorAnalyzer.calculateSectorRatios(stocks);
 
-        return SectorRatioResponse.createResponseList(sectorRatioMap);
+        return SectorRatioResponse.fromMap(sectorRatioMap);
     }
 }
