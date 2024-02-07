@@ -16,7 +16,6 @@ import static org.mockito.BDDMockito.given;
 class StockBatchServiceTest extends AbstractBatchServiceTest {
 
     @Test
-    @DisplayName("현재가와 거래량을 업데이트한다")
     void 현재가와_거래량을_업데이트한다() {
         // given
         Stock stock = stockRepository.save(StockFixture.createStock(StockFixture.TSLA, 10.0, 1234));
