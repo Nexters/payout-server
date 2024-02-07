@@ -56,4 +56,24 @@ class SectorAnalyzerTest {
                 () -> assertThat(actualTechnologySectorInfo.stockShares()).isEqualTo(List.of(new StockShare(tsla, null, 1)))
         );
     }
+
+    @Test
+    void 같거나_다른_3개의_티커가_존재하는_경우_섹터비율_검증() {
+        // given
+        List<Stock> stocks = List.of(
+                StockFixture.createStock(StockFixture.APPL, Sector.FINANCIAL_SERVICES),
+                StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL),
+                StockFixture.createStock(StockFixture.SBUX, Sector.CONSUMER_CYCLICAL));
+        SectorAnalyzer sectorAnalyzer = new SectorAnalyzer();
+
+        // when
+        Map<Sector, Double> actual = sectorAnalyzer.calculateSectorRatios(stocks);
+
+        // then
+        assertAll(
+                () -> assertThat(actual).hasSize(2),
+                () -> assertThat(actual.get(Sector.CONSUMER_CYCLICAL)).isCloseTo(0.66, Offset.offset(0.01)),
+                () -> assertThat(actual.get(Sector.FINANCIAL_SERVICES)).isCloseTo(0.33, Offset.offset(0.01))
+        );
+    }
 }
