@@ -1,7 +1,8 @@
-package nexters.payout.apiserver.stock.presentation;
+package nexters.payout.apiserver.stock.presentation.integration;
 
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.http.ContentType;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
@@ -9,10 +10,8 @@ import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.repository.StockRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.server.LocalServerPort;
 
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ class StockControllerTest extends IntegrationTest {
         RestAssured
                 .given()
                 .log().all()
+                .contentType(ContentType.JSON)
                 .queryParams(Map.of("tickers", List.of()))
                 .when().get("stocks/api/sector-ratio")
                 .then().log().all()
@@ -55,6 +55,7 @@ class StockControllerTest extends IntegrationTest {
         List<SectorRatioResponse> actual = RestAssured
                 .given()
                 .log().all()
+                .contentType(ContentType.JSON)
                 .queryParams(Map.of("tickers", List.of(StockFixture.APPL)))
                 .when().get("stocks/api/sector-ratio")
                 .then().log().all()
