@@ -28,7 +28,15 @@ public class Stock extends BaseEntity {
 
     private Integer volume;
 
-    public Stock(String ticker, String name, Sector sector, String exchange, String industry, Double price, Integer volume) {
+    public Stock(
+            final String ticker,
+            final String name,
+            final Sector sector,
+            final String exchange,
+            final String industry,
+            final Double price,
+            final Integer volume) {
+        validateTicker(ticker);
         this.ticker = ticker;
         this.name = name;
         this.sector = sector;
@@ -38,7 +46,15 @@ public class Stock extends BaseEntity {
         this.volume = volume;
     }
 
-    public void update(Double price, Integer volume) {
+    private void validateTicker(String ticker) {
+        if (ticker.isBlank()) {
+            throw new IllegalArgumentException("ticker must not be null or empty");
+        }
+    }
+
+    public void update(
+            final Double price,
+            final Integer volume) {
         this.price = price;
         this.volume = volume;
     }

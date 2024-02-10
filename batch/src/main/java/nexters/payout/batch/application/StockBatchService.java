@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nexters.payout.domain.stock.repository.StockRepository;
+import nexters.payout.batch.application.FinancialClient.StockData;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +25,24 @@ public class StockBatchService {
     @Scheduled(fixedDelay = 1000000, zone = "UTC")
     void run() {
         log.info("update stock start..");
-        List<FinancialClient.StockData> stockList = financialClient.getLatestStockList();
+        List<StockData> stockList = financialClient.getLatestStockList();
 
-        for (FinancialClient.StockData stockData : stockList) {
+        for (StockData stockData : stockList) {
             stockRepository.findByTicker(stockData.ticker())
                     .ifPresentOrElse(
                             existingStock -> existingStock.update(stockData.price(), stockData.volume()),
-                            () -> stockRepository.save(stockData.toDomain())
+                            () -> saveNewStock(stockData)
                     );
         }
         log.info("update stock end..");
+    }
+
+    private void saveNewStock(StockData stockData) {
+        try {
+            stockRepository.save(stockData.toDomain());
+        } catch (Exception e) {
+            log.error("fail to save stock: " + stockData);
+            log.error(e.getMessage());
+        }
     }
 }

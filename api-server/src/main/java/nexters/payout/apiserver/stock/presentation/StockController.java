@@ -27,7 +27,7 @@ public class StockController {
     })
     @GetMapping("/sector-ratio")
     public ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
-            @Size(min = 1) @RequestParam List<String> tickers) {
+            @Size(min = 1) @RequestParam final List<String> tickers) {
         return ResponseEntity.ok(stockService.findSectorRatios(tickers));
     }
 }
