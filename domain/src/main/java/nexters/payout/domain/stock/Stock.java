@@ -46,7 +46,7 @@ public class Stock extends BaseEntity {
         this.volume = volume;
     }
 
-    private void validateTicker(String ticker) {
+    private void validateTicker(final String ticker) {
         if (ticker.isBlank()) {
             throw new IllegalArgumentException("ticker must not be null or empty");
         }

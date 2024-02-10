@@ -10,7 +10,7 @@ public record SectorRatioResponse(
         String sectorName,
         Double sectorRatio
 ) {
-    public static List<SectorRatioResponse> fromMap(Map<Sector, Double> sectorRatioMap) {
+    public static List<SectorRatioResponse> fromMap(final Map<Sector, Double> sectorRatioMap) {
         return sectorRatioMap.entrySet()
                 .stream()
                 .map(entry -> new SectorRatioResponse(entry.getKey().getName(), entry.getValue()))
