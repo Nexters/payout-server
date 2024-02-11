@@ -14,7 +14,7 @@ public record StockResponse(
         Integer volume,
         Double dividend
 ) {
-    public static StockResponse from(Stock stock, Dividend dividend) {
+    public static StockResponse of(Stock stock, Dividend dividend) {
         return new StockResponse(
                 stock.getTicker(),
                 stock.getName(),

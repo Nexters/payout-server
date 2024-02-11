@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,11 +39,7 @@ public class StockService {
 
     private List<StockShare> getStockShares(final SectorRatioRequest request) {
         List<Stock> stocks = stockRepository.findAllByTickerIn(getTickers(request));
-        List<UUID> stockIds = stocks.stream()
-                .map(Stock::getId)
-                .toList();
-
-        Map<UUID, Dividend> stockDividendMap = getStockDividendMap(stockIds);
+        Map<UUID, Dividend> stockDividendMap = getStockDividendMap(getStockIds(stocks));
 
         return stocks.stream()
                 .map(stock -> new StockShare(
@@ -52,14 +49,22 @@ public class StockService {
                 .collect(Collectors.toList());
     }
 
-    private Map<UUID, Dividend> getStockDividendMap(List<UUID> stockIds) {
+    private List<UUID> getStockIds(final List<Stock> stocks) {
+        return stocks.stream()
+                .map(Stock::getId)
+                .toList();
+    }
+
+    private Map<UUID, Dividend> getStockDividendMap(final List<UUID> stockIds) {
         return dividendRepository.findAllByStockIdIn(stockIds)
                 .stream()
-                .collect(Collectors.groupingBy(
-                        Dividend::getStockId,
-                        Collectors.collectingAndThen(
-                                Collectors.maxBy(Comparator.comparing(Dividend::getDeclarationDate)),
-                                optionalDividend -> optionalDividend.orElse(null))));
+                .collect(Collectors.groupingBy(Dividend::getStockId, getLatestDividendOrNull()));
+    }
+
+    private Collector<Dividend, Object, Dividend> getLatestDividendOrNull() {
+        return Collectors.collectingAndThen(
+                Collectors.maxBy(Comparator.comparing(Dividend::getDeclarationDate)),
+                optionalDividend -> optionalDividend.orElse(null));
     }
 
     private List<String> getTickers(final SectorRatioRequest request) {
