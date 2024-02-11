@@ -4,7 +4,10 @@ import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
+import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
+import nexters.payout.domain.dividend.Dividend;
+import nexters.payout.domain.dividend.repository.DividendRepository;
 import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.Stock;
 import nexters.payout.domain.stock.repository.StockRepository;
@@ -34,6 +37,8 @@ class StockServiceTest {
 
     @Mock
     private StockRepository stockRepository;
+    @Mock
+    private DividendRepository dividendRepository;
 
     @Mock
     private SectorAnalyzer sectorAnalyzer;
@@ -44,13 +49,17 @@ class StockServiceTest {
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2), new TickerShare(TSLA, 3)));
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 4.0);
         Stock tsla = StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL, 2.2);
+        Dividend aaplDiv = DividendFixture.createDividend(appl.getId(), 11.0);
+        Dividend tslaDiv = DividendFixture.createDividend(tsla.getId(), 5.0);
         List<Stock> stocks = List.of(appl, tsla);
+        List<Dividend> dividends = List.of(aaplDiv, tslaDiv);
 
         given(stockRepository.findAllByTickerIn(any())).willReturn(stocks);
+        given(dividendRepository.findAllByStockIdIn(any())).willReturn(dividends);
         given(sectorAnalyzer.calculateSectorRatios(any())).willReturn(
                 Map.of(
-                        Sector.TECHNOLOGY, new SectorInfo(0.5479, List.of(new StockShare(appl, 2))),
-                        Sector.CONSUMER_CYCLICAL, new SectorInfo(0.4520, List.of(new StockShare(tsla, 3)))
+                        Sector.TECHNOLOGY, new SectorInfo(0.5479, List.of(new StockShare(appl, aaplDiv, 2))),
+                        Sector.CONSUMER_CYCLICAL, new SectorInfo(0.4520, List.of(new StockShare(tsla, tslaDiv, 3)))
                 )
         );
 
@@ -65,8 +74,10 @@ class StockServiceTest {
                                 appl.getExchange(),
                                 appl.getIndustry(),
                                 appl.getPrice(),
-                                appl.getVolume()))
-                        ),
+                                appl.getVolume(),
+                                aaplDiv.getDividend()
+                        ))
+                ),
                 new SectorRatioResponse(
                         Sector.CONSUMER_CYCLICAL.getName(),
                         0.4520,
@@ -77,7 +88,9 @@ class StockServiceTest {
                                 tsla.getExchange(),
                                 tsla.getIndustry(),
                                 tsla.getPrice(),
-                                tsla.getVolume()))
+                                tsla.getVolume(),
+                                tslaDiv.getDividend())
+                        )
                 )
         );
 

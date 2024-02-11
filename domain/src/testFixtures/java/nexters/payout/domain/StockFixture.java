@@ -4,6 +4,8 @@ import nexters.payout.domain.stock.Exchange;
 import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.Stock;
 
+import java.util.UUID;
+
 public class StockFixture {
     public static final String TSLA = "TSLA";
     public static final String AAPL = "AAPL";
@@ -14,10 +16,10 @@ public class StockFixture {
     }
 
     public static Stock createStock(String ticker, Sector sector) {
-        return new Stock(ticker, ticker, sector, Exchange.NYSE.name(), "industry", 0.0, 0);
+        return new Stock(UUID.randomUUID(), ticker, ticker, sector, Exchange.NYSE.name(), "industry", 0.0, 0);
     }
 
     public static Stock createStock(String ticker, Sector sector, Double price) {
-        return new Stock(ticker, ticker, sector, Exchange.NYSE.name(), "industry", price, 0);
+        return new Stock(UUID.randomUUID(), ticker, ticker, sector, Exchange.NYSE.name(), "industry", price, 0);
     }
 }

@@ -1,7 +1,6 @@
 package nexters.payout.domain.dividend;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +19,11 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Dividend extends BaseEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(unique = true, nullable = false, updatable = false)
+    private UUID id;
+
     @Column(nullable = false, updatable = false)
     private UUID stockId;
 
@@ -33,7 +37,7 @@ public class Dividend extends BaseEntity {
 
     private Instant declarationDate;
 
-    private Dividend(
+    public Dividend(
             UUID stockId,
             Double dividend,
             Instant exDividendDate,
@@ -48,8 +52,9 @@ public class Dividend extends BaseEntity {
 
     /**
      * 배당금 정보를 갱신하는 메서드입니다.
-     * @param dividend 갱신할 배당금
-     * @param paymentDate 갱신할 배당 지급일
+     *
+     * @param dividend        갱신할 배당금
+     * @param paymentDate     갱신할 배당 지급일
      * @param declarationDate 갱신할 배당 지급 선언일
      */
     public void update(Double dividend, Instant paymentDate, Instant declarationDate) {
