@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class StockControllerTest extends IntegrationTest {
 
     @Test
-    void 티커가_1개_미만일_경우_예외가_발생한다() {
+    void 빈_리스트로_요청한_경우_예외가_발생한다() {
         // given
         SectorRatioRequest request = new SectorRatioRequest(List.of());
 
@@ -43,6 +43,25 @@ class StockControllerTest extends IntegrationTest {
                 .extract()
                 .as(ErrorResponse.class);
     }
+
+    @Test
+    void 종목_소유_개수가_0개인_경우_예외가_발생한다() {
+        // given
+        SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 0)));
+
+        // when, then
+        RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("stocks/api/sector-ratio")
+                .then().log().all()
+                .statusCode(400)
+                .extract()
+                .as(ErrorResponse.class);
+    }
+
 
     @Test
     void 티커가_1개_이상일_경우_정상적으로_동작한다() {
