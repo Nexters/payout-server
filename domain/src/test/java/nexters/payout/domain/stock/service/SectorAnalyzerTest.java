@@ -62,7 +62,7 @@ class SectorAnalyzerTest {
                 () -> assertThat(actualFinancialSectorInfo.ratio()).isCloseTo(0.8889, within(0.001)),
                 () -> assertThat(actualFinancialSectorInfo.stockShares()).isEqualTo(List.of(new StockShare(appl, 2))),
                 () -> assertThat(actualTechnologySectorInfo.ratio()).isCloseTo(0.1111, within(0.001)),
-                () -> assertThat(actualTechnologySectorInfo.stockShares()).isEqualTo(List.of(new StockShare(tsla, 1)))
+                () -> assertThat(actualTechnologySectorInfo.stockShares()).isEqualTo(List.of(new StockShare(tsla, null, 1)))
         );
     }
 }
