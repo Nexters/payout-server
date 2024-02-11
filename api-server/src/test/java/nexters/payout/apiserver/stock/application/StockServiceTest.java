@@ -48,7 +48,7 @@ class StockServiceTest {
         // given
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2), new TickerShare(TSLA, 3)));
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 4.0);
-        Stock tsla = StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL, 2.2);
+        Stock tsla = StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL, 2.2);
         Dividend aaplDiv = DividendFixture.createDividend(appl.getId(), 11.0);
         Dividend tslaDiv = DividendFixture.createDividend(tsla.getId(), 5.0);
         List<Stock> stocks = List.of(appl, tsla);
@@ -68,6 +68,7 @@ class StockServiceTest {
                         Sector.TECHNOLOGY.getName(),
                         0.5479,
                         List.of(new StockResponse(
+                                appl.getId(),
                                 appl.getTicker(),
                                 appl.getName(),
                                 appl.getSector(),
@@ -82,6 +83,7 @@ class StockServiceTest {
                         Sector.CONSUMER_CYCLICAL.getName(),
                         0.4520,
                         List.of(new StockResponse(
+                                tsla.getId(),
                                 tsla.getTicker(),
                                 tsla.getName(),
                                 tsla.getSector(),
