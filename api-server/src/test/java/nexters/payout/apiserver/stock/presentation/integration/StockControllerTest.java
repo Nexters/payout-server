@@ -3,6 +3,8 @@ package nexters.payout.apiserver.stock.presentation.integration;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
+import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
@@ -14,8 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Map;
 
+import static nexters.payout.domain.StockFixture.APPL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -32,14 +34,15 @@ class StockControllerTest extends IntegrationTest {
     @Test
     void 티커가_1개_미만일_경우_예외가_발생한다() {
         // given
+        SectorRatioRequest request = new SectorRatioRequest(List.of());
 
         // when, then
         RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
-                .queryParams(Map.of("tickers", List.of()))
-                .when().get("stocks/api/sector-ratio")
+                .body(request)
+                .when().post("stocks/api/sector-ratio")
                 .then().log().all()
                 .statusCode(400)
                 .extract()
@@ -49,15 +52,16 @@ class StockControllerTest extends IntegrationTest {
     @Test
     void 티커가_1개_이상일_경우_정상적으로_동작한다() {
         // given
-        stockRepository.save(StockFixture.createStock(StockFixture.APPL, Sector.TECHNOLOGY));
+        SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(APPL, 2)));
+        stockRepository.save(StockFixture.createStock(APPL, Sector.TECHNOLOGY, 5.0));
 
         // when
         List<SectorRatioResponse> actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
-                .queryParams(Map.of("tickers", List.of(StockFixture.APPL)))
-                .when().get("stocks/api/sector-ratio")
+                .body(request)
+                .when().post("stocks/api/sector-ratio")
                 .then().log().all()
                 .statusCode(200)
                 .extract()

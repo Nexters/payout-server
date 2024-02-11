@@ -3,72 +3,57 @@ package nexters.payout.domain.stock.service;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.Stock;
-import org.assertj.core.data.Offset;
-import org.junit.jupiter.api.DisplayName;
+import nexters.payout.domain.stock.service.SectorAnalyzer.SectorInfo;
+import nexters.payout.domain.stock.service.SectorAnalyzer.StockShare;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.within;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class SectorAnalyzerTest {
 
-    @ParameterizedTest
-    @ValueSource(strings = {StockFixture.APPL, StockFixture.TSLA, StockFixture.SBUX})
-    void 하나의_티커가_존재하는_경우_섹터비율_검증(String ticker) {
+    @Test
+    void 하나의_티커가_존재하는_경우_섹터비율_검증() {
         // given
-        List<Stock> stocks = List.of(StockFixture.createStock(ticker, Sector.FINANCIAL_SERVICES));
+        Stock stock = StockFixture.createStock(StockFixture.APPL, Sector.TECHNOLOGY, 3.0);
+        List<StockShare> stockShares = List.of(new StockShare(stock, 1));
         SectorAnalyzer sectorAnalyzer = new SectorAnalyzer();
 
         // when
-        Map<Sector, Double> actual = sectorAnalyzer.calculateSectorRatios(stocks);
+        Map<Sector, SectorInfo> actual = sectorAnalyzer.calculateSectorRatios(stockShares);
 
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(Sector.FINANCIAL_SERVICES)).isEqualTo(1.0)
+                () -> assertThat(actual.get(Sector.TECHNOLOGY)).isEqualTo(new SectorInfo(1.0, List.of(new StockShare(stock, 1))))
         );
     }
 
     @Test
-    void 서로_다른_섹터를_가진_2개의_티커가_존재하는_경우_섹터비율_검증() {
+    void 서로_다른_섹터와_개수와_현재가를_가진_2개의_티커가_존재하는_경우_섹터비율_검증() {
         // given
-        List<Stock> stocks = List.of(
-                StockFixture.createStock(StockFixture.APPL, Sector.FINANCIAL_SERVICES),
-                StockFixture.createStock(StockFixture.TSLA, Sector.TECHNOLOGY));
+        Stock appl = StockFixture.createStock(StockFixture.APPL, Sector.TECHNOLOGY, 4.0);
+        Stock tsla = StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL, 1.0);
+        List<StockShare> stockShares = List.of(new StockShare(appl, 2), new StockShare(tsla, 1));
         SectorAnalyzer sectorAnalyzer = new SectorAnalyzer();
 
         // when
-        Map<Sector, Double> actual = sectorAnalyzer.calculateSectorRatios(stocks);
+        Map<Sector, SectorInfo> actual = sectorAnalyzer.calculateSectorRatios(stockShares);
 
         // then
+        SectorInfo actualFinancialSectorInfo = actual.get(Sector.TECHNOLOGY);
+        SectorInfo actualTechnologySectorInfo = actual.get(Sector.CONSUMER_CYCLICAL);
+
         assertAll(
                 () -> assertThat(actual).hasSize(2),
-                () -> assertThat(actual).allSatisfy((sector, ratio) -> assertThat(ratio).isEqualTo(0.5))
-        );
-    }
-
-    @Test
-    void 같거나_다른_3개의_티커가_존재하는_경우_섹터비율_검증() {
-        // given
-        List<Stock> stocks = List.of(
-                StockFixture.createStock(StockFixture.APPL, Sector.FINANCIAL_SERVICES),
-                StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL),
-                StockFixture.createStock(StockFixture.SBUX, Sector.CONSUMER_CYCLICAL));
-        SectorAnalyzer sectorAnalyzer = new SectorAnalyzer();
-
-        // when
-        Map<Sector, Double> actual = sectorAnalyzer.calculateSectorRatios(stocks);
-
-        // then
-        assertAll(
-                () -> assertThat(actual).hasSize(2),
-                () -> assertThat(actual.get(Sector.CONSUMER_CYCLICAL)).isCloseTo(0.66, Offset.offset(0.01)),
-                () -> assertThat(actual.get(Sector.FINANCIAL_SERVICES)).isCloseTo(0.33, Offset.offset(0.01))
+                () -> assertThat(actualFinancialSectorInfo.ratio()).isCloseTo(0.8889, within(0.001)),
+                () -> assertThat(actualFinancialSectorInfo.stockShares()).isEqualTo(List.of(new StockShare(appl, 2))),
+                () -> assertThat(actualTechnologySectorInfo.ratio()).isCloseTo(0.1111, within(0.001)),
+                () -> assertThat(actualTechnologySectorInfo.stockShares()).isEqualTo(List.of(new StockShare(tsla, 1)))
         );
     }
 }
