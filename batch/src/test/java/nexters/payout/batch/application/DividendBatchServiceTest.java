@@ -86,11 +86,6 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
         dividendBatchService.run();
 
         // then
-        assertThat(dividendRepository.findByStockIdAndExDividendDate(
-                stock.getId(),
-                Instant.parse("2023-12-21T00:00:00Z")))
-                .isPresent();
-
         Dividend actual = dividendRepository.findByStockIdAndExDividendDate(
                         stock.getId(),
                         Instant.parse("2023-12-21T00:00:00Z"))
