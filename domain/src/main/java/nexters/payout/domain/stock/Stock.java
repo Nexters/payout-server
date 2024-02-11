@@ -58,4 +58,17 @@ public class Stock extends BaseEntity {
         this.price = price;
         this.volume = volume;
     }
+
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "ticker='" + ticker + '\'' +
+                ", name='" + name + '\'' +
+                ", sector=" + sector +
+                ", exchange='" + exchange + '\'' +
+                ", industry='" + industry + '\'' +
+                ", price=" + price +
+                ", volume=" + volume +
+                '}';
+    }
 }

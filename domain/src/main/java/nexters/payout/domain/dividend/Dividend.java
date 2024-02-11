@@ -66,4 +66,15 @@ public class Dividend extends BaseEntity {
             Instant declarationDate) {
         return new Dividend(stockId, dividend, exDividendDate, paymentDate, declarationDate);
     }
+
+    @Override
+    public String toString() {
+        return "Dividend{" +
+                "stockId=" + stockId +
+                ", dividend=" + dividend +
+                ", exDividendDate=" + exDividendDate +
+                ", paymentDate=" + paymentDate +
+                ", declarationDate=" + declarationDate +
+                '}';
+    }
 }

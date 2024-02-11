@@ -1,5 +1,6 @@
 package nexters.payout.domain.stock.repository;
 
+import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.Stock;
 import org.springframework.data.jpa.repository.JpaRepository;
 
