@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Map;
 
-import static nexters.payout.domain.StockFixture.APPL;
+import static nexters.payout.domain.StockFixture.AAPL;
 import static nexters.payout.domain.StockFixture.TSLA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,8 +41,8 @@ class StockServiceTest {
     @Test
     void 포트폴리오에_존재하는_종목과_개수_현재가를_기준으로_섹터_정보를_정상적으로_반환한다() {
         // given
-        SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(APPL, 2), new TickerShare(TSLA, 3)));
-        Stock appl = StockFixture.createStock(APPL, Sector.TECHNOLOGY, 4.0);
+        SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2), new TickerShare(TSLA, 3)));
+        Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 4.0);
         Stock tsla = StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL, 2.2);
         List<Stock> stocks = List.of(appl, tsla);
 

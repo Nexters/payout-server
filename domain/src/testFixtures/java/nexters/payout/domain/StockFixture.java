@@ -6,7 +6,7 @@ import nexters.payout.domain.stock.Stock;
 
 public class StockFixture {
     public static final String TSLA = "TSLA";
-    public static final String APPL = "APPL";
+    public static final String AAPL = "AAPL";
     public static final String SBUX = "SBUX";
 
     public static Stock createStock(String ticker, Double price, Integer volume) {

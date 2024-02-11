@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static nexters.payout.domain.StockFixture.APPL;
+import static nexters.payout.domain.StockFixture.AAPL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -52,8 +52,8 @@ class StockControllerTest extends IntegrationTest {
     @Test
     void 티커가_1개_이상일_경우_정상적으로_동작한다() {
         // given
-        SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(APPL, 2)));
-        stockRepository.save(StockFixture.createStock(APPL, Sector.TECHNOLOGY, 5.0));
+        SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2)));
+        stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
 
         // when
         List<SectorRatioResponse> actual = RestAssured

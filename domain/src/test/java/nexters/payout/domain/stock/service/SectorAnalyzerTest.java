@@ -19,7 +19,7 @@ class SectorAnalyzerTest {
     @Test
     void 하나의_티커가_존재하는_경우_섹터비율_검증() {
         // given
-        Stock stock = StockFixture.createStock(StockFixture.APPL, Sector.TECHNOLOGY, 3.0);
+        Stock stock = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY, 3.0);
         List<StockShare> stockShares = List.of(new StockShare(stock, 1));
         SectorAnalyzer sectorAnalyzer = new SectorAnalyzer();
 
@@ -36,7 +36,7 @@ class SectorAnalyzerTest {
     @Test
     void 서로_다른_섹터와_개수와_현재가를_가진_2개의_티커가_존재하는_경우_섹터비율_검증() {
         // given
-        Stock appl = StockFixture.createStock(StockFixture.APPL, Sector.TECHNOLOGY, 4.0);
+        Stock appl = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY, 4.0);
         Stock tsla = StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL, 1.0);
         List<StockShare> stockShares = List.of(new StockShare(appl, 2), new StockShare(tsla, 1));
         SectorAnalyzer sectorAnalyzer = new SectorAnalyzer();
