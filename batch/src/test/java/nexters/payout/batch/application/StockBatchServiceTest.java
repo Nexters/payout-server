@@ -20,8 +20,8 @@ class StockBatchServiceTest extends AbstractBatchServiceTest {
     void 현재가와_거래량을_업데이트한다() {
         // given
         Stock stock = stockRepository.save(StockFixture.createStock(StockFixture.TESLA, 10.0, 1234));
-        FinancialClient.StockData stockData = LatestStockFixture.createStockData(stock.getTicker(), 30.0, 4321);
-        given(financialClient.getLatestStockList()).willReturn(List.of(stockData));
+        FinancialClient.StockData expected = LatestStockFixture.createStockData(stock.getTicker(), 30.0, 4321);
+        given(financialClient.getLatestStockList()).willReturn(List.of(expected));
 
         // when
         stockBatchService.run();
@@ -29,8 +29,8 @@ class StockBatchServiceTest extends AbstractBatchServiceTest {
         // then
         Stock actual = stockRepository.findByTicker(stock.getTicker()).get();
         assertAll(
-                () -> assertThat(actual.getPrice()).isEqualTo(stockData.price()),
-                () -> assertThat(actual.getVolume()).isEqualTo(stockData.volume())
+                () -> assertThat(actual.getPrice()).isEqualTo(expected.price()),
+                () -> assertThat(actual.getVolume()).isEqualTo(expected.volume())
         );
     }
 }

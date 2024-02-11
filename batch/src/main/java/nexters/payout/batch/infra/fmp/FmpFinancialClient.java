@@ -94,12 +94,6 @@ public class FmpFinancialClient implements FinancialClient {
     @Override
     public List<DividendData> getDividendList() {
 
-        WebClient client =
-                WebClient
-                        .builder()
-                        .baseUrl(fmpProperties.getBaseUrl())
-                        .build();
-
         // 3개월 간 총 4번의 데이터를 조회함으로써 기준 날짜로부터 이전 1년 간의 데이터를 조회
         List<DividendData> result = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
@@ -107,7 +101,7 @@ public class FmpFinancialClient implements FinancialClient {
             Instant date = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1).minusMonths(i).toInstant();
 
             List<DividendData> dividendResponses =
-                    client.get()
+                    fmpWebClient.get()
                             .uri(uriBuilder ->
                                     uriBuilder
                                             .path(fmpProperties.getStockDividendCalenderPath())
