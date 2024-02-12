@@ -10,13 +10,9 @@ import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
-import nexters.payout.domain.dividend.repository.DividendRepository;
 import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.Stock;
-import nexters.payout.domain.stock.repository.StockRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -107,7 +103,7 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
                 () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL),
-                () -> assertThat(actual.get(0).stocks().get(0).dividend()).isEqualTo(12.0)
+                () -> assertThat(actual.get(0).stocks().get(0).dividendPerShare()).isEqualTo(12.0)
         );
     }
 
@@ -136,7 +132,7 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
                 () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL),
-                () -> assertThat(actual.get(0).stocks().get(0).dividend()).isEqualTo(null)
+                () -> assertThat(actual.get(0).stocks().get(0).dividendPerShare()).isEqualTo(null)
         );
     }
 }

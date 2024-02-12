@@ -11,9 +11,10 @@ import nexters.payout.domain.dividend.repository.DividendRepository;
 import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.Stock;
 import nexters.payout.domain.stock.repository.StockRepository;
-import nexters.payout.domain.stock.service.SectorAnalyzer;
-import nexters.payout.domain.stock.service.SectorAnalyzer.SectorInfo;
-import nexters.payout.domain.stock.service.SectorAnalyzer.StockShare;
+import nexters.payout.domain.stock.service.SectorAnalysisService;
+import nexters.payout.domain.stock.service.SectorAnalysisService.SectorInfo;
+import nexters.payout.domain.stock.service.SectorAnalysisService.StockShare;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,10 +42,10 @@ class StockServiceTest {
     private DividendRepository dividendRepository;
 
     @Mock
-    private SectorAnalyzer sectorAnalyzer;
+    private SectorAnalysisService sectorAnalysisService;
 
-    @Test
-    void 포트폴리오에_존재하는_종목과_개수_현재가를_기준으로_섹터_정보를_정상적으로_반환한다() {
+
+    void 섹터_정보를_정상적으로_반환한다() {
         // given
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2), new TickerShare(TSLA, 3)));
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 4.0);
@@ -56,7 +57,7 @@ class StockServiceTest {
 
         given(stockRepository.findAllByTickerIn(any())).willReturn(stocks);
         given(dividendRepository.findAllByStockIdIn(any())).willReturn(dividends);
-        given(sectorAnalyzer.calculateSectorRatios(any())).willReturn(
+        given(sectorAnalysisService.calculateSectorRatios(any())).willReturn(
                 Map.of(
                         Sector.TECHNOLOGY, new SectorInfo(0.5479, List.of(new StockShare(appl, aaplDiv, 2))),
                         Sector.CONSUMER_CYCLICAL, new SectorInfo(0.4520, List.of(new StockShare(tsla, tslaDiv, 3)))
@@ -97,7 +98,7 @@ class StockServiceTest {
         );
 
         // when
-        List<SectorRatioResponse> actual = stockService.findSectorRatios(request);
+        List<SectorRatioResponse> actual = stockService.analyzeSectorRatio(request);
 
         // then
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);

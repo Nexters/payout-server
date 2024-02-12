@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @DomainService
-public class SectorAnalyzer {
+public class SectorAnalysisService {
 
     public Map<Sector, SectorInfo> calculateSectorRatios(final List<StockShare> stockShares) {
         Map<Sector, Integer> sectorCountMap = getSectorCountMap(stockShares);
