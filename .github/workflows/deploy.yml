@@ -6,7 +6,7 @@ on:
     - main
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,7 +40,7 @@ jobs:
           sudo docker push ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch
         shell: bash
 
-  deploy-to-api-server:
+  deploy-to-server:
     name: Connect api server ssh and pull from container registry
     needs: build-and-deploy
     runs-on: ubuntu-latest
@@ -61,33 +61,11 @@ jobs:
             export FMP_API_KEY=${{ secrets.FMP_API_KEY }}
             
             sudo docker rm -f $(docker ps -qa)
+            
             sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_API }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_API }}/payout-api
-            docker-compose up api-server -d
-            docker image prune -f
-
-  deploy-to-batch-server:
-    name: Connect batch server ssh and pull from container registry
-    needs: build-and-deploy
-    runs-on: ubuntu-latest
-    steps:
-      ## docker compose up
-      - name: Deploy to batch server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.BATCH_SERVER_HOST }}
-          username: ${{ secrets.BATCH_SERVER_USERNAME }}
-          password: ${{ secrets.BATCH_SERVER_PASSWORD }}
-          script: |
-            export DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}
-            export DB_PORT=${{ secrets.DB_PORT }}
-            export DB_DATABASE=${{ secrets.DB_DATABASE }}
-            export DB_USERNAME=${{ secrets.DB_USERNAME }}
-            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            export FMP_API_KEY=${{ secrets.FMP_API_KEY }}
-            
-            sudo docker rm -f $(docker ps -qa)
             sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch
-            docker-compose up batch -d
+            
+            docker-compose up -d
             docker image prune -f
