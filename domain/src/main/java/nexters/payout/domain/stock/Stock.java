@@ -84,16 +84,10 @@ public class Stock extends BaseEntity {
     }
 
     public Double calculateDividendYield(final Dividend dividend) {
-        if (this.price == 0) {
+        if (this.price == null || this.price == 0) {
             return 0.0;
         }
         return dividend.getDividend() / this.price;
-    }
-
-    public List<Month> getDividendMonths(final List<Dividend> dividends,
-                                         final DividendAnalysisService service) {
-
-        return service.calculateDividendMonths(this, dividends);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.UUID;
 public record StockResponse(
         UUID stockId,
         String ticker,
-        String name,
+        String companyName,
         String sectorName,
         String exchange,
         String industry,

@@ -1,25 +1,25 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.stock.Sector;
 import nexters.payout.domain.stock.Stock;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 
 public record StockDetailResponse(
         String ticker,
-        String name,
-        Sector sector,
+        String companyName,
+        String sectorName,
         String exchange,
         String industry,
         Double price,
         Integer volume,
         Double dividendPerShare,
-        Instant exDividendDate,
-        Instant earliestPaymentDate,
+        LocalDate exDividendDate,
+        LocalDate earliestPaymentDate,
         Double dividendYield,
         List<Month> dividendMonths
 ) {
@@ -28,7 +28,7 @@ public record StockDetailResponse(
         return new StockDetailResponse(
                 stock.getTicker(),
                 stock.getName(),
-                stock.getSector(),
+                stock.getSector().getName(),
                 stock.getExchange(),
                 stock.getIndustry(),
                 stock.getPrice(),
@@ -42,17 +42,18 @@ public record StockDetailResponse(
     }
 
     public static StockDetailResponse of(Stock stock, Dividend dividend, List<Month> dividendMonths) {
+        int thisYear = InstantProvider.getThisYear();
         return new StockDetailResponse(
                 stock.getTicker(),
                 stock.getName(),
-                stock.getSector(),
+                stock.getSector().getName(),
                 stock.getExchange(),
                 stock.getIndustry(),
                 stock.getPrice(),
                 stock.getVolume(),
                 dividend.getDividend(),
-                dividend.getExDividendDate(),
-                dividend.getPaymentDate(),
+                InstantProvider.toLocalDate(dividend.getExDividendDate()).withYear(thisYear),
+                InstantProvider.toLocalDate(dividend.getPaymentDate()).withYear(thisYear),
                 stock.calculateDividendYield(dividend),
                 dividendMonths
         );

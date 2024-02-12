@@ -2,12 +2,10 @@ package nexters.payout.core.time;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Year;
 
 import static java.time.ZoneOffset.UTC;
 
-public class InstantTimeProvider {
+public class InstantProvider {
     public static LocalDate toLocalDate(Instant instant) {
         return LocalDate.ofInstant(instant, UTC);
     }
