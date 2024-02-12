@@ -37,12 +37,9 @@ public class Dividend extends BaseEntity {
 
     private Instant declarationDate;
 
-    public Dividend(
-            UUID stockId,
-            Double dividend,
-            Instant exDividendDate,
-            Instant paymentDate,
-            Instant declarationDate) {
+    public Dividend(UUID id, UUID stockId, Double dividend, Instant exDividendDate,
+                    Instant paymentDate, Instant declarationDate) {
+        this.id = id;
         this.stockId = stockId;
         this.dividend = dividend;
         this.exDividendDate = exDividendDate;
@@ -50,25 +47,20 @@ public class Dividend extends BaseEntity {
         this.declarationDate = declarationDate;
     }
 
-    /**
-     * 배당금 정보를 갱신하는 메서드입니다.
-     *
-     * @param dividend        갱신할 배당금
-     * @param paymentDate     갱신할 배당 지급일
-     * @param declarationDate 갱신할 배당 지급 선언일
-     */
+    public Dividend(UUID stockId, Double dividend, Instant exDividendDate,
+                    Instant paymentDate, Instant declarationDate) {
+        this(null, stockId, dividend, exDividendDate, paymentDate, declarationDate);
+    }
+
     public void update(Double dividend, Instant paymentDate, Instant declarationDate) {
         this.dividend = dividend;
         this.paymentDate = paymentDate;
         this.declarationDate = declarationDate;
     }
 
-    public static Dividend createDividend(
-            UUID stockId,
-            Double dividend,
-            Instant exDividendDate,
-            Instant paymentDate,
-            Instant declarationDate) {
+    public static Dividend create(
+            UUID stockId, Double dividend, Instant exDividendDate,
+            Instant paymentDate, Instant declarationDate) {
         return new Dividend(stockId, dividend, exDividendDate, paymentDate, declarationDate);
     }
 

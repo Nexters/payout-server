@@ -32,7 +32,7 @@ public class SectorAnalysisService {
         return sectorInfoMap;
     }
 
-    private Map<Sector, Integer> getSectorCountMap(List<StockShare> stockShares) {
+    private Map<Sector, Integer> getSectorCountMap(final List<StockShare> stockShares) {
         return stockShares
                 .stream()
                 .map(stockShare -> stockShare.stock().getSector())
@@ -52,11 +52,11 @@ public class SectorAnalysisService {
                 .sum();
     }
 
-    private List<StockShare> getStocks(Map<Sector, List<StockShare>> sectorStockMap, Sector sector) {
+    private List<StockShare> getStocks(final Map<Sector, List<StockShare>> sectorStockMap, final Sector sector) {
         return sectorStockMap.getOrDefault(sector, Collections.emptyList());
     }
 
-    private Integer stockCountBySector(Map<Sector, Integer> sectorCountMap, Sector sector) {
+    private Integer stockCountBySector(final Map<Sector, Integer> sectorCountMap, final Sector sector) {
         return sectorCountMap.getOrDefault(sector, 0);
     }
 

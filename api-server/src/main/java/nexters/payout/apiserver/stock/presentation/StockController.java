@@ -25,7 +25,11 @@ public class StockController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "SUCCESS"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
             @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "SERVER ERROR",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @GetMapping("/{ticker}")
@@ -37,6 +41,10 @@ public class StockController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "SUCCESS"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "SERVER ERROR",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping("/sector-ratio")

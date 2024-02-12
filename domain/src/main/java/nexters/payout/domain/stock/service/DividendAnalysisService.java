@@ -15,7 +15,7 @@ public class DividendAnalysisService {
     /**
      * 작년 1월 ~ 12월을 기준으로 배당을 주었던 월 리스트를 계산합니다.
      */
-    public List<Month> calculateDividendMonths(Stock stock, List<Dividend> dividends) {
+    public List<Month> calculateDividendMonths(final Stock stock,final List<Dividend> dividends) {
         int lastYear = InstantProvider.getLastYear();
 
         return dividends.stream()

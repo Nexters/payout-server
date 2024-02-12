@@ -40,14 +40,9 @@ public class Stock extends BaseEntity {
 
     private Integer volume;
 
-    public Stock(final UUID id,
-                 final String ticker,
-                 final String name,
-                 final Sector sector,
-                 final String exchange,
-                 final String industry,
-                 final Double price,
-                 final Integer volume) {
+    public Stock(final UUID id, final String ticker, final String name,
+                 final Sector sector, final String exchange, final String industry,
+                 final Double price, final Integer volume) {
         validateTicker(ticker);
         this.id = id;
         this.ticker = ticker;
@@ -59,14 +54,9 @@ public class Stock extends BaseEntity {
         this.volume = volume;
     }
 
-    public Stock(
-            final String ticker,
-            final String name,
-            final Sector sector,
-            final String exchange,
-            final String industry,
-            final Double price,
-            final Integer volume) {
+    public Stock(final String ticker, final String name,
+                 final Sector sector, final String exchange, final String industry,\
+                 final Double price, final Integer volume) {
         this(null, ticker, name, sector, exchange, industry, price, volume);
     }
 

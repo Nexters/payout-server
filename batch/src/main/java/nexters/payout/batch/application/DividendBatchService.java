@@ -14,9 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
-
-import static nexters.payout.domain.dividend.Dividend.createDividend;
 
 /**
  * 배당금 관련 스케쥴러 서비스 클래스입니다.
@@ -57,7 +54,7 @@ public class DividendBatchService {
                 parseInstant(dividendData.declarationDate()));
     }
     private void createDividend(Stock stock, DividendData dividendData) {
-        Dividend newDividend = Dividend.createDividend(
+        Dividend newDividend = Dividend.create(
                 stock.getId(),
                 dividendData.dividend(),
                 parseInstant(dividendData.date()),

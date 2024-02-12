@@ -35,7 +35,7 @@ public class StockQueryService {
     private final SectorAnalysisService sectorAnalysisService;
     private final DividendAnalysisService dividendAnalysisService;
 
-    public StockDetailResponse getStockByTicker(String ticker) {
+    public StockDetailResponse getStockByTicker(final String ticker) {
         Stock stock = stockRepository.findByTicker(ticker)
                 .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
 
@@ -54,10 +54,10 @@ public class StockQueryService {
 
 
     /**
-     * 작년 1년간 데이터를 기준으로 가장 가까운 예상 배당금 지급일을 조회합니다.
+     * 작년 1년간 데이터를 기준으로 가장 가까운 예상 배당금을 조회합니다.
      */
-    public Optional<Dividend> findEarliestDividendThisYear(Stock stock) {
-        int currentYear = InstantProvider.getThisYear();
+    public Optional<Dividend> findEarliestDividendThisYear(final Stock stock) {
+        int thisYear = InstantProvider.getThisYear();
         int lastYear = InstantProvider.getLastYear();
 
         return dividendRepository.findAllByStockId(stock.getId())
@@ -65,7 +65,7 @@ public class StockQueryService {
                 .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == lastYear)
                 .map(dividend -> {
                     LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
-                    LocalDate adjustedPaymentDate = paymentDate.withYear(currentYear);
+                    LocalDate adjustedPaymentDate = paymentDate.withYear(thisYear);
                     return new AbstractMap.SimpleEntry<>(dividend, adjustedPaymentDate);
                 })
                 .min(Map.Entry.comparingByValue())
