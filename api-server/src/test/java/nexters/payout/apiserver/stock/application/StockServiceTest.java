@@ -52,7 +52,30 @@ class StockServiceTest {
     private DividendAnalysisService dividendAnalysisService;
 
     @Test
-    void 종목_상세_정보를_정삭적으로_반환한다() {
+    void 종목_상세_정보를_정싱적으로_반환한다() {
+        // given
+        Stock aapl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
+        int lastYear = LocalDate.now(UTC).getYear() - 1;
+        Instant janPaymentDate = LocalDate.of(lastYear, 1, 3).atStartOfDay().toInstant(UTC);
+        Dividend dividend = DividendFixture.createDividend(aapl.getId(), 0.5, janPaymentDate);
+
+        given(stockRepository.findByTicker(any())).willReturn(Optional.of(aapl));
+        given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
+
+        // when
+        StockDetailResponse actual = stockService.getStockByTicker(aapl.getTicker());
+
+        // then
+        assertAll(
+                () -> assertThat(actual.ticker()).isEqualTo(aapl.getTicker()),
+                () -> assertThat(actual.industry()).isEqualTo(aapl.getIndustry()),
+                () -> assertThat(actual.dividendYield()).isEqualTo(0.5 / 2.0),
+                () -> assertThat(actual.dividendMonths()).isEqualTo(List.of(Month.JANUARY))
+        );
+    }
+
+    @Test
+    void 종목_상세_정보의_배당날짜를_올해기준으로_반환한다() {
         // given
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
         int lastYear = LocalDate.now(UTC).getYear() - 1;
@@ -61,17 +84,12 @@ class StockServiceTest {
 
         given(stockRepository.findByTicker(any())).willReturn(Optional.of(appl));
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
-        given(dividendRepository.findAllByStockIdAndPaymentDateYear(any(), anyInt(), any())).willReturn(List.of(dividend));
 
         // when
         StockDetailResponse actual = stockService.getStockByTicker(appl.getTicker());
 
         // then
-        assertAll(
-                () -> assertThat(actual.earliestPaymentDate()).isEqualTo(dividend.getPaymentDate()),
-                () -> assertThat(actual.dividendYield()).isEqualTo(0.5 / 2.0),
-                () -> assertThat(actual.dividendMonths()).isEqualTo(List.of(Month.JANUARY))
-        );
+        assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, 1, 3));
     }
 
     @Test
