@@ -5,7 +5,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nexters.payout.domain.BaseEntity;
+import nexters.payout.domain.dividend.Dividend;
+import nexters.payout.domain.stock.service.DividendAnalysisService;
 
+import java.time.Month;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -77,6 +81,19 @@ public class Stock extends BaseEntity {
             final Integer volume) {
         this.price = price;
         this.volume = volume;
+    }
+
+    public Double calculateDividendYield(final Dividend dividend) {
+        if (this.price == 0) {
+            return 0.0;
+        }
+        return dividend.getDividend() / this.price;
+    }
+
+    public List<Month> getDividendMonths(final List<Dividend> dividends,
+                                         final DividendAnalysisService service) {
+
+        return service.calculateDividendMonths(this, dividends);
     }
 
     @Override

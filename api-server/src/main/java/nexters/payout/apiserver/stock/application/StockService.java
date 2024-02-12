@@ -4,20 +4,23 @@ import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
+import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
+import nexters.payout.core.exception.error.NotFoundException;
+import nexters.payout.core.time.InstantTimeProvider;
 import nexters.payout.domain.dividend.Dividend;
 import nexters.payout.domain.dividend.repository.DividendRepository;
-import nexters.payout.domain.stock.Stock;
-import nexters.payout.domain.stock.service.SectorAnalyzer;
-import nexters.payout.domain.stock.service.SectorAnalyzer.StockShare;
-import nexters.payout.domain.stock.service.SectorAnalyzer.SectorInfo;
 import nexters.payout.domain.stock.Sector;
+import nexters.payout.domain.stock.Stock;
 import nexters.payout.domain.stock.repository.StockRepository;
+import nexters.payout.domain.stock.service.DividendAnalysisService;
+import nexters.payout.domain.stock.service.SectorAnalysisService;
+import nexters.payout.domain.stock.service.SectorAnalysisService.SectorInfo;
+import nexters.payout.domain.stock.service.SectorAnalysisService.StockShare;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.time.Month;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -27,12 +30,38 @@ public class StockService {
 
     private final StockRepository stockRepository;
     private final DividendRepository dividendRepository;
-    private final SectorAnalyzer sectorAnalyzer;
+    private final SectorAnalysisService sectorAnalysisService;
+    private final DividendAnalysisService dividendAnalysisService;
 
-    public List<SectorRatioResponse> findSectorRatios(final SectorRatioRequest request) {
+    public StockDetailResponse getStockByTicker(String ticker) {
+        Stock stock = stockRepository.findByTicker(ticker)
+                .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
+
+        List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(
+                stock, getDividends(stock.getId())
+        );
+
+        return findEarliestDividendThisYear(stock)
+                .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths))
+                .orElseGet(() -> StockDetailResponse.from(stock));
+    }
+
+    private List<Dividend> getDividends(UUID stockId) {
+        return dividendRepository.findAllByStockId(stockId);
+    }
+
+    private Optional<Dividend> findEarliestDividendThisYear(Stock stock) {
+        int thisYear = InstantTimeProvider.getThisYear();
+
+        return dividendRepository
+                .findAllByStockIdAndPaymentDateYear(stock.getId(), thisYear, PageRequest.of(0, 1))
+                .stream()
+                .findFirst();
+    }
+
+    public List<SectorRatioResponse> analyzeSectorRatio(final SectorRatioRequest request) {
         List<StockShare> stockShares = getStockShares(request);
-
-        Map<Sector, SectorInfo> sectorInfoMap = sectorAnalyzer.calculateSectorRatios(stockShares);
+        Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
 
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
