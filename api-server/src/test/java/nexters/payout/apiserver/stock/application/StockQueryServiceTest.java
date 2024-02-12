@@ -36,10 +36,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class StockServiceTest {
+class StockQueryServiceTest {
 
     @InjectMocks
-    private StockService stockService;
+    private StockQueryService stockQueryService;
 
     @Mock
     private StockRepository stockRepository;
@@ -64,7 +64,7 @@ class StockServiceTest {
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
 
         // when
-        StockDetailResponse actual = stockService.getStockByTicker(aapl.getTicker());
+        StockDetailResponse actual = stockQueryService.getStockByTicker(aapl.getTicker());
 
         // then
         assertAll(
@@ -87,7 +87,7 @@ class StockServiceTest {
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
 
         // when
-        StockDetailResponse actual = stockService.getStockByTicker(appl.getTicker());
+        StockDetailResponse actual = stockQueryService.getStockByTicker(appl.getTicker());
 
         // then
         assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, 1, 3));
@@ -141,7 +141,7 @@ class StockServiceTest {
         );
 
         // when
-        List<SectorRatioResponse> actual = stockService.analyzeSectorRatio(request);
+        List<SectorRatioResponse> actual = stockQueryService.analyzeSectorRatio(request);
 
         // then
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);

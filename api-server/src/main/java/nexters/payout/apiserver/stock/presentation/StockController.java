@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import nexters.payout.apiserver.stock.application.StockService;
+import nexters.payout.apiserver.stock.application.StockQueryService;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api/stock")
 public class StockController {
 
-    private final StockService stockService;
+    private final StockQueryService stockQueryService;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "SUCCESS"),
@@ -30,7 +30,7 @@ public class StockController {
     })
     @GetMapping("/{ticker}")
     public ResponseEntity<StockDetailResponse> getStockByTicker(@PathVariable String ticker) {
-        return ResponseEntity.ok(stockService.getStockByTicker(ticker));
+        return ResponseEntity.ok(stockQueryService.getStockByTicker(ticker));
     }
 
 
@@ -42,6 +42,6 @@ public class StockController {
     @PostMapping("/sector-ratio")
     public ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
             @Valid @RequestBody final SectorRatioRequest request) {
-        return ResponseEntity.ok(stockService.analyzeSectorRatio(request));
+        return ResponseEntity.ok(stockQueryService.analyzeSectorRatio(request));
     }
 }

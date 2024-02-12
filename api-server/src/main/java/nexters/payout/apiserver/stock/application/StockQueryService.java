@@ -17,6 +17,7 @@ import nexters.payout.domain.stock.service.SectorAnalysisService;
 import nexters.payout.domain.stock.service.SectorAnalysisService.SectorInfo;
 import nexters.payout.domain.stock.service.SectorAnalysisService.StockShare;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -26,7 +27,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StockService {
+@Transactional(readOnly = true)
+public class StockQueryService {
 
     private final StockRepository stockRepository;
     private final DividendRepository dividendRepository;
