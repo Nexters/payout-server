@@ -43,7 +43,7 @@ jobs:
 
   deploy-to-server:
     name: Connect api server ssh and pull from container registry
-    needs: build-and-deploy
+    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       ## docker compose up
