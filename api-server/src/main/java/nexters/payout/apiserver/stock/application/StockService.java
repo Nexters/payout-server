@@ -61,6 +61,7 @@ public class StockService {
 
     public List<SectorRatioResponse> analyzeSectorRatio(final SectorRatioRequest request) {
         List<StockShare> stockShares = getStockShares(request);
+
         Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
 
         return SectorRatioResponse.fromMap(sectorInfoMap);

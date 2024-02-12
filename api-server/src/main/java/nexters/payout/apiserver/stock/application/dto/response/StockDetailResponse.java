@@ -21,7 +21,7 @@ public record StockDetailResponse(
         Instant exDividendDate,
         Instant earliestPaymentDate,
         Double dividendYield,
-        List<Month> months
+        List<Month> dividendMonths
 ) {
 
     public static StockDetailResponse from(Stock stock) {
