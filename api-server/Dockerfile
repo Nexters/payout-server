@@ -1,4 +1,4 @@
-FROM openjdk:17-temurin
+FROM eclipse-temurin:17
 
 ARG JAR_FILE=build/libs/api-server.jar
 COPY ${JAR_FILE} api-server.jar

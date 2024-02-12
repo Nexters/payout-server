@@ -1,4 +1,4 @@
-FROM openjdk:17-temurin
+FROM eclipse-temurin:17
 
 ARG JAR_FILE=build/libs/batch.jar
 COPY ${JAR_FILE} batch.jar
