@@ -14,6 +14,7 @@ public class DividendFixture {
                 Instant.now(),
                 Instant.now()
         );
+    }
 
     public static Dividend createDividend(UUID stockId) {
         return Dividend.createDividend(
