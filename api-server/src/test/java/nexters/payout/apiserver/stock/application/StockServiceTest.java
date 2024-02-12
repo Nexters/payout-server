@@ -54,6 +54,8 @@ class StockServiceTest {
     @Test
     void 종목_상세_정보를_정싱적으로_반환한다() {
         // given
+        Double expectedPrice = 2.0;
+        Double expectedDividend = 0.5;
         Stock aapl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
         int lastYear = LocalDate.now(UTC).getYear() - 1;
         Instant janPaymentDate = LocalDate.of(lastYear, 1, 3).atStartOfDay().toInstant(UTC);
@@ -69,7 +71,7 @@ class StockServiceTest {
         assertAll(
                 () -> assertThat(actual.ticker()).isEqualTo(aapl.getTicker()),
                 () -> assertThat(actual.industry()).isEqualTo(aapl.getIndustry()),
-                () -> assertThat(actual.dividendYield()).isEqualTo(0.5 / 2.0),
+                () -> assertThat(actual.dividendYield()).isEqualTo(expectedDividend / expectedPrice),
                 () -> assertThat(actual.dividendMonths()).isEqualTo(List.of(Month.JANUARY))
         );
     }
