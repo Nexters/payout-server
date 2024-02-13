@@ -55,7 +55,7 @@ public class Stock extends BaseEntity {
     }
 
     public Stock(final String ticker, final String name,
-                 final Sector sector, final String exchange, final String industry,\
+                 final Sector sector, final String exchange, final String industry,
                  final Double price, final Integer volume) {
         this(null, ticker, name, sector, exchange, industry, price, volume);
     }

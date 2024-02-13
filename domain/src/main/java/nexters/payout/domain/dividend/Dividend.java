@@ -5,8 +5,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nexters.payout.domain.BaseEntity;
+import nexters.payout.domain.stock.Stock;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -62,6 +64,16 @@ public class Dividend extends BaseEntity {
             UUID stockId, Double dividend, Instant exDividendDate,
             Instant paymentDate, Instant declarationDate) {
         return new Dividend(stockId, dividend, exDividendDate, paymentDate, declarationDate);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Dividend && this.id.equals(((Dividend) obj).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
