@@ -147,7 +147,7 @@ class StockControllerTest extends IntegrationTest {
     }
 
     @Test
-    void 티커가_빈문자열이면_예외가_발생한다() {
+    void 섹터_분석시_티커가_빈문자열이면_예외가_발생한다() {
         // given
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare("", 1)));
 
