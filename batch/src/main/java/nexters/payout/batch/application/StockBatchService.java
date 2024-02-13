@@ -19,8 +19,9 @@ public class StockBatchService {
     private final StockRepository stockRepository;
 
     /**
-     * UTC 기준 매일 자정 모든 종목의 현재가와 거래량을 업데이트합니다.
+     * UTC 시간대 기준 매일 자정 모든 종목의 현재가와 거래량을 업데이트합니다.
      */
+    @Transactional
     @Scheduled(cron = "${schedules.cron.stock}", zone = "UTC")
     void run() {
         log.info("update stock start..");

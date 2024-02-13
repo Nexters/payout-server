@@ -21,9 +21,9 @@ import java.util.List;
  * @author Min Ho CHO
  */
 @Service
-@Transactional
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class DividendBatchService {
 
     private final StockRepository stockRepository;
@@ -31,7 +31,7 @@ public class DividendBatchService {
     private final FinancialClient financialClient;
 
     /**
-     * New York 시간대 기준으로 매일 00:00에 배당금 정보를 갱신하는 스케쥴러 메서드입니다.
+     * UTC 시간대 기준으로 매일 00:00에 배당금 정보를 갱신합니다.
      */
     @Scheduled(cron = "${schedules.cron.dividend}", zone = "UTC")
     public void run() {
@@ -41,18 +41,21 @@ public class DividendBatchService {
                     .ifPresent(stock -> handleDividendData(stock, dividendData));
         }
     }
-    private void handleDividendData(Stock stock, DividendData dividendData) {
+
+    public void handleDividendData(Stock stock, DividendData dividendData) {
         dividendRepository.findByStockIdAndExDividendDate(stock.getId(), parseInstant(dividendData.date()))
                 .ifPresentOrElse(
                         existingDividend -> updateDividend(existingDividend, dividendData),
                         () -> createDividend(stock, dividendData));
     }
+
     private void updateDividend(Dividend existingDividend, DividendData dividendData) {
         existingDividend.update(
                 dividendData.dividend(),
                 parseInstant(dividendData.paymentDate()),
                 parseInstant(dividendData.declarationDate()));
     }
+
     private void createDividend(Stock stock, DividendData dividendData) {
         Dividend newDividend = Dividend.create(
                 stock.getId(),
