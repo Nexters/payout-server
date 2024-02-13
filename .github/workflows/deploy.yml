@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Copy Docker Compose file
-        run: sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp ./docker-compose.yml ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
+        run: sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp ./docker-compose.yml ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }} -o StrictHostKeyChecking=no
 
       ## docker compose up
       - name: Deploy to api server
