@@ -45,6 +45,24 @@ class StockControllerTest extends IntegrationTest {
     }
 
     @Test
+    void 티커가_빈문자열이면_예외가_발생한다() {
+        // given
+        SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare("", 1)));
+
+        // when, then
+        RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("api/stock/sector-ratio")
+                .then().log().all()
+                .statusCode(400)
+                .extract()
+                .as(ErrorResponse.class);
+    }
+
+    @Test
     void 종목_소유_개수가_0개인_경우_예외가_발생한다() {
         // given
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 0)));
