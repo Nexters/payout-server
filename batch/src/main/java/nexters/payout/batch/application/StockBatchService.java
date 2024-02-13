@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service
 public class StockBatchService {
 
     private final FinancialClient financialClient;
@@ -21,7 +21,6 @@ public class StockBatchService {
     /**
      * UTC 기준 매일 자정 모든 종목의 현재가와 거래량을 업데이트합니다.
      */
-    @Transactional
     @Scheduled(cron = "${schedules.cron.stock}", zone = "UTC")
     void run() {
         log.info("update stock start..");

@@ -38,31 +38,24 @@ public class StockQueryService {
     public StockDetailResponse getStockByTicker(final String ticker) {
         Stock stock = stockRepository.findByTicker(ticker)
                 .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
+        List<Dividend> lastYearDividends = getLastYearDividends(stock);
 
-        List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(
-                stock, getDividends(stock.getId())
-        );
+        List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(stock, lastYearDividends);
+        Double dividendYield = dividendAnalysisService.calculateDividendYield(stock, lastYearDividends);
 
-        return findEarliestDividendThisYear(stock)
-                .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths))
+        return findEarliestDividendThisYear(lastYearDividends)
+                .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths, dividendYield))
                 .orElseGet(() -> StockDetailResponse.from(stock));
     }
-
-    private List<Dividend> getDividends(UUID stockId) {
-        return dividendRepository.findAllByStockId(stockId);
-    }
-
 
     /**
      * 작년 1년간 데이터를 기준으로 가장 가까운 예상 배당금을 조회합니다.
      */
-    public Optional<Dividend> findEarliestDividendThisYear(final Stock stock) {
+    public Optional<Dividend> findEarliestDividendThisYear(final List<Dividend> lastYearDividends) {
         int thisYear = InstantProvider.getThisYear();
-        int lastYear = InstantProvider.getLastYear();
 
-        return dividendRepository.findAllByStockId(stock.getId())
+        return lastYearDividends
                 .stream()
-                .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == lastYear)
                 .map(dividend -> {
                     LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
                     LocalDate adjustedPaymentDate = paymentDate.withYear(thisYear);
@@ -70,6 +63,15 @@ public class StockQueryService {
                 })
                 .min(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey);
+    }
+
+    private List<Dividend> getLastYearDividends(Stock stock) {
+        int lastYear = InstantProvider.getLastYear();
+
+        return dividendRepository.findAllByStockId(stock.getId())
+                .stream()
+                .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == lastYear)
+                .collect(Collectors.toList());
     }
 
     public List<SectorRatioResponse> analyzeSectorRatio(final SectorRatioRequest request) {

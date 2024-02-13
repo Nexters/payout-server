@@ -72,13 +72,6 @@ public class Stock extends BaseEntity {
         this.volume = volume;
     }
 
-    public Double calculateDividendYield(final Dividend dividend) {
-        if (this.price == null || this.price == 0) {
-            return 0.0;
-        }
-        return dividend.getDividend() / this.price;
-    }
-
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Stock && this.id.equals(((Stock) obj).getId());

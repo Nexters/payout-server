@@ -41,7 +41,7 @@ public record StockDetailResponse(
         );
     }
 
-    public static StockDetailResponse of(Stock stock, Dividend dividend, List<Month> dividendMonths) {
+    public static StockDetailResponse of(Stock stock, Dividend dividend, List<Month> dividendMonths, Double dividendYield) {
         int thisYear = InstantProvider.getThisYear();
         return new StockDetailResponse(
                 stock.getTicker(),
@@ -54,7 +54,7 @@ public record StockDetailResponse(
                 dividend.getDividend(),
                 InstantProvider.toLocalDate(dividend.getExDividendDate()).withYear(thisYear),
                 InstantProvider.toLocalDate(dividend.getPaymentDate()).withYear(thisYear),
-                stock.calculateDividendYield(dividend),
+                dividendYield,
                 dividendMonths
         );
     }
