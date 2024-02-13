@@ -28,7 +28,7 @@ jobs:
       - name: Set up Docker Build
         uses: docker/setup-buildx-action@v2
 
-      - name: Docker build and push to NCP container registry
+      - name: Docker build and push to NCP container registry and copy docker-compose.yml to server
         run: |
           cd ./api-server
           sudo docker build --build-arg DEPENDENCY=build/dependency -t ${{ secrets.NCP_CONTAINER_REGISTRY_API }}/payout-api --platform linux/amd64 .
@@ -39,6 +39,9 @@ jobs:
           sudo docker build --build-arg DEPENDENCY=build/dependency -t ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch --platform linux/amd64 .
           sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
           sudo docker push ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch
+          
+          cd ..
+          sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./docker-compose.yml ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
         shell: bash
 
   deploy-to-server:
@@ -46,9 +49,6 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Copy Docker Compose file
-        run: sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./docker-compose.yml ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
-
       ## docker compose up
       - name: Deploy to api server
         uses: appleboy/ssh-action@master
