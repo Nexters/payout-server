@@ -24,21 +24,21 @@ public enum Sector {
     CONGLOMERATES("Conglomerates"),
     ETC("");
 
-    private final String value;
+    private final String name;
 
-    Sector(final String value) {
-        this.value = value;
+    Sector(final String name) {
+        this.name = name;
     }
 
     public static List<String> getNames() {
         return Arrays.stream(Sector.values())
-                .map(it -> it.value)
+                .map(it -> it.name)
                 .toList();
     }
 
     public static Sector fromValue(String value) {
         for (Sector sector : Sector.values()) {
-            if (sector.getValue().equalsIgnoreCase(value)) {
+            if (sector.getName().equalsIgnoreCase(value)) {
                 return sector;
             }
         }

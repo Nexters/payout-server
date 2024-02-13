@@ -20,7 +20,6 @@ import static org.mockito.Mockito.doReturn;
 class DividendBatchServiceTest extends AbstractBatchServiceTest {
 
     @Test
-    @DisplayName("새로운 배당금 정보를 생성한다")
     void 새로운_배당금_정보를_생성한다() {
 
         // given
@@ -62,7 +61,6 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
     }
 
     @Test
-    @DisplayName("기존의 배당금 정보를 갱신한다.")
     void 기존의_배당금_정보를_갱신한다() {
 
         // given

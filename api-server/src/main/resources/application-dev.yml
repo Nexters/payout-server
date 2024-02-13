@@ -3,7 +3,6 @@ spring:
     url: jdbc:mysql://localhost:3306/nexters
     username: test
     password: test
-
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
@@ -13,10 +12,9 @@ spring:
         format_sql: true
     show-sql: true
 
-  flyway:
+springdoc:
+  swagger-ui:
+    path: /payout-docs.html
+    query-config-enabled: true
     enabled: true
-    baseline-on-migrate: true
-    url: jdbc:mysql://localhost:3306/nexters
-    user: test
-    password: test
-    baseline-version: 0
+

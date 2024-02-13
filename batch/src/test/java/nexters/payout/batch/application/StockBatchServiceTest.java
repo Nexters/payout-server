@@ -16,12 +16,11 @@ import static org.mockito.BDDMockito.given;
 class StockBatchServiceTest extends AbstractBatchServiceTest {
 
     @Test
-    @DisplayName("현재가와 거래량을 업데이트한다")
     void 현재가와_거래량을_업데이트한다() {
         // given
-        Stock stock = stockRepository.save(StockFixture.createStock(StockFixture.TESLA, 10.0, 1234));
-        FinancialClient.StockData expected = LatestStockFixture.createStockData(stock.getTicker(), 30.0, 4321);
-        given(financialClient.getLatestStockList()).willReturn(List.of(expected));
+        Stock stock = stockRepository.save(StockFixture.createStock(StockFixture.TSLA, 10.0, 1234));
+        FinancialClient.StockData stockData = LatestStockFixture.createStockData(stock.getTicker(), 30.0, 4321);
+        given(financialClient.getLatestStockList()).willReturn(List.of(stockData));
 
         // when
         stockBatchService.run();
@@ -29,8 +28,8 @@ class StockBatchServiceTest extends AbstractBatchServiceTest {
         // then
         Stock actual = stockRepository.findByTicker(stock.getTicker()).get();
         assertAll(
-                () -> assertThat(actual.getPrice()).isEqualTo(expected.price()),
-                () -> assertThat(actual.getVolume()).isEqualTo(expected.volume())
+                () -> assertThat(actual.getPrice()).isEqualTo(stockData.price()),
+                () -> assertThat(actual.getVolume()).isEqualTo(stockData.volume())
         );
     }
 }
