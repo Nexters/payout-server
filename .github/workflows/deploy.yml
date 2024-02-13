@@ -46,6 +46,9 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Copy Docker Compose file
+        run: sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp ./docker-compose.yml ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
+
       ## docker compose up
       - name: Deploy to api server
         uses: appleboy/ssh-action@master
@@ -68,5 +71,5 @@ jobs:
             sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch
             
-            docker-compose up -d
+            docker-compose -f ${{ secrets.DOCKER_COMPOSE_PATH }}/docker-compose.yml up -d
             docker image prune -f
