@@ -2,8 +2,8 @@ package nexters.payout.batch.infra.fmp;
 
 import lombok.extern.slf4j.Slf4j;
 import nexters.payout.batch.application.FinancialClient;
-import nexters.payout.domain.stock.Exchange;
-import nexters.payout.domain.stock.Sector;
+import nexters.payout.domain.stock.domain.Exchange;
+import nexters.payout.domain.stock.domain.Sector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -95,31 +95,20 @@ public class FmpFinancialClient implements FinancialClient {
     @Override
     public List<DividendData> getDividendList() {
 
+        // TODO (작년 1월 ~ 12월 데이터 고정적으로 가져오도록 수정 필요)
         // 3개월 간 총 4번의 데이터를 조회함으로써 기준 날짜로부터 이전 1년 간의 데이터를 조회
         List<DividendData> result = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
 
             Instant date = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1).minusMonths(i).toInstant();
 
-            List<DividendData> dividendResponses =
-                    fmpWebClient.get()
-                            .uri(uriBuilder ->
-                                    uriBuilder
-                                            .path(fmpProperties.getStockDividendCalenderPath())
-                                            .queryParam("to", formatInstant(date))
-                                            .queryParam("apikey", fmpProperties.getApiKey())
-                                            .build())
-                            .retrieve()
-                            .bodyToFlux(DividendData.class)
-                            .onErrorResume(throwable -> {
-                                log.error("FmpClient updateDividendData 수행 중 에러 발생: {}", throwable.getMessage());
-                                return Mono.empty();
-                            })
-                            .collectList()
-                            .block();
+            List<DividendData> dividendResponses = fetchDividendList(date)
+                    .stream()
+                    .map(FmpDividendData::toDividendData)
+                    .toList();
 
-            if (dividendResponses == null) {
-                log.error("FmpClient updateDividendData 수행 중 에러 발생: dividendResponses is null");
+            if (dividendResponses.isEmpty()) {
+                log.error("FmpClient updateDividendData 수행 중 에러 발생: dividendResponses is empty");
                 continue;
             }
 
@@ -127,6 +116,24 @@ public class FmpFinancialClient implements FinancialClient {
         }
 
         return result;
+    }
+
+    private List<FmpDividendData> fetchDividendList(Instant date) {
+        return fmpWebClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path(fmpProperties.getStockDividendCalenderPath())
+                                .queryParam("to", formatInstant(date))
+                                .queryParam("apikey", fmpProperties.getApiKey())
+                                .build())
+                .retrieve()
+                .bodyToFlux(FmpDividendData.class)
+                .onErrorResume(throwable -> {
+                    log.error("FmpClient updateDividendData 수행 중 에러 발생: {}", throwable.getMessage());
+                    return Mono.empty();
+                })
+                .collectList()
+                .block();
     }
 
     /**

@@ -1,4 +1,4 @@
-package nexters.payout.domain.dividend;
+package nexters.payout.domain.dividend.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import nexters.payout.domain.BaseEntity;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -21,28 +22,23 @@ public class Dividend extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(unique = true, nullable = false, updatable = false)
     private UUID id;
 
     @Column(nullable = false, updatable = false)
     private UUID stockId;
 
-    @Column(nullable = false)
     private Double dividend;
 
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private Instant exDividendDate;
 
     private Instant paymentDate;
 
     private Instant declarationDate;
 
-    public Dividend(
-            UUID stockId,
-            Double dividend,
-            Instant exDividendDate,
-            Instant paymentDate,
-            Instant declarationDate) {
+    public Dividend(final UUID id, final UUID stockId, final Double dividend, final Instant exDividendDate,
+                    final Instant paymentDate, final Instant declarationDate) {
+        this.id = id;
         this.stockId = stockId;
         this.dividend = dividend;
         this.exDividendDate = exDividendDate;
@@ -50,26 +46,31 @@ public class Dividend extends BaseEntity {
         this.declarationDate = declarationDate;
     }
 
-    /**
-     * 배당금 정보를 갱신하는 메서드입니다.
-     *
-     * @param dividend        갱신할 배당금
-     * @param paymentDate     갱신할 배당 지급일
-     * @param declarationDate 갱신할 배당 지급 선언일
-     */
-    public void update(Double dividend, Instant paymentDate, Instant declarationDate) {
+    public Dividend(final UUID stockId, final Double dividend, final Instant exDividendDate,
+                    final Instant paymentDate, final Instant declarationDate) {
+        this(null, stockId, dividend, exDividendDate, paymentDate, declarationDate);
+    }
+
+    public void update(final Double dividend, final Instant paymentDate, final Instant declarationDate) {
         this.dividend = dividend;
         this.paymentDate = paymentDate;
         this.declarationDate = declarationDate;
     }
 
-    public static Dividend createDividend(
-            UUID stockId,
-            Double dividend,
-            Instant exDividendDate,
-            Instant paymentDate,
-            Instant declarationDate) {
+    public static Dividend create(
+            final UUID stockId, final Double dividend, final Instant exDividendDate,
+            final Instant paymentDate, final Instant declarationDate) {
         return new Dividend(stockId, dividend, exDividendDate, paymentDate, declarationDate);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Dividend && this.id.equals(((Dividend) obj).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

@@ -1,10 +1,11 @@
 package nexters.payout.domain.stock.service;
 
 import nexters.payout.domain.StockFixture;
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
-import nexters.payout.domain.stock.service.SectorAnalyzer.SectorInfo;
-import nexters.payout.domain.stock.service.SectorAnalyzer.StockShare;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.Stock;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,17 +15,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.within;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class SectorAnalyzerTest {
+class SectorAnalysisServiceTest {
 
     @Test
     void 하나의_티커가_존재하는_경우_섹터비율_검증() {
         // given
         Stock stock = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY, 3.0);
         List<StockShare> stockShares = List.of(new StockShare(stock, null, 1));
-        SectorAnalyzer sectorAnalyzer = new SectorAnalyzer();
+        SectorAnalysisService sectorAnalysisService = new SectorAnalysisService();
 
         // when
-        Map<Sector, SectorInfo> actual = sectorAnalyzer.calculateSectorRatios(stockShares);
+        Map<Sector, SectorInfo> actual = sectorAnalysisService.calculateSectorRatios(stockShares);
 
         // then
         assertAll(
@@ -39,10 +40,10 @@ class SectorAnalyzerTest {
         Stock appl = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY, 4.0);
         Stock tsla = StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL, 1.0);
         List<StockShare> stockShares = List.of(new StockShare(appl, null, 2), new StockShare(tsla, null, 1));
-        SectorAnalyzer sectorAnalyzer = new SectorAnalyzer();
+        SectorAnalysisService sectorAnalysisService = new SectorAnalysisService();
 
         // when
-        Map<Sector, SectorInfo> actual = sectorAnalyzer.calculateSectorRatios(stockShares);
+        Map<Sector, SectorInfo> actual = sectorAnalysisService.calculateSectorRatios(stockShares);
 
         // then
         SectorInfo actualFinancialSectorInfo = actual.get(Sector.TECHNOLOGY);

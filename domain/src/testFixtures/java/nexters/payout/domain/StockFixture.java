@@ -1,8 +1,8 @@
 package nexters.payout.domain;
 
-import nexters.payout.domain.stock.Exchange;
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.stock.domain.Exchange;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.Stock;
 
 import java.util.UUID;
 

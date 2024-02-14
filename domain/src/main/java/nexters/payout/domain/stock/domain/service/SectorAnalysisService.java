@@ -1,9 +1,9 @@
-package nexters.payout.domain.stock.service;
+package nexters.payout.domain.stock.domain.service;
 
 import nexters.payout.domain.common.config.DomainService;
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.Stock;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @DomainService
-public class SectorAnalyzer {
+public class SectorAnalysisService {
 
     public Map<Sector, SectorInfo> calculateSectorRatios(final List<StockShare> stockShares) {
         Map<Sector, Integer> sectorCountMap = getSectorCountMap(stockShares);
@@ -32,7 +32,7 @@ public class SectorAnalyzer {
         return sectorInfoMap;
     }
 
-    private Map<Sector, Integer> getSectorCountMap(List<StockShare> stockShares) {
+    private Map<Sector, Integer> getSectorCountMap(final List<StockShare> stockShares) {
         return stockShares
                 .stream()
                 .map(stockShare -> stockShare.stock().getSector())
@@ -52,11 +52,11 @@ public class SectorAnalyzer {
                 .sum();
     }
 
-    private List<StockShare> getStocks(Map<Sector, List<StockShare>> sectorStockMap, Sector sector) {
+    private List<StockShare> getStocks(final Map<Sector, List<StockShare>> sectorStockMap, final Sector sector) {
         return sectorStockMap.getOrDefault(sector, Collections.emptyList());
     }
 
-    private Integer stockCountBySector(Map<Sector, Integer> sectorCountMap, Sector sector) {
+    private Integer stockCountBySector(final Map<Sector, Integer> sectorCountMap, final Sector sector) {
         return sectorCountMap.getOrDefault(sector, 0);
     }
 

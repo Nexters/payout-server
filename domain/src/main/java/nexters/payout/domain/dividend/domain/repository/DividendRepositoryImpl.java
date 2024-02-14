@@ -1,14 +1,14 @@
-package nexters.payout.domain.dividend.repository;
+package nexters.payout.domain.dividend.domain.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import nexters.payout.domain.dividend.Dividend;
+import nexters.payout.domain.dividend.domain.Dividend;
 
 import java.time.Instant;
 import java.util.Optional;
 
-import static nexters.payout.domain.dividend.QDividend.dividend1;
-import static nexters.payout.domain.stock.QStock.stock;
+import static nexters.payout.domain.dividend.domain.QDividend.dividend1;
+import static nexters.payout.domain.stock.domain.QStock.stock;
 
 
 /**

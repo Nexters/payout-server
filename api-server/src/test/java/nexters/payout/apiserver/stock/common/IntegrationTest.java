@@ -1,8 +1,8 @@
 package nexters.payout.apiserver.stock.common;
 
 import io.restassured.RestAssured;
-import nexters.payout.domain.dividend.repository.DividendRepository;
-import nexters.payout.domain.stock.repository.StockRepository;
+import nexters.payout.domain.dividend.domain.repository.DividendRepository;
+import nexters.payout.domain.stock.domain.repository.StockRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package nexters.payout.batch.application;
 
 import nexters.payout.batch.common.AbstractBatchServiceTest;
 import nexters.payout.domain.StockFixture;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.stock.domain.Stock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

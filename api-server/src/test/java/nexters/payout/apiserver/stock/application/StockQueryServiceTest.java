@@ -3,48 +3,98 @@ package nexters.payout.apiserver.stock.application;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
+import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.dividend.repository.DividendRepository;
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
-import nexters.payout.domain.stock.repository.StockRepository;
-import nexters.payout.domain.stock.service.SectorAnalyzer;
-import nexters.payout.domain.stock.service.SectorAnalyzer.SectorInfo;
-import nexters.payout.domain.stock.service.SectorAnalyzer.StockShare;
+import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.dividend.domain.repository.DividendRepository;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.Stock;
+import nexters.payout.domain.stock.domain.repository.StockRepository;
+import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
+import static java.time.ZoneOffset.UTC;
 import static nexters.payout.domain.StockFixture.AAPL;
 import static nexters.payout.domain.StockFixture.TSLA;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class StockServiceTest {
+class StockQueryServiceTest {
 
     @InjectMocks
-    private StockService stockService;
+    private StockQueryService stockQueryService;
 
     @Mock
     private StockRepository stockRepository;
     @Mock
     private DividendRepository dividendRepository;
-
-    @Mock
-    private SectorAnalyzer sectorAnalyzer;
+    @Spy
+    private SectorAnalysisService sectorAnalysisService;
+    @Spy
+    private DividendAnalysisService dividendAnalysisService;
 
     @Test
-    void 포트폴리오에_존재하는_종목과_개수_현재가를_기준으로_섹터_정보를_정상적으로_반환한다() {
+    void 종목_상세_정보를_정상적으로_반환한다() {
+        // given
+        Double expectedPrice = 2.0;
+        Double expectedDividend = 0.5;
+        Stock aapl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
+        int lastYear = LocalDate.now(UTC).getYear() - 1;
+        Instant janPaymentDate = LocalDate.of(lastYear, 1, 3).atStartOfDay().toInstant(UTC);
+        Dividend dividend = DividendFixture.createDividend(aapl.getId(), 0.5, janPaymentDate);
+
+        given(stockRepository.findByTicker(any())).willReturn(Optional.of(aapl));
+        given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
+
+        // when
+        StockDetailResponse actual = stockQueryService.getStockByTicker(aapl.getTicker());
+
+        // then
+        assertAll(
+                () -> assertThat(actual.ticker()).isEqualTo(aapl.getTicker()),
+                () -> assertThat(actual.industry()).isEqualTo(aapl.getIndustry()),
+                () -> assertThat(actual.dividendYield()).isEqualTo(expectedDividend / expectedPrice),
+                () -> assertThat(actual.dividendMonths()).isEqualTo(List.of(Month.JANUARY))
+        );
+    }
+
+    @Test
+    void 종목_상세_정보의_배당날짜를_올해기준으로_반환한다() {
+        // given
+        Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
+        int lastYear = LocalDate.now(UTC).getYear() - 1;
+        Instant janPaymentDate = LocalDate.of(lastYear, 1, 3).atStartOfDay().toInstant(UTC);
+        Dividend dividend = DividendFixture.createDividend(appl.getId(), 0.5, janPaymentDate);
+
+        given(stockRepository.findByTicker(any())).willReturn(Optional.of(appl));
+        given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
+
+        // when
+        StockDetailResponse actual = stockQueryService.getStockByTicker(appl.getTicker());
+
+        // then
+        assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, 1, 3));
+    }
+
+    @Test
+    void 섹터_정보를_정상적으로_반환한다() {
         // given
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2), new TickerShare(TSLA, 3)));
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 4.0);
@@ -56,17 +106,11 @@ class StockServiceTest {
 
         given(stockRepository.findAllByTickerIn(any())).willReturn(stocks);
         given(dividendRepository.findAllByStockIdIn(any())).willReturn(dividends);
-        given(sectorAnalyzer.calculateSectorRatios(any())).willReturn(
-                Map.of(
-                        Sector.TECHNOLOGY, new SectorInfo(0.5479, List.of(new StockShare(appl, aaplDiv, 2))),
-                        Sector.CONSUMER_CYCLICAL, new SectorInfo(0.4520, List.of(new StockShare(tsla, tslaDiv, 3)))
-                )
-        );
 
         List<SectorRatioResponse> expected = List.of(
                 new SectorRatioResponse(
                         Sector.TECHNOLOGY.getName(),
-                        0.5479,
+                        0.547945205479452,
                         List.of(new StockResponse(
                                 appl.getId(),
                                 appl.getTicker(),
@@ -81,7 +125,7 @@ class StockServiceTest {
                 ),
                 new SectorRatioResponse(
                         Sector.CONSUMER_CYCLICAL.getName(),
-                        0.4520,
+                        0.4520547945205479,
                         List.of(new StockResponse(
                                 tsla.getId(),
                                 tsla.getTicker(),
@@ -97,7 +141,7 @@ class StockServiceTest {
         );
 
         // when
-        List<SectorRatioResponse> actual = stockService.findSectorRatios(request);
+        List<SectorRatioResponse> actual = stockQueryService.analyzeSectorRatio(request);
 
         // then
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);

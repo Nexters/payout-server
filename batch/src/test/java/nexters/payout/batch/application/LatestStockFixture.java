@@ -1,7 +1,7 @@
 package nexters.payout.batch.application;
 
-import nexters.payout.domain.stock.Exchange;
-import nexters.payout.domain.stock.Sector;
+import nexters.payout.domain.stock.domain.Exchange;
+import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.batch.application.FinancialClient.StockData;
 
 public class LatestStockFixture {

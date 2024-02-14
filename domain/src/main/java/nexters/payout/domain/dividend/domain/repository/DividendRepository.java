@@ -1,6 +1,6 @@
-package nexters.payout.domain.dividend.repository;
+package nexters.payout.domain.dividend.domain.repository;
 
-import nexters.payout.domain.dividend.Dividend;
+import nexters.payout.domain.dividend.domain.Dividend;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.Instant;
@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 public interface DividendRepository extends JpaRepository<Dividend, UUID>, DividendRepositoryCustom {
 
-    Optional<Dividend> findByStockId(UUID stockId);
+    List<Dividend> findAllByStockId(UUID stockId);
 
     List<Dividend> findAllByStockIdIn(List<UUID> stockIds);
 

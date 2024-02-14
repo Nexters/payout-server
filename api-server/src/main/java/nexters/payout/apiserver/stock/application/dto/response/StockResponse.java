@@ -1,21 +1,20 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.stock.domain.Stock;
 
 import java.util.UUID;
 
 public record StockResponse(
         UUID stockId,
         String ticker,
-        String name,
+        String companyName,
         String sectorName,
         String exchange,
         String industry,
         Double price,
         Integer volume,
-        Double dividend
+        Double dividendPerShare
 ) {
     public static StockResponse of(Stock stock, Dividend dividend) {
         return new StockResponse(
