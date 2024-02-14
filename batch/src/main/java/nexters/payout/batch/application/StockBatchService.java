@@ -42,12 +42,7 @@ public class StockBatchService {
     }
 
     private void create(final StockData stockData) {
-        try {
-            stockCommandService.save(stockData.toDomain());
-        } catch (Exception e) {
-            log.error("fail to save stock: " + stockData);
-            log.error(e.getMessage());
-        }
+        stockCommandService.save(stockData.toDomain());
     }
 
     private void update(final String ticker, final StockData stockData) {
