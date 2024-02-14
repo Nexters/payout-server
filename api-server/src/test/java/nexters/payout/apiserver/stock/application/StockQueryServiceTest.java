@@ -51,7 +51,7 @@ class StockQueryServiceTest {
     private DividendAnalysisService dividendAnalysisService;
 
     @Test
-    void 종목_상세_정보를_정싱적으로_반환한다() {
+    void 종목_상세_정보를_정상적으로_반환한다() {
         // given
         Double expectedPrice = 2.0;
         Double expectedDividend = 0.5;
