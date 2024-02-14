@@ -1,15 +1,11 @@
-package nexters.payout.domain.stock;
+package nexters.payout.domain.stock.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nexters.payout.domain.BaseEntity;
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.stock.service.DividendAnalysisService;
 
-import java.time.Month;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 

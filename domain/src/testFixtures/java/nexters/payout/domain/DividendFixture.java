@@ -1,6 +1,6 @@
 package nexters.payout.domain;
 
-import nexters.payout.domain.dividend.Dividend;
+import nexters.payout.domain.dividend.domain.Dividend;
 
 import java.time.Instant;
 import java.util.UUID;

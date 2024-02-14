@@ -1,8 +1,9 @@
 package nexters.payout.batch.application;
 
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.Stock;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface FinancialClient {
@@ -27,14 +28,15 @@ public interface FinancialClient {
     }
 
     record DividendData(
-            String date,
+            Instant date,
             String label,
             Double adjDividend,
             String symbol,
             Double dividend,
-            String recordDate,
-            String paymentDate,
-            String declarationDate
+            Instant recordDate,
+            Instant paymentDate,
+            Instant declarationDate
     ) {
+
     }
 }

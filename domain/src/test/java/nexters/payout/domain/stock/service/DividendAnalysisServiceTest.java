@@ -2,9 +2,10 @@ package nexters.payout.domain.stock.service;
 
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.Stock;
+import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

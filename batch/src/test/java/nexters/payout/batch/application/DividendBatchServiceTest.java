@@ -3,8 +3,8 @@ package nexters.payout.batch.application;
 import nexters.payout.batch.common.AbstractBatchServiceTest;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.stock.domain.Stock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,14 +28,14 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
 
         List<FinancialClient.DividendData> responses = new ArrayList<>();
         responses.add(new FinancialClient.DividendData(
-                "2023-12-21",
+                Instant.parse("2023-12-21T00:00:00Z"),
                 "May 31, 23",
                 12.21,
                 "AAPL",
                 12.21,
-                "2023-12-21",
-                "2023-12-23",
-                "2023-12-22"));
+                Instant.parse("2023-12-21T00:00:00Z"),
+                Instant.parse("2023-12-23T00:00:00Z"),
+                Instant.parse("2023-12-22T00:00:00Z")));
 
         doReturn(responses).when(financialClient).getDividendList();
 
@@ -69,14 +69,14 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
 
         List<FinancialClient.DividendData> responses = new ArrayList<>();
         responses.add(new FinancialClient.DividendData(
-                "2023-12-21",
+                Instant.parse("2023-12-21T00:00:00Z"),
                 "May 31, 23",
                 12.21,
                 "AAPL",
                 12.21,
-                "2023-12-21",
-                "2023-12-23",
-                "2023-12-22"));
+                Instant.parse("2023-12-21T00:00:00Z"),
+                Instant.parse("2023-12-23T00:00:00Z"),
+                Instant.parse("2023-12-22T00:00:00Z")));
 
         doReturn(responses).when(financialClient).getDividendList();
 

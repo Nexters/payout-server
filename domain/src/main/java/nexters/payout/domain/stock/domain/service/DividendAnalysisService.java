@@ -1,9 +1,9 @@
-package nexters.payout.domain.stock.service;
+package nexters.payout.domain.stock.domain.service;
 
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.common.config.DomainService;
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.stock.domain.Stock;
 
 import java.time.LocalDate;
 import java.time.Month;

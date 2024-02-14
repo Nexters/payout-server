@@ -1,7 +1,7 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.stock.domain.Stock;
 
 import java.util.UUID;
 

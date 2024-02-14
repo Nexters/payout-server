@@ -11,8 +11,8 @@ import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.Stock;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

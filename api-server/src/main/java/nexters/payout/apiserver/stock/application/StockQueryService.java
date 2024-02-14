@@ -7,15 +7,15 @@ import nexters.payout.apiserver.stock.application.dto.response.SectorRatioRespon
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.core.exception.error.NotFoundException;
 import nexters.payout.core.time.InstantProvider;
-import nexters.payout.domain.dividend.Dividend;
-import nexters.payout.domain.dividend.repository.DividendRepository;
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.Stock;
-import nexters.payout.domain.stock.repository.StockRepository;
-import nexters.payout.domain.stock.service.DividendAnalysisService;
-import nexters.payout.domain.stock.service.SectorAnalysisService;
-import nexters.payout.domain.stock.service.SectorAnalysisService.SectorInfo;
-import nexters.payout.domain.stock.service.SectorAnalysisService.StockShare;
+import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.dividend.domain.repository.DividendRepository;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.Stock;
+import nexters.payout.domain.stock.domain.repository.StockRepository;
+import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

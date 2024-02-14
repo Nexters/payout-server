@@ -1,4 +1,4 @@
-package nexters.payout.domain.dividend;
+package nexters.payout.domain.dividend.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import nexters.payout.domain.QBaseEntity;
 
 
 /**
@@ -16,11 +15,11 @@ import nexters.payout.domain.QBaseEntity;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QDividend extends EntityPathBase<Dividend> {
 
-    private static final long serialVersionUID = -882282488L;
+    private static final long serialVersionUID = -1959252905L;
 
     public static final QDividend dividend1 = new QDividend("dividend1");
 
-    public final QBaseEntity _super = new QBaseEntity(this);
+    public final nexters.payout.domain.QBaseEntity _super = new nexters.payout.domain.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.Instant> createdAt = _super.createdAt;
@@ -31,8 +30,7 @@ public class QDividend extends EntityPathBase<Dividend> {
 
     public final DateTimePath<java.time.Instant> exDividendDate = createDateTime("exDividendDate", java.time.Instant.class);
 
-    //inherited
-    public final ComparablePath<java.util.UUID> id = _super.id;
+    public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
     //inherited
     public final DateTimePath<java.time.Instant> lastModifiedAt = _super.lastModifiedAt;

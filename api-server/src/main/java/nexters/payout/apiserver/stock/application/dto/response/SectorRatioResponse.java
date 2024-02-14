@@ -1,7 +1,7 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
-import nexters.payout.domain.stock.Sector;
-import nexters.payout.domain.stock.service.SectorAnalysisService.SectorInfo;
+import nexters.payout.domain.stock.domain.Sector;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
 
 import java.util.List;
 import java.util.Map;

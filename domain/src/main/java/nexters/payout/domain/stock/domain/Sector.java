@@ -1,4 +1,4 @@
-package nexters.payout.domain.stock;
+package nexters.payout.domain.stock.domain;
 
 import lombok.Getter;
 
