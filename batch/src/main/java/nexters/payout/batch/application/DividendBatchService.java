@@ -52,12 +52,17 @@ public class DividendBatchService {
     }
 
     private void create(final Stock stock, final DividendData dividendData) {
-        dividendCommandService.save(
-                Dividend.create(
-                        stock.getId(), dividendData.dividend(), dividendData.date(),
-                        dividendData.paymentDate(), dividendData.declarationDate()
-                )
-        );
+        try {
+            dividendCommandService.save(
+                    Dividend.create(
+                            stock.getId(), dividendData.dividend(), dividendData.date(),
+                            dividendData.paymentDate(), dividendData.declarationDate()
+                    )
+            );
+        } catch (Exception e) {
+            log.error("fail to save dividend: " + dividendData);
+            log.error(e.getMessage());
+        }
     }
 
     private void update(final UUID dividendId, final DividendData dividendData) {
