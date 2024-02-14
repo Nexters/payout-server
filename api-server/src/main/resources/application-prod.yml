@@ -1,0 +1,5 @@
+springdoc:
+  swagger-ui:
+    path: /payout-docs.html
+    query-config-enabled: true
+    enabled: true

@@ -6,10 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nexters.payout.domain.BaseEntity;
 
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Stock extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(unique = true, nullable = false, updatable = false)
+    private UUID id;
 
     @Column(unique = true, nullable = false, length = 50)
     private String ticker;
@@ -28,7 +36,16 @@ public class Stock extends BaseEntity {
 
     private Integer volume;
 
-    public Stock(String ticker, String name, Sector sector, String exchange, String industry, Double price, Integer volume) {
+    public Stock(final UUID id,
+                 final String ticker,
+                 final String name,
+                 final Sector sector,
+                 final String exchange,
+                 final String industry,
+                 final Double price,
+                 final Integer volume) {
+        validateTicker(ticker);
+        this.id = id;
         this.ticker = ticker;
         this.name = name;
         this.sector = sector;
@@ -38,8 +55,50 @@ public class Stock extends BaseEntity {
         this.volume = volume;
     }
 
-    public void update(Double price, Integer volume) {
+    public Stock(
+            final String ticker,
+            final String name,
+            final Sector sector,
+            final String exchange,
+            final String industry,
+            final Double price,
+            final Integer volume) {
+        this(null, ticker, name, sector, exchange, industry, price, volume);
+    }
+
+    private void validateTicker(final String ticker) {
+        if (ticker.isBlank()) {
+            throw new IllegalArgumentException("ticker must not be null or empty");
+        }
+    }
+
+    public void update(
+            final Double price,
+            final Integer volume) {
         this.price = price;
         this.volume = volume;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Stock && this.id.equals(((Stock) obj).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "ticker='" + ticker + '\'' +
+                ", name='" + name + '\'' +
+                ", sector=" + sector +
+                ", exchange='" + exchange + '\'' +
+                ", industry='" + industry + '\'' +
+                ", price=" + price +
+                ", volume=" + volume +
+                '}';
     }
 }

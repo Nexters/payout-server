@@ -36,33 +36,34 @@ public class DividendBatchService {
     /**
      * New York 시간대 기준으로 매일 00:00에 배당금 정보를 갱신하는 스케쥴러 메서드입니다.
      */
-    @Scheduled(cron = "${schedules.cron.dividend}", zone = "America/New_York")
+    @Scheduled(cron = "${schedules.cron.dividend}", zone = "UTC")
     public void run() {
-
         List<DividendData> dividendResponses = financialClient.getDividendList();
-
-        for (DividendData response : dividendResponses) {
-
-            Optional<Stock> findStock = stockRepository.findByTicker(response.symbol());
-            if (findStock.isEmpty()) continue;  // NYSE, NASDAQ, AMEX 이외의 주식인 경우 continue
-
-            Optional<Dividend> findDividend = dividendRepository.findByStockId(findStock.get().getId());
-            if (findDividend.isPresent()) {
-                // 기존의 Dividend 엔티티가 존재할 경우 정보 갱신
-                findDividend.get().update(
-                        response.dividend(),
-                        parseInstant(response.paymentDate()),
-                        parseInstant(response.declarationDate()));
-            } else {
-                // 기존의 Dividend 엔티티가 존재하지 않을 경우 새로 생성
-                dividendRepository.save(createDividend(
-                        findStock.get().getId(),
-                        response.dividend(),
-                        parseInstant(response.date()),
-                        parseInstant(response.paymentDate()),
-                        parseInstant(response.declarationDate())));
-            }
+        for (DividendData dividendData : dividendResponses) {
+            stockRepository.findByTicker(dividendData.symbol())
+                    .ifPresent(stock -> handleDividendData(stock, dividendData));
         }
+    }
+    private void handleDividendData(Stock stock, DividendData dividendData) {
+        dividendRepository.findByStockIdAndExDividendDate(stock.getId(), parseInstant(dividendData.date()))
+                .ifPresentOrElse(
+                        existingDividend -> updateDividend(existingDividend, dividendData),
+                        () -> createDividend(stock, dividendData));
+    }
+    private void updateDividend(Dividend existingDividend, DividendData dividendData) {
+        existingDividend.update(
+                dividendData.dividend(),
+                parseInstant(dividendData.paymentDate()),
+                parseInstant(dividendData.declarationDate()));
+    }
+    private void createDividend(Stock stock, DividendData dividendData) {
+        Dividend newDividend = Dividend.createDividend(
+                stock.getId(),
+                dividendData.dividend(),
+                parseInstant(dividendData.date()),
+                parseInstant(dividendData.paymentDate()),
+                parseInstant(dividendData.declarationDate()));
+        dividendRepository.save(newDividend);
     }
 
     /**
