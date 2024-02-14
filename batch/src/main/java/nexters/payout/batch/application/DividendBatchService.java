@@ -42,21 +42,21 @@ public class DividendBatchService {
         }
     }
 
-    public void handleDividendData(Stock stock, DividendData dividendData) {
+    public void handleDividendData(final Stock stock, final DividendData dividendData) {
         dividendRepository.findByStockIdAndExDividendDate(stock.getId(), parseInstant(dividendData.date()))
                 .ifPresentOrElse(
                         existingDividend -> updateDividend(existingDividend, dividendData),
                         () -> createDividend(stock, dividendData));
     }
 
-    private void updateDividend(Dividend existingDividend, DividendData dividendData) {
+    private void updateDividend(final Dividend existingDividend, final DividendData dividendData) {
         existingDividend.update(
                 dividendData.dividend(),
                 parseInstant(dividendData.paymentDate()),
                 parseInstant(dividendData.declarationDate()));
     }
 
-    private void createDividend(Stock stock, DividendData dividendData) {
+    private void createDividend(final Stock stock, final DividendData dividendData) {
         Dividend newDividend = Dividend.create(
                 stock.getId(),
                 dividendData.dividend(),
@@ -72,7 +72,7 @@ public class DividendBatchService {
      * @param date "yyyy-MM-dd" 형식의 String
      * @return 해당하는 Instant 타입
      */
-    private Instant parseInstant(String date) {
+    private Instant parseInstant(final String date) {
 
         if (date == null) return null;
         return Instant.parse(date + "T00:00:00Z");

@@ -37,7 +37,7 @@ public class StockBatchService {
         log.info("update stock end..");
     }
 
-    private void saveNewStock(StockData stockData) {
+    private void saveNewStock(final StockData stockData) {
         try {
             stockRepository.save(stockData.toDomain());
         } catch (Exception e) {
