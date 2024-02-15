@@ -21,7 +21,7 @@ class SectorAnalysisServiceTest {
     void 하나의_티커가_존재하는_경우_섹터비율_검증() {
         // given
         Stock stock = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY, 3.0);
-        List<StockShare> stockShares = List.of(new StockShare(stock, null, 1));
+        List<StockShare> stockShares = List.of(new StockShare(stock, 1));
         SectorAnalysisService sectorAnalysisService = new SectorAnalysisService();
 
         // when
@@ -30,7 +30,7 @@ class SectorAnalysisServiceTest {
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(Sector.TECHNOLOGY)).isEqualTo(new SectorInfo(1.0, List.of(new StockShare(stock, null, 1))))
+                () -> assertThat(actual.get(Sector.TECHNOLOGY)).isEqualTo(new SectorInfo(1.0, List.of(new StockShare(stock, 1))))
         );
     }
 
@@ -39,7 +39,7 @@ class SectorAnalysisServiceTest {
         // given
         Stock appl = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY, 4.0);
         Stock tsla = StockFixture.createStock(StockFixture.TSLA, Sector.CONSUMER_CYCLICAL, 1.0);
-        List<StockShare> stockShares = List.of(new StockShare(appl, null, 2), new StockShare(tsla, null, 1));
+        List<StockShare> stockShares = List.of(new StockShare(appl, 2), new StockShare(tsla, 1));
         SectorAnalysisService sectorAnalysisService = new SectorAnalysisService();
 
         // when
@@ -52,9 +52,9 @@ class SectorAnalysisServiceTest {
         assertAll(
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actualFinancialSectorInfo.ratio()).isCloseTo(0.8889, within(0.001)),
-                () -> assertThat(actualFinancialSectorInfo.stockShares()).isEqualTo(List.of(new StockShare(appl, null, 2))),
+                () -> assertThat(actualFinancialSectorInfo.stockShares()).isEqualTo(List.of(new StockShare(appl, 2))),
                 () -> assertThat(actualTechnologySectorInfo.ratio()).isCloseTo(0.1111, within(0.001)),
-                () -> assertThat(actualTechnologySectorInfo.stockShares()).isEqualTo(List.of(new StockShare(tsla, null, 1)))
+                () -> assertThat(actualTechnologySectorInfo.stockShares()).isEqualTo(List.of(new StockShare(tsla, 1)))
         );
     }
 }

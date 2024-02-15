@@ -188,7 +188,6 @@ class StockControllerTest extends IntegrationTest {
         // given
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2)));
         Stock stock = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
-        dividendRepository.save(DividendFixture.createDividend(stock.getId(), 12.0));
 
         // when
         List<SectorRatioResponse> actual = RestAssured
@@ -208,8 +207,7 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(1),
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
-                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL),
-                () -> assertThat(actual.get(0).stocks().get(0).dividendPerShare()).isEqualTo(12.0)
+                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL)
         );
     }
 
@@ -237,8 +235,7 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(1),
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
-                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL),
-                () -> assertThat(actual.get(0).stocks().get(0).dividendPerShare()).isEqualTo(null)
+                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL)
         );
     }
 }

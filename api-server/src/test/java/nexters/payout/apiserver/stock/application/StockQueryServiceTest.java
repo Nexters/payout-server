@@ -99,13 +99,9 @@ class StockQueryServiceTest {
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2), new TickerShare(TSLA, 3)));
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 4.0);
         Stock tsla = StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL, 2.2);
-        Dividend aaplDiv = DividendFixture.createDividend(appl.getId(), 11.0);
-        Dividend tslaDiv = DividendFixture.createDividend(tsla.getId(), 5.0);
         List<Stock> stocks = List.of(appl, tsla);
-        List<Dividend> dividends = List.of(aaplDiv, tslaDiv);
 
         given(stockRepository.findAllByTickerIn(any())).willReturn(stocks);
-        given(dividendRepository.findAllByStockIdIn(any())).willReturn(dividends);
 
         List<SectorRatioResponse> expected = List.of(
                 new SectorRatioResponse(
@@ -119,23 +115,22 @@ class StockQueryServiceTest {
                                 appl.getExchange(),
                                 appl.getIndustry(),
                                 appl.getPrice(),
-                                appl.getVolume(),
-                                aaplDiv.getDividend()
+                                appl.getVolume()
                         ))
                 ),
                 new SectorRatioResponse(
                         Sector.CONSUMER_CYCLICAL.getName(),
                         0.4520547945205479,
                         List.of(new StockResponse(
-                                tsla.getId(),
-                                tsla.getTicker(),
-                                tsla.getName(),
-                                tsla.getSector().getName(),
-                                tsla.getExchange(),
-                                tsla.getIndustry(),
-                                tsla.getPrice(),
-                                tsla.getVolume(),
-                                tslaDiv.getDividend())
+                                        tsla.getId(),
+                                        tsla.getTicker(),
+                                        tsla.getName(),
+                                        tsla.getSector().getName(),
+                                        tsla.getExchange(),
+                                        tsla.getIndustry(),
+                                        tsla.getPrice(),
+                                        tsla.getVolume()
+                                )
                         )
                 )
         );

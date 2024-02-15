@@ -19,10 +19,9 @@ import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockSha
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
-import java.util.stream.Collector;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,32 +67,12 @@ public class StockQueryService {
 
     private List<StockShare> getStockShares(final SectorRatioRequest request) {
         List<Stock> stocks = stockRepository.findAllByTickerIn(getTickers(request));
-        Map<UUID, Dividend> stockDividendMap = getStockDividendMap(getStockIds(stocks));
 
         return stocks.stream()
                 .map(stock -> new StockShare(
                         stock,
-                        stockDividendMap.get(stock.getId()),
                         getTickerShareMap(request).get(stock.getTicker())))
                 .collect(Collectors.toList());
-    }
-
-    private List<UUID> getStockIds(final List<Stock> stocks) {
-        return stocks.stream()
-                .map(Stock::getId)
-                .toList();
-    }
-
-    private Map<UUID, Dividend> getStockDividendMap(final List<UUID> stockIds) {
-        return dividendRepository.findAllByStockIdIn(stockIds)
-                .stream()
-                .collect(Collectors.groupingBy(Dividend::getStockId, getLatestDividendOrNull()));
-    }
-
-    private Collector<Dividend, Object, Dividend> getLatestDividendOrNull() {
-        return Collectors.collectingAndThen(
-                Collectors.maxBy(Comparator.comparing(Dividend::getDeclarationDate)),
-                optionalDividend -> optionalDividend.orElse(null));
     }
 
     private List<String> getTickers(final SectorRatioRequest request) {
