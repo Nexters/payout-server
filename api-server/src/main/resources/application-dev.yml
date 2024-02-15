@@ -18,3 +18,8 @@ springdoc:
     query-config-enabled: true
     enabled: true
 
+financial:
+  eodhd:
+    base-url: https://eodhd.com
+    stock-logo-path: /img/logos/US/
+    image-postfix: .png
