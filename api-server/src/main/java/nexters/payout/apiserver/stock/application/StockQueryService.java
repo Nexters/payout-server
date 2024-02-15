@@ -43,27 +43,11 @@ public class StockQueryService {
         List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(stock, lastYearDividends);
         Double dividendYield = dividendAnalysisService.calculateDividendYield(stock, lastYearDividends);
 
-        return findEarliestDividendThisYear(lastYearDividends)
+        return dividendAnalysisService.findEarliestDividendThisYear(lastYearDividends)
                 .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths, dividendYield))
                 .orElseGet(() -> StockDetailResponse.from(stock));
     }
 
-    /**
-     * 작년 1년간 데이터를 기준으로 가장 가까운 예상 배당금을 조회합니다.
-     */
-    public Optional<Dividend> findEarliestDividendThisYear(final List<Dividend> lastYearDividends) {
-        int thisYear = InstantProvider.getThisYear();
-
-        return lastYearDividends
-                .stream()
-                .map(dividend -> {
-                    LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
-                    LocalDate adjustedPaymentDate = paymentDate.withYear(thisYear);
-                    return new AbstractMap.SimpleEntry<>(dividend, adjustedPaymentDate);
-                })
-                .min(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey);
-    }
 
     private List<Dividend> getLastYearDividends(Stock stock) {
         int lastYear = InstantProvider.getLastYear();
