@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    group:
+      prod: file-logging
   datasource:
     url: jdbc:mysql://${DB_HOSTNAME}:${DB_PORT}/${DB_DATABASE}
     driver-class-name: com.mysql.cj.jdbc.Driver
