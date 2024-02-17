@@ -8,8 +8,10 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public record StockDetailResponse(
+        UUID stockId,
         String ticker,
         String companyName,
         String sectorName,
@@ -26,6 +28,7 @@ public record StockDetailResponse(
 
     public static StockDetailResponse from(Stock stock) {
         return new StockDetailResponse(
+                stock.getId(),
                 stock.getTicker(),
                 stock.getName(),
                 stock.getSector().getName(),
@@ -44,6 +47,7 @@ public record StockDetailResponse(
     public static StockDetailResponse of(Stock stock, Dividend dividend, List<Month> dividendMonths, Double dividendYield) {
         int thisYear = InstantProvider.getThisYear();
         return new StockDetailResponse(
+                stock.getId(),
                 stock.getTicker(),
                 stock.getName(),
                 stock.getSector().getName(),
