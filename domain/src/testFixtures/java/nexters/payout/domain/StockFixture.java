@@ -19,6 +19,10 @@ public class StockFixture {
         return new Stock(UUID.randomUUID(), ticker, ticker, sector, Exchange.NYSE.name(), "industry", 0.0, 0);
     }
 
+    public static Stock createStock(String ticker, String companyName) {
+        return new Stock(UUID.randomUUID(), ticker, companyName, Sector.TECHNOLOGY, Exchange.NYSE.name(), "industry", 0.0, 0);
+    }
+
     public static Stock createStock(String ticker, Sector sector, Double price) {
         return new Stock(UUID.randomUUID(), ticker, ticker, sector, Exchange.NYSE.name(), "industry", price, 0);
     }
