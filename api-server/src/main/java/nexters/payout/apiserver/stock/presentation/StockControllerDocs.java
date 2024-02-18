@@ -23,6 +23,13 @@ import java.util.List;
 
 public interface StockControllerDocs {
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "SUCCESS"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "SERVER ERROR",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
     @Operation(summary = "티커명/회사명 검색")
     ResponseEntity<List<StockResponse>> searchStock(
             @Parameter(description = "tickerName or companyName of stock ex) APPL, APPLE")
