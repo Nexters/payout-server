@@ -46,7 +46,7 @@ class StockControllerTest extends IntegrationTest {
     }
 
     @Test
-    void 종목_조회시_배당금이_존재하지_않는_경우_정상적으로_조회된다() {
+    void 종목_조회시_종목의_정보가_정상적으로_조회된다() {
         // given
         stockRepository.save(StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL));
 
@@ -65,36 +65,6 @@ class StockControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(stockDetailResponse.ticker()).isEqualTo(TSLA),
                 () -> assertThat(stockDetailResponse.sectorName()).isEqualTo(Sector.CONSUMER_CYCLICAL.getName())
-        );
-    }
-
-    @Test
-    void 종목_조회시_배당금이_존재하는_경우_정상적으로_조회된다() {
-        // given
-        Double price = 100.0;
-        Double dividend = 12.0;
-        Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL, price));
-        Instant paymentDate = LocalDate.of(2023, 4, 5).atStartOfDay().toInstant(UTC);
-        dividendRepository.save(DividendFixture.createDividend(tsla.getId(), dividend, paymentDate));
-
-        // when, then
-        StockDetailResponse stockDetailResponse = RestAssured
-                .given()
-                .log().all()
-                .contentType(ContentType.JSON)
-                .when().get("api/stocks/TSLA")
-                .then().log().all()
-                .statusCode(200)
-                .extract()
-                .as(new TypeRef<>() {
-                });
-
-        assertAll(
-                () -> assertThat(stockDetailResponse.ticker()).isEqualTo(TSLA),
-                () -> assertThat(stockDetailResponse.sectorName()).isEqualTo(Sector.CONSUMER_CYCLICAL.getName()),
-                () -> assertThat(stockDetailResponse.dividendYield()).isEqualTo(dividend / price),
-                () -> assertThat(stockDetailResponse.earliestPaymentDate()).isEqualTo(LocalDate.of(LocalDate.now().getYear(), 4, 5)),
-                () -> assertThat(stockDetailResponse.dividendMonths()).isEqualTo(List.of(Month.APRIL))
         );
     }
 
@@ -188,7 +158,6 @@ class StockControllerTest extends IntegrationTest {
         // given
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2)));
         Stock stock = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
-        dividendRepository.save(DividendFixture.createDividend(stock.getId(), 12.0));
 
         // when
         List<SectorRatioResponse> actual = RestAssured
@@ -208,8 +177,7 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(1),
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
-                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL),
-                () -> assertThat(actual.get(0).stocks().get(0).dividendPerShare()).isEqualTo(12.0)
+                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL)
         );
     }
 
@@ -237,8 +205,7 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(1),
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
-                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL),
-                () -> assertThat(actual.get(0).stocks().get(0).dividendPerShare()).isEqualTo(null)
+                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL)
         );
     }
 }

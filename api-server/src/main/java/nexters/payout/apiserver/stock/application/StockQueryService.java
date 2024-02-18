@@ -19,10 +19,9 @@ import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockSha
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
-import java.util.stream.Collector;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,27 +42,11 @@ public class StockQueryService {
         List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(stock, lastYearDividends);
         Double dividendYield = dividendAnalysisService.calculateDividendYield(stock, lastYearDividends);
 
-        return findEarliestDividendThisYear(lastYearDividends)
+        return dividendAnalysisService.findEarliestDividendThisYear(lastYearDividends)
                 .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths, dividendYield))
                 .orElseGet(() -> StockDetailResponse.from(stock));
     }
 
-    /**
-     * 작년 1년간 데이터를 기준으로 가장 가까운 예상 배당금을 조회합니다.
-     */
-    public Optional<Dividend> findEarliestDividendThisYear(final List<Dividend> lastYearDividends) {
-        int thisYear = InstantProvider.getThisYear();
-
-        return lastYearDividends
-                .stream()
-                .map(dividend -> {
-                    LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
-                    LocalDate adjustedPaymentDate = paymentDate.withYear(thisYear);
-                    return new AbstractMap.SimpleEntry<>(dividend, adjustedPaymentDate);
-                })
-                .min(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey);
-    }
 
     private List<Dividend> getLastYearDividends(Stock stock) {
         int lastYear = InstantProvider.getLastYear();
@@ -84,32 +67,12 @@ public class StockQueryService {
 
     private List<StockShare> getStockShares(final SectorRatioRequest request) {
         List<Stock> stocks = stockRepository.findAllByTickerIn(getTickers(request));
-        Map<UUID, Dividend> stockDividendMap = getStockDividendMap(getStockIds(stocks));
 
         return stocks.stream()
                 .map(stock -> new StockShare(
                         stock,
-                        stockDividendMap.get(stock.getId()),
                         getTickerShareMap(request).get(stock.getTicker())))
                 .collect(Collectors.toList());
-    }
-
-    private List<UUID> getStockIds(final List<Stock> stocks) {
-        return stocks.stream()
-                .map(Stock::getId)
-                .toList();
-    }
-
-    private Map<UUID, Dividend> getStockDividendMap(final List<UUID> stockIds) {
-        return dividendRepository.findAllByStockIdIn(stockIds)
-                .stream()
-                .collect(Collectors.groupingBy(Dividend::getStockId, getLatestDividendOrNull()));
-    }
-
-    private Collector<Dividend, Object, Dividend> getLatestDividendOrNull() {
-        return Collectors.collectingAndThen(
-                Collectors.maxBy(Comparator.comparing(Dividend::getDeclarationDate)),
-                optionalDividend -> optionalDividend.orElse(null));
     }
 
     private List<String> getTickers(final SectorRatioRequest request) {

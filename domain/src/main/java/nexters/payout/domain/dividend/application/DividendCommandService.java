@@ -5,6 +5,7 @@ import nexters.payout.core.exception.error.NotFoundException;
 import nexters.payout.domain.dividend.application.dto.UpdateDividendRequest;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.domain.repository.DividendRepository;
+import nexters.payout.domain.stock.domain.Stock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,15 +15,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class DividendCommandService {
+
     private final DividendRepository dividendRepository;
 
-    public void save(Dividend dividend) {
-        dividendRepository.save(dividend);
-    }
+    public void saveOrUpdate(UUID stockId, Dividend dividendData) {
+        dividendRepository.findByStockIdAndExDividendDate(stockId, dividendData.getExDividendDate())
+                .ifPresentOrElse(
+                        existing -> existing.update(
+                                dividendData.getDividend(),
+                                dividendData.getPaymentDate(),
+                                dividendData.getDeclarationDate()
+                        ),
+                        () -> dividendRepository.save(dividendData)
+                );
 
-    public void update(UUID dividendId, UpdateDividendRequest request) {
-        Dividend dividend = dividendRepository.findById(dividendId)
-                .orElseThrow(() -> new NotFoundException(String.format("not found dividend [%s]", dividendId)));
-        dividend.update(request.dividend(), request.paymentDate(), request.declarationDate());
     }
 }

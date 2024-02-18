@@ -76,7 +76,6 @@ public class SectorAnalysisService {
 
     public record StockShare(
             Stock stock,
-            Dividend dividend,
             Integer share
     ) {
 

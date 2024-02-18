@@ -28,7 +28,7 @@ public interface FinancialClient {
     }
 
     record DividendData(
-            Instant date,
+            Instant exDividendDate,
             String label,
             Double adjDividend,
             String symbol,

@@ -13,10 +13,9 @@ public record StockResponse(
         String exchange,
         String industry,
         Double price,
-        Integer volume,
-        Double dividendPerShare
+        Integer volume
 ) {
-    public static StockResponse of(Stock stock, Dividend dividend) {
+    public static StockResponse from(Stock stock) {
         return new StockResponse(
                 stock.getId(),
                 stock.getTicker(),
@@ -25,8 +24,7 @@ public record StockResponse(
                 stock.getExchange(),
                 stock.getIndustry(),
                 stock.getPrice(),
-                stock.getVolume(),
-                dividend == null ? null : dividend.getDividend()
+                stock.getVolume()
         );
     }
 }
