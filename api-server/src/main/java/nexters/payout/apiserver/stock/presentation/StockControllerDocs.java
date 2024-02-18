@@ -8,17 +8,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
+import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
 import nexters.payout.core.exception.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 public interface StockControllerDocs {
+
+    @Operation(summary = "티커명/회사명 검색")
+    ResponseEntity<List<StockResponse>> searchStock(
+            @Parameter(description = "tickerName or companyName of stock ex) APPL, APPLE")
+            @RequestParam @NotEmpty String ticker
+    );
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "SUCCESS"),
@@ -31,7 +40,7 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "종목 상세 조회")
     ResponseEntity<StockDetailResponse> getStockByTicker(
-            @Parameter(description = "ticker name of stock", example = "AAPL")
+            @Parameter(description = "tickerName of stock", example = "AAPL")
             @PathVariable String ticker
     );
 
