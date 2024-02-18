@@ -23,7 +23,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_HOSTNAME: jdbc:mysql://db:${DB_PORT}/${DB_DATABASE}
+      DB_HOSTNAME: ${DB_HOSTNAME}
       DB_PORT: ${DB_PORT}
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USERNAME}
@@ -38,7 +38,7 @@ services:
       - db
     image: ${NCP_CONTAINER_REGISTRY_BATCH}/payout-batch
     environment:
-      DB_HOSTNAME: dbc:mysql://db:${DB_PORT}/${DB_DATABASE}
+      DB_HOSTNAME: ${DB_HOSTNAME}
       DB_PORT: ${DB_PORT}
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USERNAME}
