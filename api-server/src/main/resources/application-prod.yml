@@ -1,3 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOSTNAME}:${DB_PORT}/${DB_DATABASE}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: jdbc:mysql://${DB_HOSTNAME}:${DB_PORT}/${DB_DATABASE}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    baseline-version: 0
+
+
 springdoc:
   swagger-ui:
     path: /payout-docs.html
