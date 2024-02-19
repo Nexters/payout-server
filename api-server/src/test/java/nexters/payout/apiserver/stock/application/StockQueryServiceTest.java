@@ -64,9 +64,9 @@ class StockQueryServiceTest {
         // then
         assertAll(
                 () -> assertThat(actual.get(0).ticker()).isEqualTo(AAPL),
-                () -> assertThat(actual.get(0).sectorName()).isEqualTo(Sector.TECHNOLOGY.getName())
+                () -> assertThat(actual.get(0).sectorName()).isEqualTo(Sector.TECHNOLOGY.getName()),
+                () -> assertThat(actual.get(0).logoUrl()).isEqualTo("")
         );
-
     }
 
     @Test
@@ -134,7 +134,8 @@ class StockQueryServiceTest {
                                 appl.getExchange(),
                                 appl.getIndustry(),
                                 appl.getPrice(),
-                                appl.getVolume()
+                                appl.getVolume(),
+                                appl.getLogoUrl()
                         ))
                 ),
                 new SectorRatioResponse(
@@ -148,7 +149,8 @@ class StockQueryServiceTest {
                                         tsla.getExchange(),
                                         tsla.getIndustry(),
                                         tsla.getPrice(),
-                                        tsla.getVolume()
+                                        tsla.getVolume(),
+                                        appl.getLogoUrl()
                                 )
                         )
                 )
