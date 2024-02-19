@@ -15,5 +15,6 @@ import java.util.Optional;
 public interface DividendRepositoryCustom {
 
     Optional<Dividend> findByTickerAndExDividendDate(String ticker, Instant exDividendDate);
-    List<Dividend> findAllByTickerAndYearAndMonth(String ticker, int year, int month);
+    List<Dividend> findAllByTickerAndYearAndMonth(String ticker, Integer year, Integer month);
+    List<Dividend> findAllByTickerAndYear(String ticker, Integer year);
 }

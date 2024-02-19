@@ -4,18 +4,18 @@ import java.util.Comparator;
 import java.util.List;
 
 public record YearlyDividendResponse(
-        List<DividendResponse> dividends,
+        List<SingleYearlyDividendResponse> dividends,
         Double totalDividend
 ) {
-    public static YearlyDividendResponse of(List<DividendResponse> dividends) {
+    public static YearlyDividendResponse of(List<SingleYearlyDividendResponse> dividends) {
 
         dividends = dividends.stream()
-                .sorted(Comparator.comparingDouble(DividendResponse::totalDividend).reversed())
+                .sorted(Comparator.comparingDouble(SingleYearlyDividendResponse::totalDividend).reversed())
                 .toList();
         return new YearlyDividendResponse(
                 dividends,
                 dividends.stream()
-                        .mapToDouble(DividendResponse::totalDividend)
+                        .mapToDouble(SingleYearlyDividendResponse::totalDividend)
                         .sum()
         );
     }
