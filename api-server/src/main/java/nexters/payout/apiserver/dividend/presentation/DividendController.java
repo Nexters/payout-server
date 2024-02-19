@@ -14,6 +14,7 @@ import nexters.payout.apiserver.dividend.application.dto.response.YearlyDividend
 import nexters.payout.core.exception.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,7 +43,7 @@ public class DividendController {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping("/monthly")
-    public ResponseEntity<List<MonthlyDividendResponse>> getMonthlyDividends(@Valid DividendRequest request) {
+    public ResponseEntity<List<MonthlyDividendResponse>> getMonthlyDividends(@RequestBody @Valid DividendRequest request) {
 
         return ResponseEntity.ok(dividendQueryService.getMonthlyDividends(request));
     }
@@ -57,7 +58,7 @@ public class DividendController {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping("/yearly")
-    public ResponseEntity<YearlyDividendResponse> getYearlyDividends(@Valid DividendRequest request) {
+    public ResponseEntity<YearlyDividendResponse> getYearlyDividends(@RequestBody @Valid DividendRequest request) {
 
         return ResponseEntity.ok(dividendQueryService.getYearlyDividends(request));
     }
