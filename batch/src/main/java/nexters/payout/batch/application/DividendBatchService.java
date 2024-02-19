@@ -28,7 +28,6 @@ public class DividendBatchService {
 
     private final FinancialClient financialClient;
     private final DividendCommandService dividendCommandService;
-    private final DividendRepository dividendRepository;
     private final StockRepository stockRepository;
 
     /**
@@ -44,30 +43,17 @@ public class DividendBatchService {
     }
 
     public void handleDividendData(final Stock stock, final DividendData dividendData) {
-        dividendRepository.findByStockIdAndExDividendDate(stock.getId(), dividendData.date())
-                .ifPresentOrElse(
-                        existing -> update(existing.getId(), dividendData),
-                        () -> create(stock, dividendData)
-                );
-    }
-
-    private void create(final Stock stock, final DividendData dividendData) {
-        dividendCommandService.save(
-                Dividend.create(
-                        stock.getId(), dividendData.dividend(), dividendData.date(),
-                        dividendData.paymentDate(), dividendData.declarationDate()
-                )
-        );
-    }
-
-    private void update(final UUID dividendId, final DividendData dividendData) {
-        dividendCommandService.update(
-                dividendId,
-                new UpdateDividendRequest(
-                        dividendData.dividend(),
-                        dividendData.paymentDate(),
-                        dividendData.declarationDate()
-                )
-        );
+        try {
+            dividendCommandService.saveOrUpdate(
+                    stock.getId(),
+                    Dividend.create(
+                            stock.getId(), dividendData.dividend(), dividendData.exDividendDate(),
+                            dividendData.paymentDate(), dividendData.declarationDate()
+                    )
+            );
+        } catch (Exception e) {
+            log.error("fail to save(update) dividend: " + dividendData);
+            log.error(e.getMessage());
+        }
     }
 }

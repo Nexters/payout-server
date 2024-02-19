@@ -2,7 +2,23 @@ version: '3'
 
 services:
 
+  db:
+    image: mysql:8.0
+    platform: linux/amd64
+    volumes:
+      - ./db/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+
   api-server:
+    depends_on:
+      - db
     image: ${NCP_CONTAINER_REGISTRY_API}/payout-api
     ports:
       - "8080:8080"
@@ -14,8 +30,12 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       FMP_API_KEY: ${FMP_API_KEY}
     restart: always
+    links:
+      - db:db
 
   batch:
+    depends_on:
+      - db
     image: ${NCP_CONTAINER_REGISTRY_BATCH}/payout-batch
     environment:
       DB_HOSTNAME: ${DB_HOSTNAME}
@@ -25,3 +45,5 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       FMP_API_KEY: ${FMP_API_KEY}
     restart: always
+    links:
+      - db:db

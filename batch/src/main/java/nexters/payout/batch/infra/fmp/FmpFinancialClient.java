@@ -41,7 +41,8 @@ public class FmpFinancialClient implements FinancialClient {
                 .flatMap(exchange -> fetchVolumeList(exchange).stream())
                 .collect(Collectors.toMap(FmpVolumeData::symbol, fmpVolumeData -> fmpVolumeData));
 
-        return stockDataMap.entrySet().stream()
+        return stockDataMap.entrySet()
+                .stream()
                 .map(entry -> {
                     String tickerName = entry.getKey();
                     FmpStockData fmpStockData = entry.getValue();
@@ -62,7 +63,7 @@ public class FmpFinancialClient implements FinancialClient {
                 .toList();
     }
 
-    private List<FmpStockData> fetchStockList(String sector) {
+    private List<FmpStockData> fetchStockList(final String sector) {
         return fmpWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(fmpProperties.getStockScreenerPath())

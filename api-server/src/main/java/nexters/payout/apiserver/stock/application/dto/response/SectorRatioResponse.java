@@ -21,7 +21,7 @@ public record SectorRatioResponse(
                         entry.getValue()
                                 .stockShares()
                                 .stream()
-                                .map(stockShare -> StockResponse.of(stockShare.stock(), stockShare.dividend()))
+                                .map(stockShare -> StockResponse.from(stockShare.stock()))
                                 .collect(Collectors.toList()))
                 )
                 .collect(Collectors.toList());

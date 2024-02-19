@@ -12,6 +12,7 @@ import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
+import nexters.payout.domain.stock.domain.repository.StockRepositoryCustom;
 import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import org.junit.jupiter.api.Test;
@@ -44,11 +45,29 @@ class StockQueryServiceTest {
     @Mock
     private StockRepository stockRepository;
     @Mock
+    private StockRepositoryCustom stockRepositoryCustom;
+    @Mock
     private DividendRepository dividendRepository;
     @Spy
     private SectorAnalysisService sectorAnalysisService;
     @Spy
     private DividendAnalysisService dividendAnalysisService;
+
+    @Test
+    void 검색된_종목_정보를_정상적으로_반환한다() {
+        // given
+        given(stockRepositoryCustom.findStocksByTickerOrNameWithPriority(any())).willReturn(List.of(StockFixture.createStock(AAPL, Sector.TECHNOLOGY)));
+
+        // when
+        List<StockResponse> actual = stockQueryService.searchStock("A");
+
+        // then
+        assertAll(
+                () -> assertThat(actual.get(0).ticker()).isEqualTo(AAPL),
+                () -> assertThat(actual.get(0).sectorName()).isEqualTo(Sector.TECHNOLOGY.getName()),
+                () -> assertThat(actual.get(0).logoUrl()).isEqualTo("")
+        );
+    }
 
     @Test
     void 종목_상세_정보를_정상적으로_반환한다() {
@@ -99,13 +118,9 @@ class StockQueryServiceTest {
         SectorRatioRequest request = new SectorRatioRequest(List.of(new TickerShare(AAPL, 2), new TickerShare(TSLA, 3)));
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 4.0);
         Stock tsla = StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL, 2.2);
-        Dividend aaplDiv = DividendFixture.createDividend(appl.getId(), 11.0);
-        Dividend tslaDiv = DividendFixture.createDividend(tsla.getId(), 5.0);
         List<Stock> stocks = List.of(appl, tsla);
-        List<Dividend> dividends = List.of(aaplDiv, tslaDiv);
 
         given(stockRepository.findAllByTickerIn(any())).willReturn(stocks);
-        given(dividendRepository.findAllByStockIdIn(any())).willReturn(dividends);
 
         List<SectorRatioResponse> expected = List.of(
                 new SectorRatioResponse(
@@ -120,22 +135,23 @@ class StockQueryServiceTest {
                                 appl.getIndustry(),
                                 appl.getPrice(),
                                 appl.getVolume(),
-                                aaplDiv.getDividend()
+                                appl.getLogoUrl()
                         ))
                 ),
                 new SectorRatioResponse(
                         Sector.CONSUMER_CYCLICAL.getName(),
                         0.4520547945205479,
                         List.of(new StockResponse(
-                                tsla.getId(),
-                                tsla.getTicker(),
-                                tsla.getName(),
-                                tsla.getSector().getName(),
-                                tsla.getExchange(),
-                                tsla.getIndustry(),
-                                tsla.getPrice(),
-                                tsla.getVolume(),
-                                tslaDiv.getDividend())
+                                        tsla.getId(),
+                                        tsla.getTicker(),
+                                        tsla.getName(),
+                                        tsla.getSector().getName(),
+                                        tsla.getExchange(),
+                                        tsla.getIndustry(),
+                                        tsla.getPrice(),
+                                        tsla.getVolume(),
+                                        appl.getLogoUrl()
+                                )
                         )
                 )
         );

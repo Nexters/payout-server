@@ -1,6 +1,5 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
-import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.stock.domain.Stock;
 
 import java.util.UUID;
@@ -14,9 +13,9 @@ public record StockResponse(
         String industry,
         Double price,
         Integer volume,
-        Double dividendPerShare
+        String logoUrl
 ) {
-    public static StockResponse of(Stock stock, Dividend dividend) {
+    public static StockResponse from(Stock stock) {
         return new StockResponse(
                 stock.getId(),
                 stock.getTicker(),
@@ -26,7 +25,7 @@ public record StockResponse(
                 stock.getIndustry(),
                 stock.getPrice(),
                 stock.getVolume(),
-                dividend == null ? null : dividend.getDividend()
+                stock.getLogoUrl()
         );
     }
 }

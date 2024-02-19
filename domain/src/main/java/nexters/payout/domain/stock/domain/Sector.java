@@ -4,6 +4,10 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Getter
 public enum Sector {
@@ -30,18 +34,28 @@ public enum Sector {
         this.name = name;
     }
 
+    private static final Map<String, Sector> NAME_TO_SECTOR_MAP = Arrays
+            .stream(values())
+            .collect(Collectors.toMap(sector -> sector.name, Function.identity()));
+
+    private static final Set<String> ETC_NAMES = Set.of(FINANCIAL.name, SERVICES.name, CONGLOMERATES.name);
+
     public static List<String> getNames() {
         return Arrays.stream(Sector.values())
                 .map(it -> it.name)
+                .filter(name -> !name.isEmpty())
                 .toList();
     }
 
-    public static Sector fromValue(String value) {
-        for (Sector sector : Sector.values()) {
-            if (sector.getName().equalsIgnoreCase(value)) {
-                return sector;
-            }
+    public static Sector fromValue(String sectorName) {
+        if (isEtcCategory(sectorName)) {
+            return ETC;
         }
-        return ETC;
+
+        return NAME_TO_SECTOR_MAP.getOrDefault(sectorName, ETC);
+    }
+
+    private static boolean isEtcCategory(String value) {
+        return ETC_NAMES.contains(value);
     }
 }
