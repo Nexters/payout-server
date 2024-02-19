@@ -13,6 +13,17 @@ public class StockCommandService {
 
     private final StockRepository stockRepository;
 
+    public void create(Stock stockData) {
+        stockRepository.save(stockData);
+    }
+
+    public void update(String ticker, Stock stockData) {
+        stockRepository.findByTicker(ticker)
+                .ifPresent(
+                        existing -> existing.update(stockData.getPrice(), stockData.getVolume())
+                );
+    }
+
     public void saveOrUpdate(String ticker, Stock stockData) {
         stockRepository.findByTicker(ticker)
                 .ifPresentOrElse(

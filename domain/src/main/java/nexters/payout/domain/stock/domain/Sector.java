@@ -34,7 +34,8 @@ public enum Sector {
         this.name = name;
     }
 
-    private static final Map<String, Sector> NAME_TO_SECTOR_MAP = Arrays.stream(values())
+    private static final Map<String, Sector> NAME_TO_SECTOR_MAP = Arrays
+            .stream(values())
             .collect(Collectors.toMap(sector -> sector.name, Function.identity()));
 
     private static final Set<String> ETC_NAMES = Set.of(FINANCIAL.name, SERVICES.name, CONGLOMERATES.name);
@@ -46,12 +47,12 @@ public enum Sector {
                 .toList();
     }
 
-    public static Sector fromValue(String value) {
-        if (isEtcCategory(value)) {
+    public static Sector fromValue(String sectorName) {
+        if (isEtcCategory(sectorName)) {
             return ETC;
         }
 
-        return NAME_TO_SECTOR_MAP.getOrDefault(value.toUpperCase(), ETC);
+        return NAME_TO_SECTOR_MAP.getOrDefault(sectorName, ETC);
     }
 
     private static boolean isEtcCategory(String value) {

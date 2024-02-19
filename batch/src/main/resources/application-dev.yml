@@ -20,10 +20,14 @@ financial:
     exchange-symbols-stock-list-path: /api/v3/symbol/
     stock-screener-path: /api/v3/stock-screener
     stock-dividend-calender-path: /api/v3/stock_dividend_calendar
+  ninjas:
+    api-key: ${NINJAS_API_KEY}
+    base-url: https://api.api-ninjas.com
+    logo-path: /v1/logo
 
 schedules:
   cron:
     dividend: 0 0 0 * * *
-    stock: 0 0/10 * * * *
+    stock: 0 0 1 * * * *
     
 

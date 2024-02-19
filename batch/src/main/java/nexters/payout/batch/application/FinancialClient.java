@@ -23,7 +23,11 @@ public interface FinancialClient {
             Integer avgVolume
     ) {
         Stock toDomain() {
-            return new Stock(ticker, name, sector, exchange, industry, price, volume);
+            return new Stock(ticker, name, sector, exchange, industry, price, volume, null);
+        }
+
+        Stock toDomain(String logoUrl) {
+            return new Stock(ticker, name, sector, exchange, industry, price, volume, logoUrl);
         }
     }
 

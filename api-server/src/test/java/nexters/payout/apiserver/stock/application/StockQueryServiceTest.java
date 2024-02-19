@@ -12,6 +12,7 @@ import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
+import nexters.payout.domain.stock.domain.repository.StockRepositoryCustom;
 import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import org.junit.jupiter.api.Test;
@@ -44,11 +45,29 @@ class StockQueryServiceTest {
     @Mock
     private StockRepository stockRepository;
     @Mock
+    private StockRepositoryCustom stockRepositoryCustom;
+    @Mock
     private DividendRepository dividendRepository;
     @Spy
     private SectorAnalysisService sectorAnalysisService;
     @Spy
     private DividendAnalysisService dividendAnalysisService;
+
+    @Test
+    void 검색된_종목_정보를_정상적으로_반환한다() {
+        // given
+        given(stockRepositoryCustom.findStocksByTickerOrNameWithPriority(any())).willReturn(List.of(StockFixture.createStock(AAPL, Sector.TECHNOLOGY)));
+
+        // when
+        List<StockResponse> actual = stockQueryService.searchStock("A");
+
+        // then
+        assertAll(
+                () -> assertThat(actual.get(0).ticker()).isEqualTo(AAPL),
+                () -> assertThat(actual.get(0).sectorName()).isEqualTo(Sector.TECHNOLOGY.getName())
+        );
+
+    }
 
     @Test
     void 종목_상세_정보를_정상적으로_반환한다() {

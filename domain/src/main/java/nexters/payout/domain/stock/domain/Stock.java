@@ -35,9 +35,11 @@ public class Stock extends BaseEntity {
 
     private Integer volume;
 
+    private String logoUrl;
+
     public Stock(final UUID id, final String ticker, final String name,
                  final Sector sector, final String exchange, final String industry,
-                 final Double price, final Integer volume) {
+                 final Double price, final Integer volume, final String logoUrl) {
         validateTicker(ticker);
         this.id = id;
         this.ticker = ticker;
@@ -47,12 +49,13 @@ public class Stock extends BaseEntity {
         this.industry = industry;
         this.price = price;
         this.volume = volume;
+        this.logoUrl = logoUrl;
     }
 
     public Stock(final String ticker, final String name,
                  final Sector sector, final String exchange, final String industry,
-                 final Double price, final Integer volume) {
-        this(null, ticker, name, sector, exchange, industry, price, volume);
+                 final Double price, final Integer volume, final String logoUrl) {
+        this(null, ticker, name, sector, exchange, industry, price, volume, logoUrl);
     }
 
     private void validateTicker(final String ticker) {

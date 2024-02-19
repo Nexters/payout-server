@@ -7,6 +7,7 @@ import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
+import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
 import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
 import nexters.payout.domain.DividendFixture;
@@ -27,6 +28,123 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class StockControllerTest extends IntegrationTest {
+    @Test
+    void 검색키워드가_빈값인_경우_400_예외가_발생한다() {
+        // given
+        Stock apdd = StockFixture.createStock("APDD", "DDDD");
+
+        stockRepository.save(apdd);
+
+        // when, then
+        RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/search?keyword=")
+                .then().log().all()
+                .statusCode(400)
+                .extract()
+                .as(ErrorResponse.class);
+    }
+
+    @Test
+    void 티커는_앞자리부터_검색_회사명은_중간에서도_검색_가능하다() {
+        // given
+        Stock apdd = StockFixture.createStock("APDD", "DDDD");
+        Stock abcd = StockFixture.createStock("ABCD", "APPLE");
+
+        stockRepository.save(apdd);
+        stockRepository.save(abcd);
+
+        // when
+        List<StockResponse> actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/search?keyword=AP")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(actual).hasSize(2),
+                () -> assertThat(actual).containsExactlyInAnyOrderElementsOf(
+                        List.of(
+                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume()),
+                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume())
+                        )
+                )
+        );
+    }
+
+    @Test
+    void 티커_기반_검색_1순위_회사명_기반_검색이_2순위이다() {
+        // given
+        Stock apdd = StockFixture.createStock("APDD", "DDDD");
+        Stock abcd = StockFixture.createStock("ABCD", "APPLE");
+
+        stockRepository.save(apdd);
+        stockRepository.save(abcd);
+
+        // when
+        List<StockResponse> actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/search?keyword=AP")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(actual).hasSize(2),
+                () -> assertThat(actual).isEqualTo(
+                        List.of(
+                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume()),
+                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume())
+                        )
+                )
+        );
+    }
+
+    @Test
+    void 검색_결과는_알파벳_순으로_정렬한다() {
+        // given
+        Stock dddd = StockFixture.createStock("DDDD", "DDDDA");
+        Stock aaaa = StockFixture.createStock("AAAA", "AAADA");
+
+        stockRepository.save(dddd);
+        stockRepository.save(aaaa);
+
+        // when
+        List<StockResponse> actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/search?keyword=DA")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(actual).hasSize(2),
+                () -> assertThat(actual).containsExactlyInAnyOrderElementsOf(
+                        List.of(
+                                new StockResponse(aaaa.getId(), aaaa.getTicker(), aaaa.getName(), aaaa.getSector().getName(), aaaa.getExchange(), aaaa.getIndustry(), aaaa.getPrice(), aaaa.getVolume()),
+                                new StockResponse(dddd.getId(), dddd.getTicker(), dddd.getName(), dddd.getSector().getName(), dddd.getExchange(), dddd.getIndustry(), dddd.getPrice(), dddd.getVolume())
+                        )
+                )
+        );
+    }
 
     @Test
     void 종목_조회시_티커를_찾을수없는경우_404_예외가_발생한다() {

@@ -5,6 +5,7 @@ import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
+import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
 import nexters.payout.core.exception.error.NotFoundException;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -12,6 +13,7 @@ import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
+import nexters.payout.domain.stock.domain.repository.StockRepositoryCustom;
 import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
@@ -30,9 +32,17 @@ import java.util.stream.Collectors;
 public class StockQueryService {
 
     private final StockRepository stockRepository;
+    private final StockRepositoryCustom stockRepositoryCustom;
     private final DividendRepository dividendRepository;
     private final SectorAnalysisService sectorAnalysisService;
     private final DividendAnalysisService dividendAnalysisService;
+
+    public List<StockResponse> searchStock(final String keyword) {
+        return stockRepositoryCustom.findStocksByTickerOrNameWithPriority(keyword)
+                .stream()
+                .map(StockResponse::from)
+                .collect(Collectors.toList());
+    }
 
     public StockDetailResponse getStockByTicker(final String ticker) {
         Stock stock = stockRepository.findByTicker(ticker)
