@@ -12,18 +12,18 @@ public class StockFixture {
     public static final String SBUX = "SBUX";
 
     public static Stock createStock(String ticker, Double price, Integer volume) {
-        return new Stock(ticker, "tesla", Sector.FINANCIAL_SERVICES, Exchange.NYSE.name(), "industry", price, volume);
+        return new Stock(ticker, "tesla", Sector.FINANCIAL_SERVICES, Exchange.NYSE.name(), "industry", price, volume, "");
     }
 
     public static Stock createStock(String ticker, Sector sector) {
-        return new Stock(UUID.randomUUID(), ticker, ticker, sector, Exchange.NYSE.name(), "industry", 0.0, 0);
+        return new Stock(UUID.randomUUID(), ticker, ticker, sector, Exchange.NYSE.name(), "industry", 0.0, 0, "");
     }
 
     public static Stock createStock(String ticker, String companyName) {
-        return new Stock(UUID.randomUUID(), ticker, companyName, Sector.TECHNOLOGY, Exchange.NYSE.name(), "industry", 0.0, 0);
+        return new Stock(UUID.randomUUID(), ticker, companyName, Sector.TECHNOLOGY, Exchange.NYSE.name(), "industry", 0.0, 0, "");
     }
 
     public static Stock createStock(String ticker, Sector sector, Double price) {
-        return new Stock(UUID.randomUUID(), ticker, ticker, sector, Exchange.NYSE.name(), "industry", price, 0);
+        return new Stock(UUID.randomUUID(), ticker, ticker, sector, Exchange.NYSE.name(), "industry", price, 0, "");
     }
 }
