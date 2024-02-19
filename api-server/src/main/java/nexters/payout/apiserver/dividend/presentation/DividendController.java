@@ -29,13 +29,13 @@ public class DividendController implements DividendControllerDocs {
     private final DividendQueryService dividendQueryService;
 
     @PostMapping("/monthly")
-    public ResponseEntity<List<MonthlyDividendResponse>> getMonthlyDividends(@RequestBody @Valid DividendRequest request) {
+    public ResponseEntity<List<MonthlyDividendResponse>> getMonthlyDividends(@RequestBody @Valid final DividendRequest request) {
 
         return ResponseEntity.ok(dividendQueryService.getMonthlyDividends(request));
     }
 
     @PostMapping("/yearly")
-    public ResponseEntity<YearlyDividendResponse> getYearlyDividends(@RequestBody @Valid DividendRequest request) {
+    public ResponseEntity<YearlyDividendResponse> getYearlyDividends(@RequestBody @Valid final DividendRequest request) {
 
         return ResponseEntity.ok(dividendQueryService.getYearlyDividends(request));
     }
