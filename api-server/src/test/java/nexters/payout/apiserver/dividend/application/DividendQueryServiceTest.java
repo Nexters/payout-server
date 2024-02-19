@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static nexters.payout.domain.StockFixture.*;
@@ -65,11 +66,13 @@ class DividendQueryServiceTest {
         List<MonthlyDividendResponse> actual = dividendQueryService.getMonthlyDividends(request());
 
         // then
-        assertThat(actual.size()).isEqualTo(12);
-        assertThat(actual.stream()
-                .mapToDouble(MonthlyDividendResponse::totalDividend)
-                .sum()).isEqualTo(expected);
-        assertThat(actual.get(11).dividends().get(0).totalDividend()).isEqualTo(5.0);
+        assertAll(
+                () -> assertThat(actual.size()).isEqualTo(12),
+                () -> assertThat(actual.stream()
+                        .mapToDouble(MonthlyDividendResponse::totalDividend)
+                        .sum()).isEqualTo(expected),
+                () -> assertThat(actual.get(11).dividends().get(0).totalDividend()).isEqualTo(5.0)
+        );
     }
 
     @Test
@@ -85,12 +88,14 @@ class DividendQueryServiceTest {
         YearlyDividendResponse actual = dividendQueryService.getYearlyDividends(request());
 
         // then
-        assertThat(actual.totalDividend()).isEqualTo(totalDividendExpected);
-        assertThat(actual.dividends().stream()
-                .filter(dividend -> dividend.ticker().equals(AAPL))
-                .findFirst().get()
-                .totalDividend())
-                .isEqualTo(aaplDividendExpected);
+        assertAll(
+                () -> assertThat(actual.totalDividend()).isEqualTo(totalDividendExpected),
+                () -> assertThat(actual.dividends().stream()
+                        .filter(dividend -> dividend.ticker().equals(AAPL))
+                        .findFirst().get()
+                        .totalDividend())
+                        .isEqualTo(aaplDividendExpected)
+        );
     }
 
     private DividendRequest request() {

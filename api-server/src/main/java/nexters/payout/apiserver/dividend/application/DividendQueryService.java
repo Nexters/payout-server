@@ -66,6 +66,7 @@ public class DividendQueryService {
                             findDividends.stream().mapToDouble(Dividend::getDividend).sum()
                     );
                 })
+                .filter(response -> response.totalDividend() != 0)
                 .collect(Collectors.toList());
 
         return YearlyDividendResponse.of(dividends);
