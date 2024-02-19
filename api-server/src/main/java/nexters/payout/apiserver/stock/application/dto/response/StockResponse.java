@@ -12,7 +12,8 @@ public record StockResponse(
         String exchange,
         String industry,
         Double price,
-        Integer volume
+        Integer volume,
+        String logoUrl
 ) {
     public static StockResponse from(Stock stock) {
         return new StockResponse(
@@ -23,7 +24,8 @@ public record StockResponse(
                 stock.getExchange(),
                 stock.getIndustry(),
                 stock.getPrice(),
-                stock.getVolume()
+                stock.getVolume(),
+                stock.getLogoUrl()
         );
     }
 }
