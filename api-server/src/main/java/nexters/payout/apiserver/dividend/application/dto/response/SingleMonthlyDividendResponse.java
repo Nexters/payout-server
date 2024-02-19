@@ -10,10 +10,10 @@ public record SingleMonthlyDividendResponse(
         Double dividend,
         Double totalDividend
 ) {
-    public static SingleMonthlyDividendResponse of(Stock stock, String logoUrl, int share, Dividend dividend) {
+    public static SingleMonthlyDividendResponse of(Stock stock, int share, Dividend dividend) {
         return new SingleMonthlyDividendResponse(
                 stock.getTicker(),
-                logoUrl,
+                stock.getLogoUrl(),
                 share,
                 dividend.getDividend(),
                 dividend.getDividend() * share

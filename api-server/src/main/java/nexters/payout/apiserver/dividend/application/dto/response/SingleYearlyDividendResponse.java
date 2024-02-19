@@ -8,10 +8,10 @@ public record SingleYearlyDividendResponse(
         Integer share,
         Double totalDividend
 ) {
-    public static SingleYearlyDividendResponse of(Stock stock, String logoUrl, int share, double dividend) {
+    public static SingleYearlyDividendResponse of(Stock stock, int share, double dividend) {
         return new SingleYearlyDividendResponse(
                 stock.getTicker(),
-                logoUrl,
+                stock.getLogoUrl(),
                 share,
                 dividend * share
         );

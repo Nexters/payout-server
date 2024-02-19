@@ -4,7 +4,6 @@ import nexters.payout.apiserver.dividend.application.dto.request.DividendRequest
 import nexters.payout.apiserver.dividend.application.dto.request.TickerShare;
 import nexters.payout.apiserver.dividend.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.dividend.application.dto.response.YearlyDividendResponse;
-import nexters.payout.apiserver.dividend.infra.eodhd.EodhdProperties;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
@@ -15,11 +14,9 @@ import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -38,21 +35,16 @@ import static nexters.payout.domain.StockFixture.*;
 import static nexters.payout.domain.stock.domain.Sector.*;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
-@SpringBootTest
 class DividendQueryServiceTest {
 
-    @Autowired
+    @InjectMocks
     private DividendQueryService dividendQueryService;
 
-    @MockBean
+    @Mock
     private DividendRepository dividendRepository;
 
-    @MockBean
+    @Mock
     private StockRepository stockRepository;
-
-    @Autowired
-    private EodhdProperties eodhdProperties;
 
     @Test
     void 사용자의_월간_배당금_정보를_가져온다() {

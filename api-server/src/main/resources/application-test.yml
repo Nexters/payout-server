@@ -13,9 +13,3 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
-
-financial:
-  eodhd:
-    base-url: https://eodhd.com
-    stock-logo-path: /img/logos/US/
-    image-postfix: .png

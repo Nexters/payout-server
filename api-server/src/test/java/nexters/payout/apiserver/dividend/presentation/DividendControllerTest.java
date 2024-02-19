@@ -7,7 +7,6 @@ import nexters.payout.apiserver.dividend.application.dto.request.DividendRequest
 import nexters.payout.apiserver.dividend.application.dto.request.TickerShare;
 import nexters.payout.apiserver.dividend.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.dividend.application.dto.response.YearlyDividendResponse;
-import nexters.payout.apiserver.dividend.infra.eodhd.EodhdProperties;
 import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
 import nexters.payout.core.time.InstantProvider;
@@ -16,7 +15,6 @@ import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -32,9 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DividendControllerTest extends IntegrationTest {
-
-    @Autowired
-    private EodhdProperties eodhdProperties;
 
     @Test
     void 월별_배당금_조회시_티커를_찾을수없는경우_404_예외가_발생한다() {

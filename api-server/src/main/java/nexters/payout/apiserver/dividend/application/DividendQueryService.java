@@ -7,7 +7,6 @@ import nexters.payout.apiserver.dividend.application.dto.response.SingleMonthlyD
 import nexters.payout.apiserver.dividend.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.dividend.application.dto.response.SingleYearlyDividendResponse;
 import nexters.payout.apiserver.dividend.application.dto.response.YearlyDividendResponse;
-import nexters.payout.apiserver.dividend.infra.eodhd.EodhdProperties;
 import nexters.payout.core.exception.error.NotFoundException;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -28,7 +27,6 @@ public class DividendQueryService {
 
     private final DividendRepository dividendRepository;
     private final StockRepository stockRepository;
-    public final EodhdProperties eodhdProperties;
 
     /**
      * 사용자가 추가한 주식의 예상 월간 배당금을 반환하는 메서드입니다.
@@ -61,7 +59,6 @@ public class DividendQueryService {
                     return SingleYearlyDividendResponse.of(
                             stockRepository.findByTicker(ticker)
                                     .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", tickerShare.ticker()))),
-                            generateLogoUrl(ticker),
                             tickerShare.share(),
                             findDividends.stream().mapToDouble(Dividend::getDividend).sum()
                     );
@@ -86,15 +83,10 @@ public class DividendQueryService {
                             .map(stock -> findDividends.stream()
                                     .map(dividend -> SingleMonthlyDividendResponse.of(
                                             stock,
-                                            generateLogoUrl(stock.getTicker()),
                                             tickerShare.share(),
                                             dividend)))
                             .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", tickerShare.ticker())));
                 })
                 .toList();
-    }
-
-    private String generateLogoUrl(String ticker) {
-        return eodhdProperties.getBaseUrl() + eodhdProperties.getStockLogoPath() + ticker + eodhdProperties.getImagePostfix();
     }
 }
