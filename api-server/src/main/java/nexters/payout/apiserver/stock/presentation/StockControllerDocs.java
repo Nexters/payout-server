@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
@@ -33,7 +34,11 @@ public interface StockControllerDocs {
     @Operation(summary = "티커명/회사명 검색")
     ResponseEntity<List<StockResponse>> searchStock(
             @Parameter(description = "tickerName or companyName of stock ex) APPL, APPLE")
-            @RequestParam @NotEmpty String ticker
+            @RequestParam @NotEmpty String ticker,
+            @Parameter(description = "page number(start with 1) for pagination")
+            @RequestParam @NotNull final Integer pageNumber,
+            @Parameter(description = "page size for pagination")
+            @RequestParam @NotNull final Integer pageSize
     );
 
     @ApiResponses(value = {
