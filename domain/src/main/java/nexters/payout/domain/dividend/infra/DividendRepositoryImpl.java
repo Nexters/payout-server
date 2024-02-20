@@ -1,8 +1,9 @@
-package nexters.payout.domain.dividend.domain.repository;
+package nexters.payout.domain.dividend.infra;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import nexters.payout.domain.dividend.domain.Dividend;
+import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import static nexters.payout.domain.stock.domain.QStock.stock;
  *
  * @author Min Ho CHO
  */
+@Repository
 public class DividendRepositoryImpl implements DividendRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;

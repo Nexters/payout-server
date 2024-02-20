@@ -1,6 +1,7 @@
 package nexters.payout.domain.dividend.domain.repository;
 
 import nexters.payout.domain.dividend.domain.Dividend;
+import nexters.payout.domain.dividend.infra.DividendRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.Instant;
