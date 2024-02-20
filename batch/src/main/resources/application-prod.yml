@@ -24,7 +24,7 @@ spring:
 
 schedules:
   cron:
-    stock: "0 0 3 * * *"
+    stock: "0 21 1 * * *"
     dividend: "0 0 4 * * *"
 
 financial:
