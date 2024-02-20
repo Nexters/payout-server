@@ -8,6 +8,6 @@ import java.util.List;
 @Repository
 public interface StockRepositoryCustom {
 
-    List<Stock> findStocksByTickerOrNameWithPriority(String search);
+    List<Stock> findStocksByTickerOrNameWithPriority(String search, Integer pageNumber, Integer pageSize);
 
 }

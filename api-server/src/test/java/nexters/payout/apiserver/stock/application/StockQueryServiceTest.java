@@ -56,10 +56,10 @@ class StockQueryServiceTest {
     @Test
     void 검색된_종목_정보를_정상적으로_반환한다() {
         // given
-        given(stockRepositoryCustom.findStocksByTickerOrNameWithPriority(any())).willReturn(List.of(StockFixture.createStock(AAPL, Sector.TECHNOLOGY)));
+        given(stockRepositoryCustom.findStocksByTickerOrNameWithPriority(any(), any(), any())).willReturn(List.of(StockFixture.createStock(AAPL, Sector.TECHNOLOGY)));
 
         // when
-        List<StockResponse> actual = stockQueryService.searchStock("A");
+        List<StockResponse> actual = stockQueryService.searchStock("A", 1 , 2);
 
         // then
         assertAll(
