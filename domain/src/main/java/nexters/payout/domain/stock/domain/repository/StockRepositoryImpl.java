@@ -16,7 +16,7 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Stock> findStocksByTickerOrNameWithPriority(String keyword) {
+    public List<Stock> findStocksByTickerOrNameWithPriority(String keyword, Integer pageNumber, Integer pageSize) {
         QStock stock = QStock.stock;
 
         // 검색 조건
@@ -32,9 +32,13 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
         OrderSpecifier<String> orderByTicker = stock.ticker.asc();
         OrderSpecifier<String> orderByName = stock.name.asc();
 
+        long offset = (pageNumber - 1) * pageSize;
+
         return queryFactory.selectFrom(stock)
                 .where(tickerStartsWith.or(nameContains))
                 .orderBy(orderByPriority, orderByTicker, orderByName)
+                .offset(offset)
+                .limit(pageSize)
                 .fetch();
     }
 }

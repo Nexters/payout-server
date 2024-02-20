@@ -37,8 +37,8 @@ public class StockQueryService {
     private final SectorAnalysisService sectorAnalysisService;
     private final DividendAnalysisService dividendAnalysisService;
 
-    public List<StockResponse> searchStock(final String keyword) {
-        return stockRepositoryCustom.findStocksByTickerOrNameWithPriority(keyword)
+    public List<StockResponse> searchStock(final String keyword, final Integer pageNumber, final Integer pageSize) {
+        return stockRepositoryCustom.findStocksByTickerOrNameWithPriority(keyword, pageNumber, pageSize)
                 .stream()
                 .map(StockResponse::from)
                 .collect(Collectors.toList());

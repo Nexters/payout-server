@@ -1,20 +1,14 @@
 package nexters.payout.apiserver.stock.presentation;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.StockQueryService;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
-import nexters.payout.core.exception.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +23,11 @@ public class StockController implements StockControllerDocs {
 
     @GetMapping("/search")
     public ResponseEntity<List<StockResponse>> searchStock(
-            @RequestParam @NotEmpty final String keyword
+            @RequestParam @NotEmpty final String keyword,
+            @RequestParam @NotNull final Integer pageNumber,
+            @RequestParam @NotNull final Integer pageSize
     ) {
-        return ResponseEntity.ok(stockQueryService.searchStock(keyword));
+        return ResponseEntity.ok(stockQueryService.searchStock(keyword, pageNumber, pageSize));
     }
 
     @GetMapping("/{ticker}")
