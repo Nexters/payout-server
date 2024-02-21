@@ -2,6 +2,7 @@ package nexters.payout.batch.infra.fmp;
 
 import lombok.extern.slf4j.Slf4j;
 import nexters.payout.batch.application.FinancialClient;
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.stock.domain.Exchange;
 import nexters.payout.domain.stock.domain.Sector;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,11 @@ import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.time.ZoneOffset.UTC;
 
 @Slf4j
 @Service
@@ -96,12 +98,16 @@ public class FmpFinancialClient implements FinancialClient {
     @Override
     public List<DividendData> getDividendList() {
 
-        // TODO (작년 1월 ~ 12월 데이터 고정적으로 가져오도록 수정 필요)
-        // 3개월 간 총 4번의 데이터를 조회함으로써 기준 날짜로부터 이전 1년 간의 데이터를 조회
+        // 현재 시간을 기준으로 작년 1월 ~ 12월의 배당금 데이터를 조회
         List<DividendData> result = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
+        for (int month = 1; month <= 10; month += 3) {
 
-            Instant date = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1).minusMonths(i).toInstant();
+            Instant date = LocalDate.of(
+                    InstantProvider.getLastYear(),
+                    month,
+                    1)
+                    .atStartOfDay()
+                    .toInstant(UTC);
 
             List<DividendData> dividendResponses = fetchDividendList(date)
                     .stream()
