@@ -25,6 +25,8 @@ import java.util.stream.IntStream;
 @Transactional(readOnly = true)
 public class DividendQueryService {
 
+    private final Integer JANUARY = 1;
+    private final Integer DECEMBER = 12;
     private final DividendRepository dividendRepository;
     private final StockRepository stockRepository;
 
@@ -36,7 +38,7 @@ public class DividendQueryService {
      */
     public List<MonthlyDividendResponse> getMonthlyDividends(final DividendRequest request) {
 
-        return IntStream.rangeClosed(1, 12)
+        return IntStream.rangeClosed(JANUARY, DECEMBER)
                 .mapToObj(month -> MonthlyDividendResponse.of(
                         InstantProvider.getNextYear(),
                         month,

@@ -46,6 +46,9 @@ class DividendQueryServiceTest {
     @Mock
     private StockRepository stockRepository;
 
+    private final Integer JANUARY = 1;
+    private final Integer DECEMBER = 12;
+
     @Test
     void 사용자의_월간_배당금_정보를_가져온다() {
         // given
@@ -101,7 +104,7 @@ class DividendQueryServiceTest {
         Stock stock = StockFixture.createStock(ticker, sector);
         given(stockRepository.findByTicker(eq(ticker))).willReturn(Optional.of(stock));
 
-        for (int month = 1; month <= 12; month++) {
+        for (int month = JANUARY; month <= DECEMBER; month++) {
             if (isContain(cycle, month)) {
                 // 배당 주기에 해당하는 경우
                 given(dividendRepository.findAllByTickerAndYearAndMonth(
