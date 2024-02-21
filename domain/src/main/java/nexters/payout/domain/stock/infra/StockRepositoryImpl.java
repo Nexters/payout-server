@@ -1,4 +1,4 @@
-package nexters.payout.domain.stock.domain.repository;
+package nexters.payout.domain.stock.infra;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -7,9 +7,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.domain.stock.domain.QStock;
 import nexters.payout.domain.stock.domain.Stock;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 @RequiredArgsConstructor
 public class StockRepositoryImpl implements StockRepositoryCustom {
 
@@ -32,7 +34,7 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
         OrderSpecifier<String> orderByTicker = stock.ticker.asc();
         OrderSpecifier<String> orderByName = stock.name.asc();
 
-        long offset = (pageNumber - 1) * pageSize;
+        long offset = (long) (pageNumber - 1) * pageSize;
 
         return queryFactory.selectFrom(stock)
                 .where(tickerStartsWith.or(nameContains))

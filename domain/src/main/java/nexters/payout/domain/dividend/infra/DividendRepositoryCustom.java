@@ -1,4 +1,4 @@
-package nexters.payout.domain.dividend.domain.repository;
+package nexters.payout.domain.dividend.infra;
 
 
 import nexters.payout.domain.dividend.domain.Dividend;
