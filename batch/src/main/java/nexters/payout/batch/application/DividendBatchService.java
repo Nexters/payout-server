@@ -6,15 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import nexters.payout.batch.application.FinancialClient.DividendData;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.application.DividendCommandService;
-import nexters.payout.domain.dividend.application.dto.UpdateDividendRequest;
-import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * 배당금 관련 스케쥴러 서비스 클래스입니다.

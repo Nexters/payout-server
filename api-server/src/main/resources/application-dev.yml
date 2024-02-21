@@ -17,4 +17,3 @@ springdoc:
     path: /payout-docs.html
     query-config-enabled: true
     enabled: true
-
