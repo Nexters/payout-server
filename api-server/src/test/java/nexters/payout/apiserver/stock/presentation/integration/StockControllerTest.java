@@ -13,7 +13,6 @@ import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
-import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import org.junit.jupiter.api.Test;
@@ -335,11 +334,12 @@ class StockControllerTest extends IntegrationTest {
     void 배당락일이_다가오는_주식_리스트를_가져온다() {
         // given
         Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
-        Dividend expected = dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
                 aapl.getId(),
                 25.0,
                 LocalDateTime.now().plusDays(1).toInstant(UTC)
         ));
+        LocalDateTime expected = LocalDateTime.now().plusDays(1);
 
         // when
         List<UpcomingDividendResponse> actual = RestAssured
@@ -357,9 +357,9 @@ class StockControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(actual.size()).isEqualTo(1),
                 () -> assertThat(actual.get(0).stockId()).isEqualTo(aapl.getId()),
-                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(getYear(expected.getExDividendDate())),
-                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(getMonth(expected.getExDividendDate())),
-                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(getDayOfMonth(expected.getExDividendDate()))
+                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(expected.getYear()),
+                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
+                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
         );
     }
 
@@ -373,11 +373,12 @@ class StockControllerTest extends IntegrationTest {
                 25.0,
                 LocalDateTime.now().plusDays(2).toInstant(UTC)
         ));
-        Dividend expected = dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
                 tsla.getId(),
                 30.0,
                 LocalDateTime.now().plusDays(1).toInstant(UTC)
         ));
+        LocalDateTime expected = LocalDateTime.now().plusDays(1);
 
         // when
         List<UpcomingDividendResponse> actual = RestAssured
@@ -395,9 +396,9 @@ class StockControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(actual.size()).isEqualTo(2),
                 () -> assertThat(actual.get(0).stockId()).isEqualTo(tsla.getId()),
-                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(getYear(expected.getExDividendDate())),
-                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(getMonth(expected.getExDividendDate())),
-                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(getDayOfMonth(expected.getExDividendDate()))
+                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(expected.getYear()),
+                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
+                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
         );
     }
 }
