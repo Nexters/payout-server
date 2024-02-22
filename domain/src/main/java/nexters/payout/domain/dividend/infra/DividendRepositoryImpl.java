@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.time.ZoneOffset.UTC;
 import static nexters.payout.domain.dividend.domain.QDividend.dividend1;
@@ -31,14 +32,16 @@ public class DividendRepositoryImpl implements DividendRepositoryCustom {
     }
 
     @Override
-    public Optional<Dividend> findByTickerAndExDividendDate(String ticker, Instant exDividendDate) {
+    public Optional<Dividend> findByStockIdAndExDividendDate(UUID stockId, Instant date) {
 
         return Optional.ofNullable(
                 queryFactory
                         .selectFrom(dividend1)
-                        .join(stock).on(dividend1.stockId.eq(stock.id))
-                        .where(stock.ticker.eq(ticker)
-                                .and(dividend1.exDividendDate.eq(exDividendDate)))
+                        .innerJoin(stock).on(dividend1.stockId.eq(stock.id))
+                        .where(stock.id.eq(stockId)
+                                .and(dividend1.exDividendDate.year().eq(InstantProvider.getYear(date)))
+                                .and(dividend1.exDividendDate.month().eq(InstantProvider.getMonth(date)))
+                                .and(dividend1.exDividendDate.dayOfMonth().eq(InstantProvider.getDayOfMonth(date))))
                         .fetchOne()
         );
     }

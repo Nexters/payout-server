@@ -19,6 +19,4 @@ public interface DividendRepository extends JpaRepository<Dividend, UUID>, Divid
     List<Dividend> findAllByStockId(UUID stockId);
 
     List<Dividend> findAllByStockIdIn(List<UUID> stockIds);
-
-    Optional<Dividend> findByStockIdAndExDividendDate(UUID stockId, Instant exDividendDate);
 }
