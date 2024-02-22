@@ -30,8 +30,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       FMP_API_KEY: ${FMP_API_KEY}
     restart: always
-    links:
-      - db:db
+    volumes:
+      - ./logs/api-server:/logs
 
   batch:
     depends_on:
@@ -46,5 +46,5 @@ services:
       FMP_API_KEY: ${FMP_API_KEY}
       NINJAS_API_KEY: ${NINJAS_API_KEY}
     restart: always
-    links:
-      - db:db
+    volumes:
+      - ./logs/batch:/logs

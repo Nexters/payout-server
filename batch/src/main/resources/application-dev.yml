@@ -31,5 +31,3 @@ schedules:
     dividend:
       past: "0 4 * * 0 *"
       future: "0 0 4 * * *"
-    
-
