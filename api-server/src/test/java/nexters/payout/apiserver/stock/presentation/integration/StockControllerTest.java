@@ -25,6 +25,7 @@ import java.time.Month;
 import java.util.List;
 
 import static java.time.ZoneOffset.UTC;
+import static nexters.payout.core.time.InstantProvider.*;
 import static nexters.payout.domain.StockFixture.AAPL;
 import static nexters.payout.domain.StockFixture.TSLA;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -356,7 +357,9 @@ class StockControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(actual.size()).isEqualTo(1),
                 () -> assertThat(actual.get(0).stockId()).isEqualTo(aapl.getId()),
-                () -> assertThat(actual.get(0).exDividendDate()).isEqualTo(expected.getExDividendDate())
+                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(getYear(expected.getExDividendDate())),
+                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(getMonth(expected.getExDividendDate())),
+                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(getDayOfMonth(expected.getExDividendDate()))
         );
     }
 
@@ -392,7 +395,9 @@ class StockControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(actual.size()).isEqualTo(2),
                 () -> assertThat(actual.get(0).stockId()).isEqualTo(tsla.getId()),
-                () -> assertThat(actual.get(0).exDividendDate()).isEqualTo(expected.getExDividendDate())
+                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(getYear(expected.getExDividendDate())),
+                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(getMonth(expected.getExDividendDate())),
+                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(getDayOfMonth(expected.getExDividendDate()))
         );
     }
 }

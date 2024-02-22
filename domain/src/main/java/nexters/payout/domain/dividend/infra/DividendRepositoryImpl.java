@@ -2,6 +2,7 @@ package nexters.payout.domain.dividend.infra;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import org.springframework.stereotype.Repository;
 
@@ -71,24 +72,9 @@ public class DividendRepositoryImpl implements DividendRepositoryCustom {
         queryFactory
                 .delete(dividend1)
                 .where(dividend1.exDividendDate.year().eq(year)
-                        .and(dividend1.createdAt.year().eq(getYear(createdAt)))
-                        .and(dividend1.createdAt.month().eq(getMonth(createdAt)))
-                        .and(dividend1.createdAt.dayOfMonth().eq(getDay(createdAt))))
+                        .and(dividend1.createdAt.year().eq(InstantProvider.getYear(createdAt)))
+                        .and(dividend1.createdAt.month().eq(InstantProvider.getMonth(createdAt)))
+                        .and(dividend1.createdAt.dayOfMonth().eq(InstantProvider.getDayOfMonth(createdAt))))
                 .execute();
-    }
-
-    private Integer getYear(Instant date) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date, UTC);
-        return zonedDateTime.getYear();
-    }
-
-    private Integer getMonth(Instant date) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date, UTC);
-        return zonedDateTime.getMonthValue();
-    }
-
-    private Integer getDay(Instant date) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date, UTC);
-        return zonedDateTime.getDayOfMonth();
     }
 }
