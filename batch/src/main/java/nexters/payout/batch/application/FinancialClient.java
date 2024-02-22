@@ -10,7 +10,9 @@ public interface FinancialClient {
 
     List<StockData> getLatestStockList();
 
-    List<DividendData> getDividendList();
+    List<DividendData> getPastDividendList();
+
+    List<DividendData> getIncomingDividendList();
 
     record StockData(
             String ticker,

@@ -17,4 +17,5 @@ public interface DividendRepositoryCustom {
     Optional<Dividend> findByTickerAndExDividendDate(String ticker, Instant exDividendDate);
     List<Dividend> findAllByTickerAndYearAndMonth(String ticker, Integer year, Integer month);
     List<Dividend> findAllByTickerAndYear(String ticker, Integer year);
+    void deleteByYearAndCreatedAt(Integer year, Instant createdAt);
 }

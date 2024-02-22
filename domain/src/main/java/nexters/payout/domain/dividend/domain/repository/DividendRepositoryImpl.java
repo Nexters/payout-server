@@ -5,9 +5,11 @@ import jakarta.persistence.EntityManager;
 import nexters.payout.domain.dividend.domain.Dividend;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.ZoneOffset.UTC;
 import static nexters.payout.domain.dividend.domain.QDividend.dividend1;
 import static nexters.payout.domain.stock.domain.QStock.stock;
 
@@ -59,5 +61,32 @@ public class DividendRepositoryImpl implements DividendRepositoryCustom {
                 .where(dividend1.exDividendDate.year().eq(year)
                         .and(stock.ticker.eq(ticker)))
                 .fetch();
+    }
+
+    @Override
+    public void deleteByYearAndCreatedAt(Integer year, Instant createdAt) {
+
+        queryFactory
+                .delete(dividend1)
+                .where(dividend1.exDividendDate.year().eq(year)
+                        .and(dividend1.createdAt.year().eq(getYear(createdAt)))
+                        .and(dividend1.createdAt.month().eq(getMonth(createdAt)))
+                        .and(dividend1.createdAt.dayOfMonth().eq(getDay(createdAt))))
+                .execute();
+    }
+
+    private Integer getYear(Instant date) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date, UTC);
+        return zonedDateTime.getYear();
+    }
+
+    private Integer getMonth(Instant date) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date, UTC);
+        return zonedDateTime.getMonthValue();
+    }
+
+    private Integer getDay(Instant date) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date, UTC);
+        return zonedDateTime.getDayOfMonth();
     }
 }

@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static java.time.ZoneOffset.UTC;
@@ -93,19 +94,19 @@ public class FmpFinancialClient implements FinancialClient {
     }
 
     /**
-     * 배당금 관련 정보를 업데이트하는 메서드입니다.
+     * 과거 배당금 관련 정보를 가져오는 메서드입니다.
      */
     @Override
-    public List<DividendData> getDividendList() {
+    public List<DividendData> getPastDividendList() {
 
         // 현재 시간을 기준으로 작년 1월 ~ 12월의 배당금 데이터를 조회
         List<DividendData> result = new ArrayList<>();
-        for (int month = 1; month <= 10; month += 3) {
+        for (int month = 12; month >= 3; month -= 3) {
 
             Instant date = LocalDate.of(
-                    InstantProvider.getLastYear(),
-                    month,
-                    1)
+                            InstantProvider.getLastYear(),
+                            month,
+                            1)
                     .atStartOfDay()
                     .toInstant(UTC);
 
@@ -125,12 +126,52 @@ public class FmpFinancialClient implements FinancialClient {
         return result;
     }
 
+    /**
+     * 다가오는 배당금 관련 정보를 가져오는 메서드입니다.
+     */
+    @Override
+    public List<DividendData> getIncomingDividendList() {
+
+        List<DividendData> dividendResponse = fetchDividendList(
+                LocalDate.now().atStartOfDay().toInstant(UTC),
+                LocalDate.now().plusMonths(3).atStartOfDay().toInstant(UTC)
+        )
+                .stream()
+                .map(FmpDividendData::toDividendData)
+                .toList();
+
+        if (dividendResponse.isEmpty()) {
+            log.error("FmpClient updateDividendData 수행 중 에러 발생: dividendResponses is empty");
+        }
+
+        return dividendResponse;
+    }
+
     private List<FmpDividendData> fetchDividendList(Instant date) {
         return fmpWebClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
                                 .path(fmpProperties.getStockDividendCalenderPath())
                                 .queryParam("to", formatInstant(date))
+                                .queryParam("apikey", fmpProperties.getApiKey())
+                                .build())
+                .retrieve()
+                .bodyToFlux(FmpDividendData.class)
+                .onErrorResume(throwable -> {
+                    log.error("FmpClient updateDividendData 수행 중 에러 발생: {}", throwable.getMessage());
+                    return Mono.empty();
+                })
+                .collectList()
+                .block();
+    }
+
+    private List<FmpDividendData> fetchDividendList(Instant from, Instant to) {
+        return fmpWebClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path(fmpProperties.getStockDividendCalenderPath())
+                                .queryParam("from", formatInstant(from))
+                                .queryParam("to", formatInstant(to))
                                 .queryParam("apikey", fmpProperties.getApiKey())
                                 .build())
                 .retrieve()
