@@ -12,16 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static java.time.ZoneOffset.UTC;
 import static nexters.payout.domain.dividend.domain.QDividend.dividend1;
 import static nexters.payout.domain.stock.domain.QStock.stock;
 
-
-/**
- * Dividend 엔티티 관련 custom query repository 클래스입니다.
- *
- * @author Min Ho CHO
- */
 @Repository
 public class DividendRepositoryImpl implements DividendRepositoryCustom {
 

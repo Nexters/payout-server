@@ -13,11 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * 배당금 관련 스케쥴러 서비스 클래스입니다.
- *
- * @author Min Ho CHO
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor

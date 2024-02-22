@@ -39,3 +39,4 @@ out/
 
 **/logs
 **/db/**
+domain/src/main/generated/nexters/payout/domain/stock/domain/QStock.java

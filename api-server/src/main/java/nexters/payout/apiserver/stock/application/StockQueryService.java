@@ -74,12 +74,6 @@ public class StockQueryService {
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
 
-    /**
-     * 배당락일이 다가오는 주식 리스트를 반환하는 메서드입니다.
-     * @param pageNumber 페이지 번호 (1부터 시작)
-     * @param pageSize 페이지 크기
-     * @return 배당락일이 다가오는 주식 리스트
-     */
     public List<UpcomingDividendResponse> getUpcomingDividendStocks(int pageNumber, int pageSize) {
 
         return stockRepository.findUpcomingDividendStock(pageNumber, pageSize).stream()

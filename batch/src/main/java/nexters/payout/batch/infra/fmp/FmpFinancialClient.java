@@ -185,10 +185,7 @@ public class FmpFinancialClient implements FinancialClient {
     }
 
     /**
-     * Instant를 yyyy-MM-dd 형식의 String으로 변환하는 메서드입니다.
-     *
-     * @param instant instant 데이터
-     * @return 날짜 String 데이터
+     * Instant를 "yyyy-MM-dd" 형식의 String으로 변환합니다.
      */
     private String formatInstant(Instant instant) {
 

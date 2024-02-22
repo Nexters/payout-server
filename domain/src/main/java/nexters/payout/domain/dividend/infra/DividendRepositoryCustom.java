@@ -8,11 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * custom query를 위한 dividend repository interface 입니다.
- *
- * @author Min Ho CHO
- */
 public interface DividendRepositoryCustom {
 
     Optional<Dividend> findByStockIdAndExDividendDate(UUID stockId, Instant date);
