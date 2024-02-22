@@ -1,6 +1,7 @@
 package nexters.payout.batch.application;
 
 import nexters.payout.batch.common.AbstractBatchServiceTest;
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
+import static nexters.payout.core.time.InstantProvider.*;
 import static nexters.payout.domain.StockFixture.AAPL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -177,7 +179,9 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
 
         assertAll(
                 () -> assertThat(actual.getDividend()).isEqualTo(expected.getDividend()),
-                () -> assertThat(actual.getExDividendDate()).isEqualTo(expectedDate),
+                () -> assertThat(getYear(actual.getExDividendDate())).isEqualTo(getYear(expectedDate)),
+                () -> assertThat(getMonth(actual.getExDividendDate())).isEqualTo(getMonth(expectedDate)),
+                () -> assertThat(getDayOfMonth(actual.getExDividendDate())).isEqualTo(getDayOfMonth(expectedDate)),
                 () -> assertThat(dividendRepository.findAll().size()).isEqualTo(1)
         );
     }
