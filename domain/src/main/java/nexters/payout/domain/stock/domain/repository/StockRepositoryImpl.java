@@ -1,14 +1,21 @@
 package nexters.payout.domain.stock.domain.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.domain.stock.domain.QStock;
 import nexters.payout.domain.stock.domain.Stock;
+import nexters.payout.domain.stock.domain.repository.dto.StockDividendDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static java.time.ZoneOffset.UTC;
+import static nexters.payout.domain.dividend.domain.QDividend.dividend1;
+import static nexters.payout.domain.stock.domain.QStock.stock;
 
 @RequiredArgsConstructor
 public class StockRepositoryImpl implements StockRepositoryCustom {
@@ -38,6 +45,20 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
                 .where(tickerStartsWith.or(nameContains))
                 .orderBy(orderByPriority, orderByTicker, orderByName)
                 .offset(offset)
+                .limit(pageSize)
+                .fetch();
+    }
+
+    @Override
+    public List<StockDividendDto> findUpcomingDividendStock(int pageNumber, int pageSize) {
+
+        return queryFactory
+                .select(Projections.constructor(StockDividendDto.class, stock, dividend1))
+                .from(stock)
+                .innerJoin(dividend1).on(stock.id.eq(dividend1.stockId))
+                .where(dividend1.exDividendDate.after(LocalDateTime.now().toInstant(UTC)))
+                .orderBy(dividend1.exDividendDate.asc())
+                .offset((long) (pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .fetch();
     }

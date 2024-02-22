@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface StockRepository extends JpaRepository<Stock, UUID> {
+public interface StockRepository extends JpaRepository<Stock, UUID>, StockRepositoryCustom {
     Optional<Stock> findByTicker(String ticker);
 
     List<Stock> findAllByTickerIn(List<String> tickers);
