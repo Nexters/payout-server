@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import nexters.payout.batch.application.FinancialClient.DividendData;
-import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.application.DividendCommandService;
 import nexters.payout.domain.stock.domain.Stock;
@@ -40,9 +39,9 @@ public class DividendBatchService {
      * 어제 삽입된 미래 배당금 정보를 삭제하고, UTC 시간대 기준으로 매일 새벽 4시에 현재 날짜로부터 3개월 간의 다가오는 배당금 정보를 갱신합니다.
      */
     @Scheduled(cron = "${schedules.cron.dividend.future}", zone = "UTC")
-    public void updateIncomingDividendInfo() {
+    public void updateUpcomingDividendInfo() {
         dividendCommandService.deleteInvalidDividend();
-        handleDividendData(financialClient.getIncomingDividendList());
+        handleDividendData(financialClient.getUpcomingDividendList());
     }
 
     private void saveOrUpdateDividendData(final Stock stock, final DividendData dividendData) {

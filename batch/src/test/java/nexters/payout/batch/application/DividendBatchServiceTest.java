@@ -131,11 +131,11 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
                 21.02,
                 LocalDateTime.now().toInstant(UTC)));
 
-        doReturn(new ArrayList<>()).when(financialClient).getIncomingDividendList();
+        doReturn(new ArrayList<>()).when(financialClient).getUpcomingDividendList();
 
         // when
         given(dateTimeProvider.getNow()).willReturn(Optional.of(LocalDateTime.now()));
-        dividendBatchService.updateIncomingDividendInfo();
+        dividendBatchService.updateUpcomingDividendInfo();
 
         // then
         assertThat(dividendRepository.count()).isEqualTo(0);
@@ -159,10 +159,10 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
                 expectedDate,
                 expectedDate));
 
-        doReturn(responses).when(financialClient).getIncomingDividendList();
+        doReturn(responses).when(financialClient).getUpcomingDividendList();
 
         // when
-        dividendBatchService.updateIncomingDividendInfo();
+        dividendBatchService.updateUpcomingDividendInfo();
 
         // then
         assertThat(dividendRepository.findByStockIdAndExDividendDate(

@@ -130,7 +130,7 @@ public class FmpFinancialClient implements FinancialClient {
      * 다가오는 배당금 관련 정보를 가져오는 메서드입니다.
      */
     @Override
-    public List<DividendData> getIncomingDividendList() {
+    public List<DividendData> getUpcomingDividendList() {
 
         List<DividendData> dividendResponse = fetchDividendList(
                 LocalDate.now().atStartOfDay().toInstant(UTC),

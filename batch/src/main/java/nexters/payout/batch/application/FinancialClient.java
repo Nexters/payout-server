@@ -12,7 +12,7 @@ public interface FinancialClient {
 
     List<DividendData> getPastDividendList();
 
-    List<DividendData> getIncomingDividendList();
+    List<DividendData> getUpcomingDividendList();
 
     record StockData(
             String ticker,
