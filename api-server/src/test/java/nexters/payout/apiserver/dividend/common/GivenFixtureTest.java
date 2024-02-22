@@ -31,10 +31,10 @@ public abstract class GivenFixtureTest {
     private final Integer DECEMBER = 12;
 
     @Mock
-    private DividendRepository dividendRepository;
+    protected DividendRepository dividendRepository;
 
     @Mock
-    private StockRepository stockRepository;
+    protected StockRepository stockRepository;
 
     public void givenStockAndDividendForMonthly(String ticker, Sector sector, double dividend, int... cycle) {
         Stock stock = StockFixture.createStock(ticker, sector);

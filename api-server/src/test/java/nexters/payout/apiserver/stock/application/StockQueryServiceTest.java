@@ -2,6 +2,7 @@ package nexters.payout.apiserver.stock.application;
 
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
+import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
@@ -9,10 +10,10 @@ import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.domain.repository.DividendRepository;
+import nexters.payout.domain.stock.domain.repository.dto.StockDividendDto;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
-import nexters.payout.domain.stock.domain.repository.StockRepositoryCustom;
 import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,7 @@ import java.util.Optional;
 import static java.time.ZoneOffset.UTC;
 import static nexters.payout.domain.StockFixture.AAPL;
 import static nexters.payout.domain.StockFixture.TSLA;
+import static nexters.payout.domain.stock.domain.Sector.TECHNOLOGY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,8 +48,6 @@ class StockQueryServiceTest {
     @Mock
     private StockRepository stockRepository;
     @Mock
-    private StockRepositoryCustom stockRepositoryCustom;
-    @Mock
     private DividendRepository dividendRepository;
     @Spy
     private SectorAnalysisService sectorAnalysisService;
@@ -56,7 +57,7 @@ class StockQueryServiceTest {
     @Test
     void 검색된_종목_정보를_정상적으로_반환한다() {
         // given
-        given(stockRepositoryCustom.findStocksByTickerOrNameWithPriority(any(), any(), any())).willReturn(List.of(StockFixture.createStock(AAPL, Sector.TECHNOLOGY)));
+        given(stockRepository.findStocksByTickerOrNameWithPriority(any(), any(), any())).willReturn(List.of(StockFixture.createStock(AAPL, Sector.TECHNOLOGY)));
 
         // when
         List<StockResponse> actual = stockQueryService.searchStock("A", 1 , 2);
@@ -161,5 +162,24 @@ class StockQueryServiceTest {
 
         // then
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
+    void 배당락일이_다가오는_주식_리스트를_가져온다() {
+        // given
+        Stock stock = StockFixture.createStock(AAPL, TECHNOLOGY);
+        Dividend expected = DividendFixture.createDividend(stock.getId(), LocalDateTime.now().plusDays(1).toInstant(UTC));
+        given(stockRepository.findUpcomingDividendStock(1, 10))
+                .willReturn(List.of(new StockDividendDto(stock, expected)));
+
+        // when
+        List<UpcomingDividendResponse> actual = stockQueryService.getUpcomingDividendStocks(1, 10);
+
+        // then
+        assertAll(
+                () -> assertThat(actual.size()).isEqualTo(1),
+                () -> assertThat(actual.get(0).exDividendDate()).isEqualTo(expected.getExDividendDate()),
+                () -> assertThat(actual.get(0).ticker()).isEqualTo(stock.getTicker())
+        );
     }
 }
