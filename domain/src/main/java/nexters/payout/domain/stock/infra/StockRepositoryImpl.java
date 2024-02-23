@@ -4,11 +4,13 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.domain.stock.domain.QStock;
 import nexters.payout.domain.stock.domain.Stock;
-import nexters.payout.domain.stock.domain.repository.dto.StockDividendDto;
+import nexters.payout.domain.stock.infra.dto.StockDividendDto;
+import nexters.payout.domain.stock.infra.dto.StockDividendYieldDto;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -60,6 +62,24 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
                 .innerJoin(dividend1).on(stock.id.eq(dividend1.stockId))
                 .where(dividend1.exDividendDate.after(LocalDateTime.now().toInstant(UTC)))
                 .orderBy(dividend1.exDividendDate.asc())
+                .offset((long) (pageNumber - 1) * pageSize)
+                .limit(pageSize)
+                .fetch();
+    }
+
+    @Override
+    public List<StockDividendYieldDto> findBiggestDividendYieldStock(int lastYear, int pageNumber, int pageSize) {
+
+        NumberExpression<Double> dividendYield = stock.price.divide(dividend1.dividend.sum().coalesce(0.0));
+
+        return queryFactory
+                .select(Projections.constructor(StockDividendYieldDto.class, stock, dividendYield))
+                .from(stock)
+                .leftJoin(dividend1)
+                .on(stock.id.eq(dividend1.stockId))
+                .where(dividend1.exDividendDate.year().eq(lastYear))
+                .groupBy(stock.id, stock.price)
+                .orderBy(dividendYield.desc())
                 .offset((long) (pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .fetch();
