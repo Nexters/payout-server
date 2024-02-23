@@ -5,12 +5,10 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
-import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
-import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
+import nexters.payout.apiserver.stock.application.dto.response.*;
 import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.stock.domain.Sector;
@@ -25,8 +23,7 @@ import java.util.List;
 
 import static java.time.ZoneOffset.UTC;
 import static nexters.payout.core.time.InstantProvider.*;
-import static nexters.payout.domain.StockFixture.AAPL;
-import static nexters.payout.domain.StockFixture.TSLA;
+import static nexters.payout.domain.StockFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -399,6 +396,87 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(expected.getYear()),
                 () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
                 () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
+        );
+    }
+
+    @Test
+    void 배당_수익률이_큰_순서대로_주식_리스트를_가져온다() {
+        // given
+        Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 8.0));
+        Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 20.0));
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+                aapl.getId(),
+                8.0,
+                LocalDate.of(InstantProvider.getLastYear(), 3, 1).atStartOfDay().toInstant(UTC)
+        ));
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+                tsla.getId(),
+                5.0,
+                LocalDate.of(InstantProvider.getLastYear(), 3, 1).atStartOfDay().toInstant(UTC)
+        ));
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+                tsla.getId(),
+                5.0,
+                LocalDate.of(InstantProvider.getLastYear(), 6, 1).atStartOfDay().toInstant(UTC)
+        ));
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+                tsla.getId(),
+                5.0,
+                LocalDate.of(InstantProvider.getLastYear() - 1, 6, 1).atStartOfDay().toInstant(UTC)
+        ));
+
+        Double expectedAaplDividendYield = 1.0;
+        Double expectedTslaDividendYield = 2.0;
+
+        // when
+        List<StockDividendYieldResponse> actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/dividend-yields/highest?pageNumber=1&pageSize=20")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(actual.size()).isEqualTo(2),
+                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expectedTslaDividendYield),
+                () -> assertThat(actual.get(0).ticker()).isEqualTo(tsla.getTicker()),
+                () -> assertThat(actual.get(1).dividendYield()).isEqualTo(expectedAaplDividendYield)
+        );
+    }
+
+    @Test
+    void 연간_배당금이_없는_주식은_배당_수익률_계산시_포함되지_않는다() {
+        // given
+        Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
+        stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 0.0));
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+                aapl.getId(),
+                5.0,
+                LocalDate.of(InstantProvider.getLastYear(), 3, 1).atStartOfDay().toInstant(UTC)
+        ));
+        Double expected = 1.0;
+
+        // when
+        List<StockDividendYieldResponse> actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/dividend-yields/highest?pageNumber=1&pageSize=20")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(actual.size()).isEqualTo(1),
+                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expected)
         );
     }
 }
