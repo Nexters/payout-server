@@ -1,7 +1,6 @@
 package nexters.payout.batch.application;
 
 import nexters.payout.batch.common.AbstractBatchServiceTest;
-import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -27,7 +26,6 @@ import static nexters.payout.domain.StockFixture.AAPL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
 
 @DisplayName("배당금 스케쥴러 서비스 테스트")
 class DividendBatchServiceTest extends AbstractBatchServiceTest {
@@ -39,7 +37,7 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
     AuditingHandler auditingHandler;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
         auditingHandler.setDateTimeProvider(dateTimeProvider);
     }
@@ -62,7 +60,7 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
                 Instant.parse("2023-12-23T00:00:00Z"),
                 Instant.parse("2023-12-22T00:00:00Z")));
 
-        doReturn(responses).when(financialClient).getPastDividendList();
+        given(financialClient.getPastDividendList()).willReturn(responses);
 
         // when
         dividendBatchService.updatePastDividendInfo();
@@ -103,7 +101,7 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
                 Instant.parse("2023-12-23T00:00:00Z"),
                 Instant.parse("2023-12-22T00:00:00Z")));
 
-        doReturn(responses).when(financialClient).getPastDividendList();
+        given(financialClient.getPastDividendList()).willReturn(responses);
 
         // when
         dividendBatchService.updatePastDividendInfo();
@@ -133,7 +131,7 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
                 21.02,
                 LocalDateTime.now().toInstant(UTC)));
 
-        doReturn(new ArrayList<>()).when(financialClient).getUpcomingDividendList();
+        given(financialClient.getUpcomingDividendList()).willReturn(new ArrayList<>());
 
         // when
         given(dateTimeProvider.getNow()).willReturn(Optional.of(LocalDateTime.now()));
@@ -161,7 +159,7 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
                 expectedDate,
                 expectedDate));
 
-        doReturn(responses).when(financialClient).getUpcomingDividendList();
+        given(financialClient.getUpcomingDividendList()).willReturn(responses);
 
         // when
         dividendBatchService.updateUpcomingDividendInfo();
