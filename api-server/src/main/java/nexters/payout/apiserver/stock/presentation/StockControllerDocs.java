@@ -11,10 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
-import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
-import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
+import nexters.payout.apiserver.stock.application.dto.response.*;
 import nexters.payout.core.exception.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,6 +82,21 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "배당락일이 다가오는 주식 리스트")
     ResponseEntity<List<UpcomingDividendResponse>> getUpComingDividendStocks(
+            @Parameter(description = "page number(start with 1) for pagination", example = "1")
+            @RequestParam @NotNull final Integer pageNumber,
+            @Parameter(description = "page size for pagination", example = "20")
+            @RequestParam @NotNull final Integer pageSize
+    );
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "SUCCESS"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "SERVER ERROR",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @Operation(summary = "배당수익률이 큰 주식 리스트")
+    ResponseEntity<List<StockDividendYieldResponse>> getBiggestDividendYieldStocks(
             @Parameter(description = "page number(start with 1) for pagination", example = "1")
             @RequestParam @NotNull final Integer pageNumber,
             @Parameter(description = "page size for pagination", example = "20")
