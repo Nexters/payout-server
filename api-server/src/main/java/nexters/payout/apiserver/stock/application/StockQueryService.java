@@ -3,10 +3,7 @@ package nexters.payout.apiserver.stock.application;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
-import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
-import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
+import nexters.payout.apiserver.stock.application.dto.response.*;
 import nexters.payout.core.exception.error.NotFoundException;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -80,6 +77,16 @@ public class StockQueryService {
                 .map(stockDividend -> UpcomingDividendResponse.of(
                         stockDividend.stock(),
                         stockDividend.dividend())
+                )
+                .collect(Collectors.toList());
+    }
+
+    public List<StockDividendYieldResponse> getBiggestDividendStocks(int pageNumber, int pageSize) {
+
+        return stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), pageNumber, pageSize).stream()
+                .map(stockDividendYield -> StockDividendYieldResponse.of(
+                        stockDividendYield.stock(),
+                        stockDividendYield.dividendYield())
                 )
                 .collect(Collectors.toList());
     }
