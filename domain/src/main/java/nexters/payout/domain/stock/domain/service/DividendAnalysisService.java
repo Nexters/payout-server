@@ -48,7 +48,7 @@ public class DividendAnalysisService {
      * 공시된 현재 연도의 데이터가 있는 경우 실제 지급일을 반환하고, 없으면 작년 데이터를 기반으로 가장 빠른 배당 지급일을 계산합니다.
      * 월과 일만 확인하기 때문에 과거 연도가 반환될 수 있습니다.
      */
-    public Optional<Dividend> findEarliestDividend(
+    public Optional<Dividend> findUpcomingDividend(
             final List<Dividend> lastYearDividends, final List<Dividend> thisYearDividends
     ) {
         LocalDate now = InstantProvider.getNow();

@@ -49,7 +49,7 @@ public class StockQueryService {
         List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(stock, lastYearDividends);
         Double dividendYield = dividendAnalysisService.calculateDividendYield(stock, lastYearDividends);
 
-        return dividendAnalysisService.findEarliestDividend(lastYearDividends, thisYearDividends)
+        return dividendAnalysisService.findUpcomingDividend(lastYearDividends, thisYearDividends)
                 .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths, dividendYield))
                 .orElseGet(() -> StockDetailResponse.from(stock));
     }

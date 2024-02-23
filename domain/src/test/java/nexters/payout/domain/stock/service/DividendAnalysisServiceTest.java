@@ -94,7 +94,7 @@ class DividendAnalysisServiceTest {
         List<Dividend> lastYearDividends = List.of(pastDividend, earlistDividend);
 
         // when
-        Optional<Dividend> actual = dividendAnalysisService.findEarliestDividend(lastYearDividends, Collections.emptyList());
+        Optional<Dividend> actual = dividendAnalysisService.findUpcomingDividend(lastYearDividends, Collections.emptyList());
 
         // then
         assertThat(actual.get()).isEqualTo(earlistDividend);
@@ -124,7 +124,7 @@ class DividendAnalysisServiceTest {
         List<Dividend> thisYearDividends = List.of(thisYearDividend);
 
         // when
-        Optional<Dividend> actual = dividendAnalysisService.findEarliestDividend(lastYearDividends, thisYearDividends);
+        Optional<Dividend> actual = dividendAnalysisService.findUpcomingDividend(lastYearDividends, thisYearDividends);
 
         // then
         assertThat(actual.get()).isEqualTo(thisYearDividend);
