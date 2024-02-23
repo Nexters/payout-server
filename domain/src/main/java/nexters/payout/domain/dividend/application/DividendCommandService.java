@@ -1,11 +1,9 @@
 package nexters.payout.domain.dividend.application;
 
 import lombok.RequiredArgsConstructor;
-import nexters.payout.core.exception.error.NotFoundException;
-import nexters.payout.domain.dividend.application.dto.UpdateDividendRequest;
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.domain.repository.DividendRepository;
-import nexters.payout.domain.stock.domain.Stock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +26,9 @@ public class DividendCommandService {
                         ),
                         () -> dividendRepository.save(dividendData)
                 );
+    }
 
+    public void deleteInvalidDividend() {
+        dividendRepository.deleteByYearAndCreatedAt(InstantProvider.getThisYear(), InstantProvider.getYesterday());
     }
 }

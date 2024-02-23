@@ -10,11 +10,6 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * 배당금을 표현하는 클래스입니다.
- *
- * @author Min Ho CHO
- */
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -15,11 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * 배당금 관련 컨트롤러 클래스입니다.
- *
- * @author Min Ho CHO
- */
 @RestController
 @RequiredArgsConstructor
 @Slf4j

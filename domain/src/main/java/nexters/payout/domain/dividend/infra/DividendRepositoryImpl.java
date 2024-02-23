@@ -2,22 +2,19 @@ package nexters.payout.domain.dividend.infra;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static nexters.payout.domain.dividend.domain.QDividend.dividend1;
 import static nexters.payout.domain.stock.domain.QStock.stock;
 
-
-/**
- * Dividend 엔티티 관련 custom query repository 클래스입니다.
- *
- * @author Min Ho CHO
- */
 @Repository
 public class DividendRepositoryImpl implements DividendRepositoryCustom {
 
@@ -28,14 +25,16 @@ public class DividendRepositoryImpl implements DividendRepositoryCustom {
     }
 
     @Override
-    public Optional<Dividend> findByTickerAndExDividendDate(String ticker, Instant exDividendDate) {
+    public Optional<Dividend> findByStockIdAndExDividendDate(UUID stockId, Instant date) {
 
         return Optional.ofNullable(
                 queryFactory
                         .selectFrom(dividend1)
-                        .join(stock).on(dividend1.stockId.eq(stock.id))
-                        .where(stock.ticker.eq(ticker)
-                                .and(dividend1.exDividendDate.eq(exDividendDate)))
+                        .innerJoin(stock).on(dividend1.stockId.eq(stock.id))
+                        .where(stock.id.eq(stockId)
+                                .and(dividend1.exDividendDate.year().eq(InstantProvider.getYear(date)))
+                                .and(dividend1.exDividendDate.month().eq(InstantProvider.getMonth(date)))
+                                .and(dividend1.exDividendDate.dayOfMonth().eq(InstantProvider.getDayOfMonth(date))))
                         .fetchOne()
         );
     }
@@ -61,5 +60,17 @@ public class DividendRepositoryImpl implements DividendRepositoryCustom {
                 .where(dividend1.exDividendDate.year().eq(year)
                         .and(stock.ticker.eq(ticker)))
                 .fetch();
+    }
+
+    @Override
+    public void deleteByYearAndCreatedAt(Integer year, Instant createdAt) {
+
+        queryFactory
+                .delete(dividend1)
+                .where(dividend1.exDividendDate.year().eq(year)
+                        .and(dividend1.createdAt.year().eq(InstantProvider.getYear(createdAt)))
+                        .and(dividend1.createdAt.month().eq(InstantProvider.getMonth(createdAt)))
+                        .and(dividend1.createdAt.dayOfMonth().eq(InstantProvider.getDayOfMonth(createdAt))))
+                .execute();
     }
 }
