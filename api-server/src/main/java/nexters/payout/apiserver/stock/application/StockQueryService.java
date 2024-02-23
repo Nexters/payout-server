@@ -3,6 +3,7 @@ package nexters.payout.apiserver.stock.application;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
+import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
@@ -13,7 +14,6 @@ import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
-import nexters.payout.domain.stock.infra.StockRepositoryCustom;
 import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
@@ -72,6 +72,16 @@ public class StockQueryService {
         Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
 
         return SectorRatioResponse.fromMap(sectorInfoMap);
+    }
+
+    public List<UpcomingDividendResponse> getUpcomingDividendStocks(int pageNumber, int pageSize) {
+
+        return stockRepository.findUpcomingDividendStock(pageNumber, pageSize).stream()
+                .map(stockDividend -> UpcomingDividendResponse.of(
+                        stockDividend.stock(),
+                        stockDividend.dividend())
+                )
+                .collect(Collectors.toList());
     }
 
     private List<StockShare> getStockShares(final SectorRatioRequest request) {

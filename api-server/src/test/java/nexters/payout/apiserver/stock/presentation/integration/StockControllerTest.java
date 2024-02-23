@@ -8,6 +8,7 @@ import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
+import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
 import nexters.payout.apiserver.stock.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
 import nexters.payout.domain.DividendFixture;
@@ -18,10 +19,12 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
 import static java.time.ZoneOffset.UTC;
+import static nexters.payout.core.time.InstantProvider.*;
 import static nexters.payout.domain.StockFixture.AAPL;
 import static nexters.payout.domain.StockFixture.TSLA;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -324,6 +327,78 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
                 () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL)
+        );
+    }
+
+    @Test
+    void 배당락일이_다가오는_주식_리스트를_가져온다() {
+        // given
+        Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+                aapl.getId(),
+                25.0,
+                LocalDateTime.now().plusDays(1).toInstant(UTC)
+        ));
+        LocalDateTime expected = LocalDateTime.now().plusDays(1);
+
+        // when
+        List<UpcomingDividendResponse> actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/ex-dividend-dates/upcoming?pageNumber=1&pageSize=20")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(actual.size()).isEqualTo(1),
+                () -> assertThat(actual.get(0).stockId()).isEqualTo(aapl.getId()),
+                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(expected.getYear()),
+                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
+                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
+        );
+    }
+
+    @Test
+    void 배당락일이_다가오는_주식_리스트는_배당락일이_가까운_순서대로_정렬된다() {
+        // given
+        Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
+        Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 5.0));
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+                aapl.getId(),
+                25.0,
+                LocalDateTime.now().plusDays(2).toInstant(UTC)
+        ));
+        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+                tsla.getId(),
+                30.0,
+                LocalDateTime.now().plusDays(1).toInstant(UTC)
+        ));
+        LocalDateTime expected = LocalDateTime.now().plusDays(1);
+
+        // when
+        List<UpcomingDividendResponse> actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/ex-dividend-dates/upcoming?pageNumber=1&pageSize=20")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(actual.size()).isEqualTo(2),
+                () -> assertThat(actual.get(0).stockId()).isEqualTo(tsla.getId()),
+                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(expected.getYear()),
+                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
+                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
         );
     }
 }

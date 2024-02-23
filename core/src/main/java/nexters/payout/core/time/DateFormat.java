@@ -4,10 +4,7 @@ import java.time.Instant;
 
 public class DateFormat {
     /**
-     * "yyyy-MM-dd" 형식의 String을 Instant 타입으로 변환하는 메서드입니다.
-     *
-     * @param date "yyyy-MM-dd" 형식의 String
-     * @return 해당하는 Instant 타입
+     * "yyyy-MM-dd" 형식의 String을 Instant 타입으로 변환합니다.
      */
     public static Instant parseInstant(final String date) {
 

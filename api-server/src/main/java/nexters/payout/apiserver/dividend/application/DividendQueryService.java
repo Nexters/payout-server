@@ -30,12 +30,6 @@ public class DividendQueryService {
     private final DividendRepository dividendRepository;
     private final StockRepository stockRepository;
 
-    /**
-     * 사용자가 추가한 주식의 예상 월간 배당금을 반환하는 메서드입니다.
-     *
-     * @param request 사용자가 추가한 주식
-     * @return 예상 월간 배당금 정보
-     */
     public List<MonthlyDividendResponse> getMonthlyDividends(final DividendRequest request) {
 
         return IntStream.rangeClosed(JANUARY, DECEMBER)
@@ -46,12 +40,6 @@ public class DividendQueryService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 사용자가 추가한 주식의 예상 연간 배당금을 반환하는 메서드입니다.
-     *
-     * @param request 사용자가 추가한 주식
-     * @return 예상 연간 배당금 정보
-     */
     public YearlyDividendResponse getYearlyDividends(final DividendRequest request) {
 
         List<SingleYearlyDividendResponse> dividends = request.tickerShares().stream()

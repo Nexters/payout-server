@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.StockQueryService;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
+import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
@@ -42,5 +43,13 @@ public class StockController implements StockControllerDocs {
     public ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
             @Valid @RequestBody final SectorRatioRequest request) {
         return ResponseEntity.ok(stockQueryService.analyzeSectorRatio(request));
+    }
+
+    @GetMapping("/ex-dividend-dates/upcoming")
+    public ResponseEntity<List<UpcomingDividendResponse>> getUpComingDividendStocks(
+            @RequestParam @NotNull final Integer pageNumber,
+            @RequestParam @NotNull final Integer pageSize
+    ) {
+        return ResponseEntity.ok(stockQueryService.getUpcomingDividendStocks(pageNumber, pageSize));
     }
 }
