@@ -24,6 +24,7 @@ import java.util.List;
 import static java.time.ZoneOffset.UTC;
 import static nexters.payout.core.time.InstantProvider.*;
 import static nexters.payout.domain.StockFixture.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
