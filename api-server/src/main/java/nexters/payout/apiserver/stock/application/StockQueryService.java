@@ -41,16 +41,22 @@ public class StockQueryService {
     }
 
     public StockDetailResponse getStockByTicker(final String ticker) {
-        Stock stock = stockRepository.findByTicker(ticker)
-                .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
+        Stock stock = getStock(ticker);
+
         List<Dividend> lastYearDividends = getLastYearDividends(stock);
+        List<Dividend> thisYearDividends = getThisYearDividends(stock);
 
         List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(stock, lastYearDividends);
         Double dividendYield = dividendAnalysisService.calculateDividendYield(stock, lastYearDividends);
 
-        return dividendAnalysisService.findEarliestDividendThisYear(lastYearDividends)
+        return dividendAnalysisService.findEarliestDividend(lastYearDividends, thisYearDividends)
                 .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths, dividendYield))
                 .orElseGet(() -> StockDetailResponse.from(stock));
+    }
+
+    private Stock getStock(String ticker) {
+        return stockRepository.findByTicker(ticker)
+                .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
     }
 
 
@@ -60,6 +66,15 @@ public class StockQueryService {
         return dividendRepository.findAllByStockId(stock.getId())
                 .stream()
                 .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == lastYear)
+                .collect(Collectors.toList());
+    }
+
+    private List<Dividend> getThisYearDividends(Stock stock) {
+        int thisYear = InstantProvider.getThisYear();
+
+        return dividendRepository.findAllByStockId(stock.getId())
+                .stream()
+                .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == thisYear)
                 .collect(Collectors.toList());
     }
 

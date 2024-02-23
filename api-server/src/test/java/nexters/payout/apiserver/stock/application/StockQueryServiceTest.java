@@ -62,7 +62,7 @@ class StockQueryServiceTest {
         given(stockRepository.findStocksByTickerOrNameWithPriority(any(), any(), any())).willReturn(List.of(StockFixture.createStock(AAPL, Sector.TECHNOLOGY)));
 
         // when
-        List<StockResponse> actual = stockQueryService.searchStock("A", 1 , 2);
+        List<StockResponse> actual = stockQueryService.searchStock("A", 1, 2);
 
         // then
         assertAll(
@@ -75,12 +75,13 @@ class StockQueryServiceTest {
     @Test
     void 종목_상세_정보를_정상적으로_반환한다() {
         // given
+        LocalDate now = LocalDate.now();
+        int lastYear = LocalDate.now(UTC).getYear() - 1;
+        Instant paymentDate = LocalDate.of(lastYear, now.getMonth(), now.getDayOfMonth()).atStartOfDay().toInstant(UTC);
         Double expectedPrice = 2.0;
         Double expectedDividend = 0.5;
         Stock aapl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
-        int lastYear = LocalDate.now(UTC).getYear() - 1;
-        Instant janPaymentDate = LocalDate.of(lastYear, 1, 3).atStartOfDay().toInstant(UTC);
-        Dividend dividend = DividendFixture.createDividend(aapl.getId(), 0.5, janPaymentDate);
+        Dividend dividend = DividendFixture.createDividend(aapl.getId(), 0.5, paymentDate);
 
         given(stockRepository.findByTicker(any())).willReturn(Optional.of(aapl));
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
@@ -93,17 +94,18 @@ class StockQueryServiceTest {
                 () -> assertThat(actual.ticker()).isEqualTo(aapl.getTicker()),
                 () -> assertThat(actual.industry()).isEqualTo(aapl.getIndustry()),
                 () -> assertThat(actual.dividendYield()).isEqualTo(expectedDividend / expectedPrice),
-                () -> assertThat(actual.dividendMonths()).isEqualTo(List.of(Month.JANUARY))
+                () -> assertThat(actual.dividendMonths()).isEqualTo(List.of(now.getMonth()))
         );
     }
 
     @Test
     void 종목_상세_정보의_배당날짜를_올해기준으로_반환한다() {
         // given
+        LocalDate now = LocalDate.now();
+        int lastYear = now.getYear() - 1;
+        Instant paymentDate = LocalDate.of(lastYear, now.getMonth(), now.getDayOfMonth()).atStartOfDay().toInstant(UTC);
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
-        int lastYear = LocalDate.now(UTC).getYear() - 1;
-        Instant janPaymentDate = LocalDate.of(lastYear, 1, 3).atStartOfDay().toInstant(UTC);
-        Dividend dividend = DividendFixture.createDividend(appl.getId(), 0.5, janPaymentDate);
+        Dividend dividend = DividendFixture.createDividend(appl.getId(), 0.5, paymentDate);
 
         given(stockRepository.findByTicker(any())).willReturn(Optional.of(appl));
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
@@ -112,7 +114,7 @@ class StockQueryServiceTest {
         StockDetailResponse actual = stockQueryService.getStockByTicker(appl.getTicker());
 
         // then
-        assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, 1, 3));
+        assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, now.getMonth(), now.getDayOfMonth()));
     }
 
     @Test
