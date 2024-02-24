@@ -3,9 +3,9 @@ name: Backend CD
 on:
   push:
     branches:
-      - main
-      - develop
-      - setting/#49
+    - main
+    - develop
+    - feat/#58
 
 jobs:
   build-and-push:
