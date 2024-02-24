@@ -70,8 +70,6 @@ jobs:
             export NCP_CONTAINER_REGISTRY_API=${{ secrets.NCP_CONTAINER_REGISTRY_API }}
             export NCP_CONTAINER_REGISTRY_BATCH=${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}
             
-            sudo docker rm -f $(docker ps -qa)
-            
             sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_API }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_API }}/payout-api
             sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
