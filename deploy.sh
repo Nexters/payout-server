@@ -35,11 +35,11 @@ docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE $BATCH_CONTAINE
 
 # Nginx 설정 업데이트하여 트래픽 전환
 docker exec $NGINX_CONTAINER sed -i "s/$OTHER_SERVICE/$TARGET_SERVICE/" $NGINX_CONF
+docker exec $NGINX_CONTAINER nginx -s reload
 
-docker stop $OTHER_SERVICE
-docker rm $OTHER_SERVICE
+#docker stop $OTHER_SERVICE
+#docker rm $OTHER_SERVICE
 
 # Nginx 설정 적용을 위해 Nginx 프로세스 재로드
-docker exec $NGINX_CONTAINER nginx -s reload
 
 echo "$TARGET_SERVICE deployment completed."
