@@ -48,7 +48,7 @@ public enum Sector {
     }
 
     public static Sector fromValue(String sectorName) {
-        if (isEtcCategory(sectorName)) {
+        if (sectorName == null || isEtcCategory(sectorName)) {
             return ETC;
         }
 

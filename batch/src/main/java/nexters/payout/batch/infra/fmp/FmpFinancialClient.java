@@ -13,7 +13,9 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.time.ZoneOffset.UTC;
 
@@ -33,10 +35,10 @@ public class FmpFinancialClient implements FinancialClient {
 
     @Override
     public List<StockData> getLatestStockList() {
-        Map<String, FmpStockData> stockDataMap = Sector.getNames()
-                .stream()
-                .flatMap(it -> fetchStockList(it).stream())
-                .collect(Collectors.toMap(FmpStockData::symbol, fmpStockData -> fmpStockData, (first, second) -> first));
+        Map<String, FmpStockData> stockDataMap = Stream.concat(
+                        Sector.getNames().stream().flatMap(it -> fetchStockList(it).stream()),
+                        fetchEtfStockList().stream())
+                .collect(Collectors.toMap(FmpStockData::symbol, Function.identity(), (first, second) -> first));
 
         Map<String, FmpVolumeData> volumeDataMap = Arrays
                 .stream(Exchange.values())
@@ -73,6 +75,19 @@ public class FmpFinancialClient implements FinancialClient {
                         .queryParam("exchange", Exchange.getNames())
                         .queryParam("sector", sector)
                         .queryParam("limit", MAX_LIMIT)
+                        .build())
+                .retrieve()
+                .bodyToFlux(FmpStockData.class)
+                .collectList()
+                .block();
+    }
+
+    private List<FmpStockData> fetchEtfStockList() {
+        return fmpWebClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(fmpProperties.getStockScreenerPath())
+                        .queryParam("apikey", fmpProperties.getApiKey())
+                        .queryParam("isEtf", true)
                         .build())
                 .retrieve()
                 .bodyToFlux(FmpStockData.class)
