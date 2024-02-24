@@ -1,6 +1,5 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
 
@@ -9,12 +8,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record SectorRatioResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector name")
         String sectorName,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector ratio")
         Double sectorRatio,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "stocks")
-        List<StockResponse> stocks
+        List<StockShareResponse> stockShares
 ) {
     public static List<SectorRatioResponse> fromMap(final Map<Sector, SectorInfo> sectorRatioMap) {
         return sectorRatioMap.entrySet()
@@ -25,7 +21,7 @@ public record SectorRatioResponse(
                         entry.getValue()
                                 .stockShares()
                                 .stream()
-                                .map(stockShare -> StockResponse.from(stockShare.stock()))
+                                .map(StockShareResponse::from)
                                 .collect(Collectors.toList()))
                 )
                 .collect(Collectors.toList());
