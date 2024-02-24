@@ -7,7 +7,8 @@ BLUE_API_CONTAINER="blue-api"
 BATCH_CONTAINER="batch"
 
 # nginx 정상 동작 확인
-IS_NGINX_RUNNING=$(curl -X 'GET' http://localhost:80/health -i)
+IS_NGINX_RUNNING=$(docker ps | grep running)
+
 if [ -z "$IS_NGINX_RUNNING" ]; then
   # 정상 작동하지 않을 시 nginx 재시작
   echo "nginx container is not running. run nginx container"
