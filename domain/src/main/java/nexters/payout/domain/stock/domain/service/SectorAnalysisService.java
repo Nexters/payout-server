@@ -47,7 +47,8 @@ public class SectorAnalysisService {
     }
 
     private static double totalValue(final List<StockShare> stockShares) {
-        return stockShares.stream()
+        return stockShares
+                .stream()
                 .mapToDouble(stockShare -> stockShare.share() * stockShare.stock().getPrice())
                 .sum();
     }
@@ -61,7 +62,8 @@ public class SectorAnalysisService {
     }
 
     private double totalValueBySector(final List<StockShare> stockShares, final Sector sector) {
-        return stockShares.stream()
+        return stockShares
+                .stream()
                 .filter(share -> share.stock().getSector().equals(sector))
                 .mapToDouble(stockShare -> stockShare.share() * stockShare.stock().getPrice())
                 .sum();

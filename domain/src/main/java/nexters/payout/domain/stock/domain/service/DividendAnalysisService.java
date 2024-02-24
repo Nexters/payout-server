@@ -18,7 +18,8 @@ public class DividendAnalysisService {
     public List<Month> calculateDividendMonths(final Stock stock, final List<Dividend> dividends) {
         int lastYear = InstantProvider.getLastYear();
 
-        return dividends.stream()
+        return dividends
+                .stream()
                 .filter(dividend -> stock.getId().equals(dividend.getStockId()))
                 .map(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()))
                 .filter(localDate -> localDate.getYear() == lastYear)
@@ -31,7 +32,8 @@ public class DividendAnalysisService {
      * 배당 수익률은 (연간 배당금 / 현재가) 를 기준으로 합니다.
      */
     public Double calculateDividendYield(final Stock stock, final List<Dividend> dividends) {
-        double sumOfDividend = dividends.stream()
+        double sumOfDividend = dividends
+                .stream()
                 .mapToDouble(Dividend::getDividend)
                 .sum();
 

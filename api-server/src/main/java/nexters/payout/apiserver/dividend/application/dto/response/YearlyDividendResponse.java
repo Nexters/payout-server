@@ -9,12 +9,14 @@ public record YearlyDividendResponse(
 ) {
     public static YearlyDividendResponse of(List<SingleYearlyDividendResponse> dividends) {
 
-        dividends = dividends.stream()
+        dividends = dividends
+                .stream()
                 .sorted(Comparator.comparingDouble(SingleYearlyDividendResponse::totalDividend).reversed())
                 .toList();
         return new YearlyDividendResponse(
                 dividends,
-                dividends.stream()
+                dividends
+                        .stream()
                         .mapToDouble(SingleYearlyDividendResponse::totalDividend)
                         .sum()
         );

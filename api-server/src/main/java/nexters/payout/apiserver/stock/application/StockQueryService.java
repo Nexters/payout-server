@@ -88,7 +88,8 @@ public class StockQueryService {
 
     public List<UpcomingDividendResponse> getUpcomingDividendStocks(int pageNumber, int pageSize) {
 
-        return stockRepository.findUpcomingDividendStock(pageNumber, pageSize).stream()
+        return stockRepository.findUpcomingDividendStock(pageNumber, pageSize)
+                .stream()
                 .map(stockDividend -> UpcomingDividendResponse.of(
                         stockDividend.stock(),
                         stockDividend.dividend())
@@ -98,7 +99,8 @@ public class StockQueryService {
 
     public List<StockDividendYieldResponse> getBiggestDividendStocks(int pageNumber, int pageSize) {
 
-        return stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), pageNumber, pageSize).stream()
+        return stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), pageNumber, pageSize)
+                .stream()
                 .map(stockDividendYield -> StockDividendYieldResponse.of(
                         stockDividendYield.stock(),
                         stockDividendYield.dividendYield())
@@ -109,7 +111,8 @@ public class StockQueryService {
     private List<StockShare> getStockShares(final SectorRatioRequest request) {
         List<Stock> stocks = stockRepository.findAllByTickerIn(getTickers(request));
 
-        return stocks.stream()
+        return stocks
+                .stream()
                 .map(stock -> new StockShare(
                         stock,
                         getTickerShareMap(request).get(stock.getTicker())))

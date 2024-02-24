@@ -42,7 +42,8 @@ public class DividendQueryService {
 
     public YearlyDividendResponse getYearlyDividends(final DividendRequest request) {
 
-        List<SingleYearlyDividendResponse> dividends = request.tickerShares().stream()
+        List<SingleYearlyDividendResponse> dividends = request.tickerShares()
+                .stream()
                 .map(tickerShare -> {
                     String ticker = tickerShare.ticker();
                     List<Dividend> findDividends = dividendRepository.findAllByTickerAndYear(ticker, InstantProvider.getLastYear());
@@ -50,7 +51,10 @@ public class DividendQueryService {
                             stockRepository.findByTicker(ticker)
                                     .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", tickerShare.ticker()))),
                             tickerShare.share(),
-                            findDividends.stream().mapToDouble(Dividend::getDividend).sum()
+                            findDividends
+                                    .stream()
+                                    .mapToDouble(Dividend::getDividend)
+                                    .sum()
                     );
                 })
                 .filter(response -> response.totalDividend() != 0)
@@ -61,7 +65,8 @@ public class DividendQueryService {
 
     private List<SingleMonthlyDividendResponse> getDividendsOfLastYearAndMonth(final DividendRequest request, int month) {
 
-        return request.tickerShares().stream()
+        return request.tickerShares()
+                .stream()
                 .flatMap(tickerShare -> {
                     List<Dividend> findDividends
                             = dividendRepository.findAllByTickerAndYearAndMonth(
@@ -70,7 +75,8 @@ public class DividendQueryService {
                             month);
 
                     return stockRepository.findByTicker(tickerShare.ticker())
-                            .map(stock -> findDividends.stream()
+                            .map(stock -> findDividends
+                                    .stream()
                                     .map(dividend -> SingleMonthlyDividendResponse.of(
                                             stock,
                                             tickerShare.share(),
