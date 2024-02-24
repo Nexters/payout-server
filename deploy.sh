@@ -16,14 +16,11 @@ else
     OTHER_SERVICE=${BLUE_API_CONTAINER}
 fi
 
-echo "[$TARGET_SERVICE] UP!"
 
-# target service 배포
-docker-compose pull $TARGET_SERVICE
-docker-compose up -d $TARGET_SERVICE
+echo "Switching to $TARGET_SERVICE..."
 
-# Nginx 설정 파일 내에서 서비스 이름 변경
-sed -i "s/server $OTHER_SERVICE:8080;/server $TARGET_SERVICE:8080;/" $NGINX_CONF
+# Nginx 설정 업데이트하여 트래픽 전환
+docker exec $NGINX_CONTAINER sed -i "s/$OTHER_SERVICE/$TARGET_SERVICE/" $NGINX_CONF
 
 # Nginx 설정 적용을 위해 Nginx 프로세스 재로드
 docker exec $NGINX_CONTAINER nginx -s reload
