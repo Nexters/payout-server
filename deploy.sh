@@ -11,7 +11,6 @@ if [ -z "$IS_NGINX_RUNNING" ]; then
   # 정상 작동하지 않을 시 nginx 재시작
   echo "nginx container is not running. run nginx container"
   docker rmi nginx
-  docker-compose build nginx
   docker-compose up -d nginx
 else
   echo "nginx is already running"
