@@ -3,9 +3,9 @@ name: Backend CD
 on:
   push:
     branches:
-    - main
-    - develop
-    - feat/#53
+      - main
+      - develop
+      - setting/#49
 
 jobs:
   build-and-push:
@@ -43,6 +43,8 @@ jobs:
           
           cd ..
           sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./docker-compose.yml ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
+          sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./nginx/nginx.conf ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:/home
+          sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./deploy.sh ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
         shell: bash
 
   deploy-to-server:
@@ -68,12 +70,12 @@ jobs:
             export NCP_CONTAINER_REGISTRY_API=${{ secrets.NCP_CONTAINER_REGISTRY_API }}
             export NCP_CONTAINER_REGISTRY_BATCH=${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}
             
-            sudo docker rm -f $(docker ps -qa)
-            
             sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_API }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_API }}/payout-api
             sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch
             
-            docker-compose -f ${{ secrets.DOCKER_COMPOSE_PATH }}/docker-compose.yml up -d
+            chmod +x /${{ secrets.DOCKER_COMPOSE_PATH }}/deploy.sh
+            /${{ secrets.DOCKER_COMPOSE_PATH }}/deploy.sh
+                    
             docker image prune -f
