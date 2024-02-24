@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
 
 public record StockShareResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "stock response")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         StockResponse stockResponse,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "share")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Integer share
 ) {
 
