@@ -65,6 +65,7 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "섹터 비중 분석",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = SectorRatioRequest.class),
                             examples = {
