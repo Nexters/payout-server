@@ -131,33 +131,18 @@ class StockQueryServiceTest {
                 new SectorRatioResponse(
                         Sector.TECHNOLOGY.getName(),
                         0.547945205479452,
-                        List.of(new StockResponse(
-                                appl.getId(),
-                                appl.getTicker(),
-                                appl.getName(),
-                                appl.getSector().getName(),
-                                appl.getExchange(),
-                                appl.getIndustry(),
-                                appl.getPrice(),
-                                appl.getVolume(),
-                                appl.getLogoUrl()
+                        List.of(new StockShareResponse(
+                                StockResponse.from(appl),
+                                2
                         ))
                 ),
                 new SectorRatioResponse(
                         Sector.CONSUMER_CYCLICAL.getName(),
                         0.4520547945205479,
-                        List.of(new StockResponse(
-                                        tsla.getId(),
-                                        tsla.getTicker(),
-                                        tsla.getName(),
-                                        tsla.getSector().getName(),
-                                        tsla.getExchange(),
-                                        tsla.getIndustry(),
-                                        tsla.getPrice(),
-                                        tsla.getVolume(),
-                                        appl.getLogoUrl()
-                                )
-                        )
+                        List.of(new StockShareResponse(
+                                StockResponse.from(tsla),
+                                3
+                        ))
                 )
         );
 
