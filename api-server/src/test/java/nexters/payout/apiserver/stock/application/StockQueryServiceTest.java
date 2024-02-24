@@ -2,6 +2,8 @@ package nexters.payout.apiserver.stock.application;
 
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
+import nexters.payout.apiserver.stock.application.dto.response.*;
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
@@ -10,12 +12,13 @@ import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.domain.repository.DividendRepository;
-import nexters.payout.domain.stock.domain.repository.dto.StockDividendDto;
+import nexters.payout.domain.stock.infra.dto.StockDividendDto;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
 import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
+import nexters.payout.domain.stock.infra.dto.StockDividendYieldDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,8 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
-import static nexters.payout.domain.StockFixture.AAPL;
-import static nexters.payout.domain.StockFixture.TSLA;
+import static nexters.payout.domain.StockFixture.*;
 import static nexters.payout.domain.stock.domain.Sector.TECHNOLOGY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -60,7 +62,7 @@ class StockQueryServiceTest {
         given(stockRepository.findStocksByTickerOrNameWithPriority(any(), any(), any())).willReturn(List.of(StockFixture.createStock(AAPL, Sector.TECHNOLOGY)));
 
         // when
-        List<StockResponse> actual = stockQueryService.searchStock("A", 1 , 2);
+        List<StockResponse> actual = stockQueryService.searchStock("A", 1, 2);
 
         // then
         assertAll(
@@ -73,12 +75,13 @@ class StockQueryServiceTest {
     @Test
     void 종목_상세_정보를_정상적으로_반환한다() {
         // given
+        LocalDate now = LocalDate.now();
+        int lastYear = LocalDate.now(UTC).getYear() - 1;
+        Instant paymentDate = LocalDate.of(lastYear, now.getMonth(), now.getDayOfMonth()).atStartOfDay().toInstant(UTC);
         Double expectedPrice = 2.0;
         Double expectedDividend = 0.5;
         Stock aapl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
-        int lastYear = LocalDate.now(UTC).getYear() - 1;
-        Instant janPaymentDate = LocalDate.of(lastYear, 1, 3).atStartOfDay().toInstant(UTC);
-        Dividend dividend = DividendFixture.createDividend(aapl.getId(), 0.5, janPaymentDate);
+        Dividend dividend = DividendFixture.createDividend(aapl.getId(), 0.5, paymentDate);
 
         given(stockRepository.findByTicker(any())).willReturn(Optional.of(aapl));
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
@@ -91,17 +94,18 @@ class StockQueryServiceTest {
                 () -> assertThat(actual.ticker()).isEqualTo(aapl.getTicker()),
                 () -> assertThat(actual.industry()).isEqualTo(aapl.getIndustry()),
                 () -> assertThat(actual.dividendYield()).isEqualTo(expectedDividend / expectedPrice),
-                () -> assertThat(actual.dividendMonths()).isEqualTo(List.of(Month.JANUARY))
+                () -> assertThat(actual.dividendMonths()).isEqualTo(List.of(now.getMonth()))
         );
     }
 
     @Test
     void 종목_상세_정보의_배당날짜를_올해기준으로_반환한다() {
         // given
+        LocalDate now = LocalDate.now();
+        int lastYear = now.getYear() - 1;
+        Instant paymentDate = LocalDate.of(lastYear, now.getMonth(), now.getDayOfMonth()).atStartOfDay().toInstant(UTC);
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
-        int lastYear = LocalDate.now(UTC).getYear() - 1;
-        Instant janPaymentDate = LocalDate.of(lastYear, 1, 3).atStartOfDay().toInstant(UTC);
-        Dividend dividend = DividendFixture.createDividend(appl.getId(), 0.5, janPaymentDate);
+        Dividend dividend = DividendFixture.createDividend(appl.getId(), 0.5, paymentDate);
 
         given(stockRepository.findByTicker(any())).willReturn(Optional.of(appl));
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
@@ -110,7 +114,7 @@ class StockQueryServiceTest {
         StockDetailResponse actual = stockQueryService.getStockByTicker(appl.getTicker());
 
         // then
-        assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, 1, 3));
+        assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, now.getMonth(), now.getDayOfMonth()));
     }
 
     @Test
@@ -180,6 +184,30 @@ class StockQueryServiceTest {
                 () -> assertThat(actual.size()).isEqualTo(1),
                 () -> assertThat(actual.get(0).exDividendDate()).isEqualTo(expected.getExDividendDate()),
                 () -> assertThat(actual.get(0).ticker()).isEqualTo(stock.getTicker())
+        );
+    }
+
+    @Test
+    void 배당_수익률이_큰_순서대로_주식_리스트를_가져온다() {
+        // given
+        Stock expected = StockFixture.createStock(AAPL, TECHNOLOGY, 2.0);
+        Stock tsla = StockFixture.createStock(TSLA, TECHNOLOGY, 3.0);
+        given(stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), 1, 10))
+                .willReturn(List.of(
+                        new StockDividendYieldDto(expected, 5.0),
+                        new StockDividendYieldDto(tsla, 4.0))
+                );
+        Double expectedAaplDividendYield = 5.0;
+
+        // when
+        List<StockDividendYieldResponse> actual = stockQueryService.getBiggestDividendStocks(1, 10);
+
+
+        // then
+        assertAll(
+                () -> assertThat(actual.size()).isEqualTo(2),
+                () -> assertThat(actual.get(0).stockId()).isEqualTo(expected.getId()),
+                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expectedAaplDividendYield)
         );
     }
 }

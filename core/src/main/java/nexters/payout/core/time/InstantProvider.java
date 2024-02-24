@@ -40,7 +40,7 @@ public class InstantProvider {
         return ZonedDateTime.ofInstant(date, UTC).getDayOfMonth();
     }
 
-    private static LocalDate getNow() {
+    public static LocalDate getNow() {
         return LocalDate.ofInstant(Instant.now(), UTC);
     }
 }

@@ -11,12 +11,18 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DividendAnalysisServiceTest {
+
+    DividendAnalysisService dividendAnalysisService = new DividendAnalysisService();
 
     @Test
     void 작년_배당_월_리스트를_정상적으로_반환한다() {
@@ -34,8 +40,7 @@ class DividendAnalysisServiceTest {
         Dividend fakeDividend = DividendFixture.createDividend(stock.getId(), fakePaymentDate);
 
         // when
-        DividendAnalysisService service = new DividendAnalysisService();
-        List<Month> actual = service.calculateDividendMonths(stock, List.of(janDividend, aprDividend, julDividend, fakeDividend));
+        List<Month> actual = dividendAnalysisService.calculateDividendMonths(stock, List.of(janDividend, aprDividend, julDividend, fakeDividend));
 
         // then
         assertThat(actual).isEqualTo(List.of(Month.JANUARY, Month.APRIL, Month.JULY));
@@ -50,8 +55,7 @@ class DividendAnalysisServiceTest {
         Dividend fakeDividend = DividendFixture.createDividend(stock.getId(), fakePaymentDate);
 
         // when
-        DividendAnalysisService service = new DividendAnalysisService();
-        List<Month> actual = service.calculateDividendMonths(stock, List.of(fakeDividend));
+        List<Month> actual = dividendAnalysisService.calculateDividendMonths(stock, List.of(fakeDividend));
 
         // then
         assertThat(actual).isEmpty();
@@ -63,10 +67,66 @@ class DividendAnalysisServiceTest {
         Stock stock = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY);
 
         // when
-        DividendAnalysisService service = new DividendAnalysisService();
-        List<Month> actual = service.calculateDividendMonths(stock, List.of());
+        List<Month> actual = dividendAnalysisService.calculateDividendMonths(stock, List.of());
 
         // then
         assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void 공시된_현재_배당금_지급일이_없는_경우_과거데이터를_기반으로_가까운_지급일을_계산한다() {
+        // given
+        LocalDate now = LocalDate.now();
+
+        Dividend pastDividend = DividendFixture.createDividend(
+                UUID.randomUUID(),
+                LocalDate.of(now.getYear() - 1, now.getMonth(), now.getDayOfMonth() - 3)
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()
+        );
+
+        int plusDay = Math.max(now.getDayOfMonth(), now.plusDays(3).getDayOfMonth());
+
+        Dividend earlistDividend = DividendFixture.createDividend(
+                UUID.randomUUID(),
+                LocalDate.of(now.getYear() - 1, now.getMonth(), plusDay)
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()
+        );
+        List<Dividend> lastYearDividends = List.of(pastDividend, earlistDividend);
+
+        // when
+        Optional<Dividend> actual = dividendAnalysisService.findUpcomingDividend(lastYearDividends, Collections.emptyList());
+
+        // then
+        assertThat(actual.get()).isEqualTo(earlistDividend);
+    }
+
+    @Test
+    void 공시된_현재_배당금_지급일이_존재하는_경우_실제_지급일을_반환한다() {
+        // given
+        LocalDate now = LocalDate.now();
+
+        int plusDay = Math.max(now.getDayOfMonth(), now.plusDays(3).getDayOfMonth());
+
+        Dividend lastYearDividend = DividendFixture.createDividend(
+                UUID.randomUUID(),
+                LocalDate.of(now.getYear() - 1, now.getMonth(), plusDay)
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()
+        );
+
+
+        Dividend thisYearDividend = DividendFixture.createDividend(
+                UUID.randomUUID(),
+                LocalDate.of(now.getYear(), now.getMonth(), plusDay)
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant()
+        );
+
+        List<Dividend> lastYearDividends = List.of(lastYearDividend);
+        List<Dividend> thisYearDividends = List.of(thisYearDividend);
+
+        // when
+        Optional<Dividend> actual = dividendAnalysisService.findUpcomingDividend(lastYearDividends, thisYearDividends);
+
+        // then
+        assertThat(actual.get()).isEqualTo(thisYearDividend);
     }
 }

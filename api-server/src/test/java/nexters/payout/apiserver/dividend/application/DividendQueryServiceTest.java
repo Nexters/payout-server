@@ -36,7 +36,8 @@ class DividendQueryServiceTest extends GivenFixtureTest {
         // then
         assertAll(
                 () -> assertThat(actual.size()).isEqualTo(12),
-                () -> assertThat(actual.stream()
+                () -> assertThat(actual
+                        .stream()
                         .mapToDouble(MonthlyDividendResponse::totalDividend)
                         .sum()).isEqualTo(expected),
                 () -> assertThat(actual.get(11).dividends().get(0).totalDividend()).isEqualTo(5.0)
@@ -58,7 +59,8 @@ class DividendQueryServiceTest extends GivenFixtureTest {
         // then
         assertAll(
                 () -> assertThat(actual.totalDividend()).isEqualTo(totalDividendExpected),
-                () -> assertThat(actual.dividends().stream()
+                () -> assertThat(actual.dividends()
+                        .stream()
                         .filter(dividend -> dividend.ticker().equals(AAPL))
                         .findFirst().get()
                         .totalDividend())

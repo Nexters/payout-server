@@ -89,7 +89,8 @@ class DividendControllerTest extends IntegrationTest {
                 });
 
         assertAll(
-                () -> assertThat(actual.stream()
+                () -> assertThat(actual
+                        .stream()
                         .mapToDouble(MonthlyDividendResponse::totalDividend)
                         .sum())
                         .isEqualTo(expected),
@@ -144,7 +145,8 @@ class DividendControllerTest extends IntegrationTest {
                 });
 
         assertAll(
-                () -> assertThat(actual.stream()
+                () -> assertThat(actual
+                        .stream()
                         .mapToDouble(MonthlyDividendResponse::totalDividend)
                         .sum())
                         .isEqualTo(expected),

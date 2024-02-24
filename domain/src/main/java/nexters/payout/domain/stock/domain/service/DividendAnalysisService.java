@@ -7,10 +7,7 @@ import nexters.payout.domain.stock.domain.Stock;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.AbstractMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @DomainService
@@ -21,7 +18,8 @@ public class DividendAnalysisService {
     public List<Month> calculateDividendMonths(final Stock stock, final List<Dividend> dividends) {
         int lastYear = InstantProvider.getLastYear();
 
-        return dividends.stream()
+        return dividends
+                .stream()
                 .filter(dividend -> stock.getId().equals(dividend.getStockId()))
                 .map(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()))
                 .filter(localDate -> localDate.getYear() == lastYear)
@@ -34,7 +32,8 @@ public class DividendAnalysisService {
      * 배당 수익률은 (연간 배당금 / 현재가) 를 기준으로 합니다.
      */
     public Double calculateDividendYield(final Stock stock, final List<Dividend> dividends) {
-        double sumOfDividend = dividends.stream()
+        double sumOfDividend = dividends
+                .stream()
                 .mapToDouble(Dividend::getDividend)
                 .sum();
 
@@ -48,19 +47,35 @@ public class DividendAnalysisService {
     }
 
     /**
-     * 작년 데이터를 기반으로 가장 빠른 배당 지급일을 계산합니다.
+     * 공시된 현재 연도의 데이터가 있는 경우 실제 지급일을 반환하고, 없으면 작년 데이터를 기반으로 가장 빠른 배당 지급일을 계산합니다.
+     * 월과 일만 확인하기 때문에 과거 연도가 반환될 수 있습니다.
      */
-    public Optional<Dividend> findEarliestDividendThisYear(final List<Dividend> lastYearDividends) {
-        int thisYear = InstantProvider.getThisYear();
+    public Optional<Dividend> findUpcomingDividend(
+            final List<Dividend> lastYearDividends, final List<Dividend> thisYearDividends
+    ) {
+        LocalDate now = InstantProvider.getNow();
+
+        for (Dividend dividend : thisYearDividends) {
+            LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
+            if (paymentDate.getYear() == now.getYear() && (isCurrentOrFutureDate(paymentDate))) {
+                return Optional.of(dividend);
+            }
+        }
 
         return lastYearDividends
                 .stream()
                 .map(dividend -> {
                     LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
-                    LocalDate adjustedPaymentDate = paymentDate.withYear(thisYear);
+                    LocalDate adjustedPaymentDate = paymentDate.withYear(now.getYear());
                     return new AbstractMap.SimpleEntry<>(dividend, adjustedPaymentDate);
                 })
+                .filter(date -> isCurrentOrFutureDate(date.getValue()))
                 .min(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey);
+    }
+
+    private boolean isCurrentOrFutureDate(final LocalDate date) {
+        LocalDate now = InstantProvider.getNow();
+        return date.isEqual(now) || date.isAfter(InstantProvider.getNow());
     }
 }

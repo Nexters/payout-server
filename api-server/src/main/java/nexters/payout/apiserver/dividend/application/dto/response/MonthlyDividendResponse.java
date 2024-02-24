@@ -11,14 +11,16 @@ public record MonthlyDividendResponse(
 ) {
     public static MonthlyDividendResponse of(int year, int month, List<SingleMonthlyDividendResponse> dividends) {
 
-        dividends = dividends.stream()
+        dividends = dividends
+                .stream()
                 .sorted(Comparator.comparingDouble(SingleMonthlyDividendResponse::totalDividend).reversed())
                 .toList();
         return new MonthlyDividendResponse(
                 year,
                 month,
                 dividends,
-                dividends.stream()
+                dividends
+                        .stream()
                         .mapToDouble(SingleMonthlyDividendResponse::totalDividend)
                         .sum()
         );

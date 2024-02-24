@@ -6,10 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.StockQueryService;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
-import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
-import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
+import nexters.payout.apiserver.stock.application.dto.response.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,5 +48,13 @@ public class StockController implements StockControllerDocs {
             @RequestParam @NotNull final Integer pageSize
     ) {
         return ResponseEntity.ok(stockQueryService.getUpcomingDividendStocks(pageNumber, pageSize));
+    }
+
+    @GetMapping("/dividend-yields/highest")
+    public ResponseEntity<List<StockDividendYieldResponse>> getBiggestDividendYieldStocks(
+            @RequestParam @NotNull final Integer pageNumber,
+            @RequestParam @NotNull final Integer pageSize
+    ) {
+        return ResponseEntity.ok(stockQueryService.getBiggestDividendStocks(pageNumber, pageSize));
     }
 }

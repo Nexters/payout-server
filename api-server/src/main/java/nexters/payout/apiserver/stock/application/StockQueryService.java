@@ -3,10 +3,7 @@ package nexters.payout.apiserver.stock.application;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
-import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
-import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
-import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
+import nexters.payout.apiserver.stock.application.dto.response.*;
 import nexters.payout.core.exception.error.NotFoundException;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -44,16 +41,22 @@ public class StockQueryService {
     }
 
     public StockDetailResponse getStockByTicker(final String ticker) {
-        Stock stock = stockRepository.findByTicker(ticker)
-                .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
+        Stock stock = getStock(ticker);
+
         List<Dividend> lastYearDividends = getLastYearDividends(stock);
+        List<Dividend> thisYearDividends = getThisYearDividends(stock);
 
         List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(stock, lastYearDividends);
         Double dividendYield = dividendAnalysisService.calculateDividendYield(stock, lastYearDividends);
 
-        return dividendAnalysisService.findEarliestDividendThisYear(lastYearDividends)
+        return dividendAnalysisService.findUpcomingDividend(lastYearDividends, thisYearDividends)
                 .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths, dividendYield))
                 .orElseGet(() -> StockDetailResponse.from(stock));
+    }
+
+    private Stock getStock(String ticker) {
+        return stockRepository.findByTicker(ticker)
+                .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
     }
 
 
@@ -63,6 +66,15 @@ public class StockQueryService {
         return dividendRepository.findAllByStockId(stock.getId())
                 .stream()
                 .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == lastYear)
+                .collect(Collectors.toList());
+    }
+
+    private List<Dividend> getThisYearDividends(Stock stock) {
+        int thisYear = InstantProvider.getThisYear();
+
+        return dividendRepository.findAllByStockId(stock.getId())
+                .stream()
+                .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == thisYear)
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +88,8 @@ public class StockQueryService {
 
     public List<UpcomingDividendResponse> getUpcomingDividendStocks(int pageNumber, int pageSize) {
 
-        return stockRepository.findUpcomingDividendStock(pageNumber, pageSize).stream()
+        return stockRepository.findUpcomingDividendStock(pageNumber, pageSize)
+                .stream()
                 .map(stockDividend -> UpcomingDividendResponse.of(
                         stockDividend.stock(),
                         stockDividend.dividend())
@@ -84,10 +97,22 @@ public class StockQueryService {
                 .collect(Collectors.toList());
     }
 
+    public List<StockDividendYieldResponse> getBiggestDividendStocks(int pageNumber, int pageSize) {
+
+        return stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), pageNumber, pageSize)
+                .stream()
+                .map(stockDividendYield -> StockDividendYieldResponse.of(
+                        stockDividendYield.stock(),
+                        stockDividendYield.dividendYield())
+                )
+                .collect(Collectors.toList());
+    }
+
     private List<StockShare> getStockShares(final SectorRatioRequest request) {
         List<Stock> stocks = stockRepository.findAllByTickerIn(getTickers(request));
 
-        return stocks.stream()
+        return stocks
+                .stream()
                 .map(stock -> new StockShare(
                         stock,
                         getTickerShareMap(request).get(stock.getTicker())))
