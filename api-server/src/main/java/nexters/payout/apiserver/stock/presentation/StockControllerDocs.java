@@ -31,11 +31,11 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "티커명/회사명 검색")
     ResponseEntity<List<StockResponse>> searchStock(
-            @Parameter(description = "tickerName or companyName of stock ex) APPL, APPLE")
+            @Parameter(description = "tickerName or companyName of stock ex) APPL, APPLE", required = true)
             @RequestParam @NotEmpty String ticker,
-            @Parameter(description = "page number(start with 1) for pagination", example = "1")
+            @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
-            @Parameter(description = "page size for pagination", example = "20")
+            @Parameter(description = "page size for pagination", example = "20", required = true)
             @RequestParam @NotNull final Integer pageSize
     );
 
@@ -50,7 +50,7 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "종목 상세 조회")
     ResponseEntity<StockDetailResponse> getStockByTicker(
-            @Parameter(description = "tickerName of stock", example = "AAPL")
+            @Parameter(description = "tickerName of stock", example = "AAPL", required = true)
             @PathVariable String ticker
     );
 
@@ -82,9 +82,9 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "배당락일이 다가오는 주식 리스트")
     ResponseEntity<List<UpcomingDividendResponse>> getUpComingDividendStocks(
-            @Parameter(description = "page number(start with 1) for pagination", example = "1")
+            @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
-            @Parameter(description = "page size for pagination", example = "20")
+            @Parameter(description = "page size for pagination", example = "20", required = true)
             @RequestParam @NotNull final Integer pageSize
     );
 
@@ -97,9 +97,9 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "배당수익률이 큰 주식 리스트")
     ResponseEntity<List<StockDividendYieldResponse>> getBiggestDividendYieldStocks(
-            @Parameter(description = "page number(start with 1) for pagination", example = "1")
+            @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
-            @Parameter(description = "page size for pagination", example = "20")
+            @Parameter(description = "page size for pagination", example = "20", required = true)
             @RequestParam @NotNull final Integer pageSize
     );
 }
