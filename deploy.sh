@@ -7,7 +7,7 @@ BLUE_API_CONTAINER="blue-api"
 BATCH_CONTAINER="batch"
 
 # nginx 정상 동작 확인
-IS_NGINX_RUNNING=$(docker inspect -f '{{.State.Status}}' nginx | grep running)
+IS_NGINX_RUNNING=$(curl -X 'GET' http://localhost:80/health -i)
 if [ -z "$IS_NGINX_RUNNING" ]; then
   # 정상 작동하지 않을 시 nginx 재시작
   echo "nginx container is not running. run nginx container"
@@ -27,7 +27,6 @@ else
     TARGET_SERVICE=${GREEN_API_CONTAINER}
     OTHER_SERVICE=${BLUE_API_CONTAINER}
 fi
-
 
 echo "Switching to $TARGET_SERVICE..."
 
