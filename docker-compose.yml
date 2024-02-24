@@ -3,11 +3,13 @@ version: '3'
 services:
 
   nginx:
+    container_name: nginx
     image: nginx:latest
     ports:
       - "80:80"
     volumes:
       - ./nginx:/etc/nginx
+      - - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - "db"
     restart: always
