@@ -29,6 +29,7 @@ public interface DividendControllerDocs {
     })
     @Operation(summary = "월별 배당금 조회",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = DividendRequest.class),
                             examples = {
@@ -48,6 +49,7 @@ public interface DividendControllerDocs {
     })
     @Operation(summary = "연간 배당금 조회",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = DividendRequest.class),
                             examples = {

@@ -296,7 +296,7 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(1),
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
-                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL)
+                () -> assertThat(actual.get(0).stockShares().get(0).stockResponse().ticker()).isEqualTo(AAPL)
         );
     }
 
@@ -324,7 +324,7 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(1),
                 () -> assertThat(actual.get(0).sectorName()).isEqualTo("Technology"),
                 () -> assertThat(actual.get(0).sectorRatio()).isEqualTo(1.0),
-                () -> assertThat(actual.get(0).stocks().get(0).ticker()).isEqualTo(AAPL)
+                () -> assertThat(actual.get(0).stockShares().get(0).stockResponse().ticker()).isEqualTo(AAPL)
         );
     }
 

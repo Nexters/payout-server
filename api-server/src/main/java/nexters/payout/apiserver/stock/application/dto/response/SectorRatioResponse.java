@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public record SectorRatioResponse(
         String sectorName,
         Double sectorRatio,
-        List<StockResponse> stocks
+        List<StockShareResponse> stockShares
 ) {
     public static List<SectorRatioResponse> fromMap(final Map<Sector, SectorInfo> sectorRatioMap) {
         return sectorRatioMap.entrySet()
@@ -21,7 +21,7 @@ public record SectorRatioResponse(
                         entry.getValue()
                                 .stockShares()
                                 .stream()
-                                .map(stockShare -> StockResponse.from(stockShare.stock()))
+                                .map(StockShareResponse::from)
                                 .collect(Collectors.toList()))
                 )
                 .collect(Collectors.toList());
