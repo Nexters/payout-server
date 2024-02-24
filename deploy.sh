@@ -4,6 +4,7 @@ NGINX_CONF="/etc/nginx/nginx.conf"
 NGINX_CONTAINER="nginx"
 GREEN_API_CONTAINER="green-api"
 BLUE_API_CONTAINER="blue-api"
+BATCH_CONTAINER="batch"
 
 # nginx 정상 동작 확인
 IS_NGINX_RUNNING=$(docker inspect -f '{{.State.Status}}' nginx | grep running)
@@ -11,6 +12,7 @@ if [ -z "$IS_NGINX_RUNNING" ]; then
   # 정상 작동하지 않을 시 nginx 재시작
   echo "nginx container is not running. run nginx container"
   docker rmi nginx
+  docker-compose up -d nginx
   docker-compose -f /home/docker-compose.yml up -d nginx
 else
   echo "nginx is already running"
@@ -30,7 +32,7 @@ fi
 
 echo "Switching to $TARGET_SERVICE..."
 
-docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE
+docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE BATCH_CONTAINER
 
 # Nginx 설정 업데이트하여 트래픽 전환
 docker exec $NGINX_CONTAINER sed -i "s/$OTHER_SERVICE/$TARGET_SERVICE/" $NGINX_CONF
