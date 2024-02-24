@@ -1,5 +1,6 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.stock.domain.Stock;
@@ -11,19 +12,33 @@ import java.util.List;
 import java.util.UUID;
 
 public record StockDetailResponse(
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker and share")
         UUID stockId,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker name")
         String ticker,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "company name")
         String companyName,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector name")
         String sectorName,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "exchange")
         String exchange,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "industry")
         String industry,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "price")
         Double price,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "volume")
         Integer volume,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "logo url")
         String logoUrl,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividend per share")
         Double dividendPerShare,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ex dividend date")
         LocalDate exDividendDate,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "earliest payment date")
         LocalDate earliestPaymentDate,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividend yield")
         Double dividendYield,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividend months")
         List<Month> dividendMonths
 ) {
 
