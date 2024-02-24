@@ -63,14 +63,7 @@ public interface StockControllerDocs {
             @ApiResponse(responseCode = "500", description = "SERVER ERROR",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @Operation(summary = "섹터 비중 분석",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = SectorRatioRequest.class),
-                            examples = {
-                                    @ExampleObject(name = "SectorRatioRequestExample", value = "{\"tickerShares\":[{\"ticker\":\"AAPL\",\"share\":3}]}")
-                            })))
+    @Operation(summary = "섹터 비중 분석")
     ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
             @Valid @RequestBody final SectorRatioRequest request);
 
