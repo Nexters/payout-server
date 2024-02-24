@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "http://localhost:8080",
-                        "https://dividend-client.vercel.app", 
+                        "https://dividend-client.vercel.app",
                         "https://dividend-client.vercel.app/**")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
