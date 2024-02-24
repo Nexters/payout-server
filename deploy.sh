@@ -28,6 +28,7 @@ else
     TARGET_SERVICE=${GREEN_API_CONTAINER}
     OTHER_SERVICE=${BLUE_API_CONTAINER}
 fi
+  sleep 3
 
 echo "Switching to $TARGET_SERVICE..."
 
@@ -36,6 +37,7 @@ docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE $BATCH_CONTAINE
 # Nginx 설정 업데이트하여 트래픽 전환
 docker exec $NGINX_CONTAINER sed -i "s/$OTHER_SERVICE/$TARGET_SERVICE/g" $NGINX_CONF
 sed -i "" "s/$OTHER_SERVICE/$TARGET_SERVICE/g" $NGINX_CONF
+
 docker-compose exec $NGINX_CONTAINER service nginx reload
 
 docker stop $OTHER_SERVICE
