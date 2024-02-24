@@ -7,7 +7,10 @@ BLUE_API_CONTAINER="blue-api"
 BATCH_CONTAINER="batch"
 
 # nginx 정상 동작 확인
-IS_NGINX_RUNNING=$(docker ps | grep running)
+IS_NGINX_RUNNING=$(docker ps | grep ${NGINX_CONTAINER})
+
+# api-server 정상 동작 확인
+IS_BLUE_RUNNING=$(docker ps | grep ${BLUE_API_CONTAINER})
 
 if [ -z "$IS_NGINX_RUNNING" ]; then
   # 정상 작동하지 않을 시 nginx 재시작
@@ -17,9 +20,6 @@ if [ -z "$IS_NGINX_RUNNING" ]; then
 else
   echo "nginx is already running"
 fi
-
-# api-server 정상 동작 확인
-IS_BLUE_RUNNING=$(docker ps | grep ${BLUE_API_CONTAINER})
 
 if [ -z "$IS_BLUE_RUNNING" ]; then
     TARGET_SERVICE=${BLUE_API_CONTAINER}
