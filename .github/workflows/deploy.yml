@@ -79,8 +79,7 @@ jobs:
             docker-compose -f ${{ secrets.DOCKER_COMPOSE_PATH }}/docker-compose.yml up -d
             
             # 배포 스크립트 복사
-            scp -o StrictHostKeyChecking=no deploy.sh ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DEPLOY_SCRIPT_PATH }}/deploy.sh
-            ssh ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }} "chmod +x ${{ secrets.DEPLOY_SCRIPT_PATH }}/deploy.sh"
-            ssh ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }} "${{ secrets.DEPLOY_SCRIPT_PATH }}/deploy.sh"
+            chmod +x ./${{ secrets.DOCKER_COMPOSE_PATH }}/deploy.sh
+            ./${{ secrets.DOCKER_COMPOSE_PATH }}/deploy.sh
             
             docker image prune -f
