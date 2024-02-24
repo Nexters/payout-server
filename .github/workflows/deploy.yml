@@ -43,7 +43,7 @@ jobs:
           
           cd ..
           sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./docker-compose.yml ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
-          sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./nginx/nginx.conf ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
+          sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./nginx/nginx.conf ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:/etc/nginx
           sshpass -p ${{ secrets.API_SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./deploy.sh ${{ secrets.API_SERVER_USERNAME }}@${{ secrets.API_SERVER_HOST }}:${{ secrets.DOCKER_COMPOSE_PATH }}
         shell: bash
 
