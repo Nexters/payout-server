@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - setting/#49
+      - feat/#52
 
 jobs:
   build-and-push:
