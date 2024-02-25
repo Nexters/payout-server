@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NGINX_CONF="/etc/nginx/nginx.conf"
+NGINX_CONF="/home/nginx.conf"
 NGINX_CONTAINER="nginx"
 GREEN_API_CONTAINER="green-api"
 BLUE_API_CONTAINER="blue-api"
