@@ -38,7 +38,7 @@ docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE $BATCH_CONTAINE
 sed -it "s/$OTHER_SERVICE/$TARGET_SERVICE/" $NGINX_CONF
 docker exec NGINX_CONTAINER nginx -s reload
 
-docker stop $OTHER_SERVICE
+#docker stop $OTHER_SERVICE
 
 # Nginx 설정 적용을 위해 Nginx 프로세스 재로드
 
