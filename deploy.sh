@@ -25,8 +25,9 @@ sleep 10
 #done
 
 # Update the nginx config and reload
-sed -i "" "s/$OTHER_SERVICE/$TARGET_SERVICE/g" NGINX_CONF
-docker-compose -f /home/docker-compose.yml exec nginx service nginx reload
+sed -it "s/$OTHER_SERVICE/$TARGET_SERVICE/" $NGINX_CONF
+docker exec $NGINX_CONTAINER nginx -s reload
+#docker-compose -f /home/docker-compose.yml exec nginx service nginx reload
 
 # Stop the other service
 docker-compose -f /home/docker-compose.yml stop $OTHER_SERVICE
