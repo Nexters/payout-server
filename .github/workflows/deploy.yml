@@ -75,7 +75,6 @@ jobs:
             sudo docker login ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }} -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
             sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY_BATCH }}/payout-batch
             
-            chmod +x /${{ secrets.DOCKER_COMPOSE_PATH }}/deploy.sh
-            /${{ secrets.DOCKER_COMPOSE_PATH }}/deploy.sh
-                    
+            docker-compose -f ${{ secrets.DOCKER_COMPOSE_PATH }}/docker-compose.yml up -d
             docker image prune -f
+            
