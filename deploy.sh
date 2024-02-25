@@ -14,14 +14,15 @@ docker-compose -f /home/docker-compose.yml pull $TARGET_SERVICE $BATCH_CONTAINER
 docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE $BATCH_CONTAINER
 
 # Wait for the target service to be healthy before proceeding
-while true; do
-    echo "$TARGET_SERVICE health check...."
-    HEALTH=$(docker-compose -f /home/docker-compose.yml exec nginx curl http://$TARGET_SERVICE:8080)
-    if [ -n "$HEALTH" ]; then
-        break
-    fi
-    sleep 3
-done
+sleep 10
+#while true; do
+#    echo "$TARGET_SERVICE health check...."
+#    HEALTH=$(docker-compose -f /home/docker-compose.yml exec nginx curl http://$TARGET_SERVICE:8080)
+#    if [ -n "$HEALTH" ]; then
+#        break
+#    fi
+#    sleep 3
+#done
 
 # Update the nginx config and reload
 sed -i "" "s/$OTHER_SERVICE/$TARGET_SERVICE/g" NGINX_CONF
