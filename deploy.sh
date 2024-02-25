@@ -10,8 +10,8 @@ else
 fi
 
 echo "$TARGET_SERVICE Deploy..."
-docker-compose -f /home/docker-compose.yml pull $TARGET_SERVICE
-docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE
+docker-compose -f /home/docker-compose.yml pull $TARGET_SERVICE $BATCH_CONTAINER
+docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE $BATCH_CONTAINER
 
 # Wait for the target service to be healthy before proceeding
 while true; do
