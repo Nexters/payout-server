@@ -13,23 +13,23 @@ services:
       - "db"
     restart: always
 
-#  blue-api:
-#    container_name: blue-api
-#    depends_on:
-#      - db
-#    image: ${NCP_CONTAINER_REGISTRY_API}/payout-api
-#    expose:
-#      - "8080"
-#    environment:
-#      DB_HOSTNAME: ${DB_HOSTNAME}
-#      DB_PORT: ${DB_PORT}
-#      DB_DATABASE: ${DB_DATABASE}
-#      DB_USERNAME: ${DB_USERNAME}
-#      DB_PASSWORD: ${DB_PASSWORD}
-#      FMP_API_KEY: ${FMP_API_KEY}
-#    restart: always
-#    volumes:
-#      - ./logs/api-server:/logs
+  blue-api:
+    container_name: blue-api
+    depends_on:
+      - db
+    image: ${NCP_CONTAINER_REGISTRY_API}/payout-api
+    expose:
+      - "8080"
+    environment:
+      DB_HOSTNAME: ${DB_HOSTNAME}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      FMP_API_KEY: ${FMP_API_KEY}
+    restart: always
+    volumes:
+      - ./logs/api-server:/logs
 
   green-api:
     container_name: green-api

@@ -10,24 +10,17 @@ else
 fi
 
 echo "$TARGET_SERVICE Deploy..."
-docker-compose -f /home/docker-compose.yml pull $TARGET_SERVICE $BATCH_CONTAINER
 docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE $BATCH_CONTAINER
 
 # Wait for the target service to be healthy before proceeding
 sleep 10
-#while true; do
-#    echo "$TARGET_SERVICE health check...."
-#    HEALTH=$(docker-compose -f /home/docker-compose.yml exec nginx curl http://$TARGET_SERVICE:8080)
-#    if [ -n "$HEALTH" ]; then
-#        break
-#    fi
-#    sleep 3
-#done
 
 # Update the nginx config and reload
 sed -it "s/$OTHER_SERVICE/$TARGET_SERVICE/" $NGINX_CONF
+docker-compose -f /home/docker-compose.yml restart nginx
+
 #docker exec $NGINX_CONTAINER nginx -s reload
-docker-compose -f /home/docker-compose.yml exec nginx service nginx reload
+#docker-compose -f /home/docker-compose.yml exec nginx service nginx reload
 
 # Stop the other service
 docker-compose -f /home/docker-compose.yml stop $OTHER_SERVICE
