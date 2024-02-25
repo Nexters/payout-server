@@ -82,9 +82,9 @@ public interface StockControllerDocs {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = SectorRatioResponse.class),
+                            schema = @Schema(implementation = SectorRatioRequest.class),
                             examples = {
-                                    @ExampleObject(name = "SectorRatioResponse")
+                                    @ExampleObject(name = "SectorRatioRequest")
                             })))
     ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
             @Valid @RequestBody final SectorRatioRequest request);

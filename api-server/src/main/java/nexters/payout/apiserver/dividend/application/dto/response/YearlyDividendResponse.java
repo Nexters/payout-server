@@ -6,9 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public record YearlyDividendResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividends")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         List<SingleYearlyDividendResponse> dividends,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "total dividend")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double totalDividend
 ) {
     public static YearlyDividendResponse of(List<SingleYearlyDividendResponse> dividends) {

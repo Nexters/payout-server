@@ -4,13 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import nexters.payout.domain.stock.domain.Stock;
 
 public record SingleYearlyDividendResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String ticker,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "logo url")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "share")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Integer share,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "total dividend")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double totalDividend
 ) {
     public static SingleYearlyDividendResponse of(Stock stock, int share, double dividend) {

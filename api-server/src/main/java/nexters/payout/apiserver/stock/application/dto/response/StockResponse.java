@@ -6,23 +6,23 @@ import nexters.payout.domain.stock.domain.Stock;
 import java.util.UUID;
 
 public record StockResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "stock id")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         UUID stockId,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String ticker,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "company name")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String companyName,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector name")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String sectorName,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "exchange")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String exchange,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "industry")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String industry,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "price")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double price,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "volume")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Integer volume,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "logo url")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl
 ) {
     public static StockResponse from(Stock stock) {
