@@ -10,13 +10,13 @@ else
 fi
 
 echo "$TARGET_SERVICE Deploy..."
-docker-compose pull $TARGET_SERVICE
-docker-compose up -d $TARGET_SERVICE
+docker-compose -f /home/docker-compose.yml pull $TARGET_SERVICE
+docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE
 
 # Wait for the target service to be healthy before proceeding
 while true; do
     echo "$TARGET_SERVICE health check...."
-    HEALTH=$(docker-compose exec nginx curl http://$TARGET_SERVICE:8080)
+    HEALTH=$(docker-compose -f /home/docker-compose.yml exec nginx curl http://$TARGET_SERVICE:8080)
     if [ -n "$HEALTH" ]; then
         break
     fi
@@ -25,10 +25,10 @@ done
 
 # Update the nginx config and reload
 sed -i "" "s/$OTHER_SERVICE/$TARGET_SERVICE/g" NGINX_CONF
-docker-compose exec nginx service nginx reload
+docker-compose -f /home/docker-compose.yml exec nginx service nginx reload
 
 # Stop the other service
-docker-compose stop $OTHER_SERVICE
+docker-compose -f /home/docker-compose.yml stop $OTHER_SERVICE
 
 
 ##!/bin/bash
