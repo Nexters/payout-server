@@ -36,7 +36,7 @@ docker-compose -f /home/docker-compose.yml up -d $TARGET_SERVICE $BATCH_CONTAINE
 
 # Nginx 설정 업데이트하여 트래픽 전환
 sed -it "s/$OTHER_SERVICE/$TARGET_SERVICE/" $NGINX_CONF
-docker exec NGINX_CONTAINER nginx -s reload
+docker exec $NGINX_CONTAINER nginx -s reload
 
 #docker stop $OTHER_SERVICE
 
