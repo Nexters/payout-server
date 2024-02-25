@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.time.ZoneOffset.UTC;
+import static nexters.payout.domain.stock.domain.Sector.ETC;
+import static nexters.payout.domain.stock.domain.Sector.ETF;
 
 @Slf4j
 @Service
@@ -36,9 +38,12 @@ public class FmpFinancialClient implements FinancialClient {
     @Override
     public List<StockData> getLatestStockList() {
         Map<String, FmpStockData> stockDataMap = Stream.concat(
-                        Sector.getNames().stream().flatMap(it -> fetchStockList(it).stream()),
-                        fetchEtfStockList().stream())
-                .collect(Collectors.toMap(FmpStockData::symbol, Function.identity(), (first, second) -> first));
+                        Sector.getNames()
+                                .stream()
+                                .filter(sector -> !(sector.equals(ETC.getName()) || sector.equals(ETF.getName())))
+                                .flatMap(this::fetchStockList)
+                        , fetchEtfStockList())
+                .collect(Collectors.toMap(FmpStockData::getSymbol, Function.identity(), (first, second) -> first));
 
         Map<String, FmpVolumeData> volumeDataMap = Arrays
                 .stream(Exchange.values())
@@ -55,11 +60,11 @@ public class FmpFinancialClient implements FinancialClient {
 
                     return new StockData(
                             tickerName,
-                            fmpStockData.companyName(),
-                            fmpStockData.exchangeShortName(),
-                            Sector.fromValue(fmpStockData.sector()),
-                            fmpStockData.industry(),
-                            fmpStockData.price(),
+                            fmpStockData.getCompanyName(),
+                            fmpStockData.getExchangeShortName(),
+                            Sector.fromValue(fmpStockData.getSector()),
+                            fmpStockData.getIndustry(),
+                            fmpStockData.getPrice(),
                             fmpVolumeData.volume(),
                             fmpVolumeData.avgVolume()
                     );
@@ -67,7 +72,7 @@ public class FmpFinancialClient implements FinancialClient {
                 .toList();
     }
 
-    private List<FmpStockData> fetchStockList(final String sector) {
+    private Stream<FmpStockData> fetchStockList(final String sector) {
         return fmpWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(fmpProperties.getStockScreenerPath())
@@ -79,10 +84,11 @@ public class FmpFinancialClient implements FinancialClient {
                 .retrieve()
                 .bodyToFlux(FmpStockData.class)
                 .collectList()
-                .block();
+                .block()
+                .stream();
     }
 
-    private List<FmpStockData> fetchEtfStockList() {
+    private Stream<FmpStockData> fetchEtfStockList() {
         return fmpWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(fmpProperties.getStockScreenerPath())
@@ -91,8 +97,13 @@ public class FmpFinancialClient implements FinancialClient {
                         .build())
                 .retrieve()
                 .bodyToFlux(FmpStockData.class)
+                .map(fmpStockData -> {
+                    fmpStockData.setSector(ETF.getName());
+                    return fmpStockData;
+                })
                 .collectList()
-                .block();
+                .block()
+                .stream();
     }
 
     private List<FmpVolumeData> fetchVolumeList(final Exchange exchange) {
