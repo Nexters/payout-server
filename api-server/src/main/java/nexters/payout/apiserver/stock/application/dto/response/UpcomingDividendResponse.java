@@ -8,13 +8,13 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record UpcomingDividendResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "stock id")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         UUID stockId,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String ticker,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "logo url")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ex dividend date")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Instant exDividendDate
 ) {
     public static UpcomingDividendResponse of(Stock stock, Dividend dividend) {

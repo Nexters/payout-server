@@ -6,13 +6,13 @@ import nexters.payout.domain.stock.domain.Stock;
 import java.util.UUID;
 
 public record StockDividendYieldResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "stock id")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         UUID stockId,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String ticker,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "logo url")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividend yield")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double dividendYield
 ) {
 

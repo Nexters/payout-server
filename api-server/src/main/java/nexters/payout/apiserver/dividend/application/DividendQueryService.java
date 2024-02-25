@@ -15,6 +15,7 @@ import nexters.payout.domain.stock.domain.repository.StockRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -25,14 +26,12 @@ import java.util.stream.IntStream;
 @Transactional(readOnly = true)
 public class DividendQueryService {
 
-    private final Integer JANUARY = 1;
-    private final Integer DECEMBER = 12;
     private final DividendRepository dividendRepository;
     private final StockRepository stockRepository;
 
     public List<MonthlyDividendResponse> getMonthlyDividends(final DividendRequest request) {
 
-        return IntStream.rangeClosed(JANUARY, DECEMBER)
+        return IntStream.rangeClosed(Month.JANUARY.getValue(), Month.DECEMBER.getValue())
                 .mapToObj(month -> MonthlyDividendResponse.of(
                         InstantProvider.getNextYear(),
                         month,

@@ -13,7 +13,7 @@ public record SectorRatioResponse(
         String sectorName,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector ratio")
         Double sectorRatio,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "stock shares")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         List<StockShareResponse> stockShares
 ) {
     public static List<SectorRatioResponse> fromMap(final Map<Sector, SectorInfo> sectorRatioMap) {

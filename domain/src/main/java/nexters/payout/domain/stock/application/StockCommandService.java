@@ -20,14 +20,14 @@ public class StockCommandService {
     public void update(String ticker, Stock stockData) {
         stockRepository.findByTicker(ticker)
                 .ifPresent(
-                        existing -> existing.update(stockData.getPrice(), stockData.getVolume())
+                        existing -> existing.update(stockData.getPrice(), stockData.getVolume(), stockData.getSector())
                 );
     }
 
     public void saveOrUpdate(String ticker, Stock stockData) {
         stockRepository.findByTicker(ticker)
                 .ifPresentOrElse(
-                        existing -> existing.update(stockData.getPrice(), stockData.getVolume()),
+                        existing -> existing.update(stockData.getPrice(), stockData.getVolume(), stockData.getSector()),
                         () -> stockRepository.save(stockData)
                 );
     }

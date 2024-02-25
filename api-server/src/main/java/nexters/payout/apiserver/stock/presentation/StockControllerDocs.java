@@ -30,14 +30,7 @@ public interface StockControllerDocs {
             @ApiResponse(responseCode = "500", description = "SERVER ERROR",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @Operation(summary = "티커명/회사명 검색",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StockResponse.class),
-                            examples = {
-                                    @ExampleObject(name = "StockResponse")
-                            })))
+    @Operation(summary = "티커명/회사명 검색")
     ResponseEntity<List<StockResponse>> searchStock(
             @Parameter(description = "tickerName or companyName of stock ex) APPL, APPLE", required = true)
             @RequestParam @NotEmpty String ticker,
@@ -56,14 +49,7 @@ public interface StockControllerDocs {
             @ApiResponse(responseCode = "500", description = "SERVER ERROR",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @Operation(summary = "종목 상세 조회",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StockDetailResponse.class),
-                            examples = {
-                                    @ExampleObject(name = "StockDetailResponse")
-                            })))
+    @Operation(summary = "종목 상세 조회")
     ResponseEntity<StockDetailResponse> getStockByTicker(
             @Parameter(description = "tickerName of stock", example = "AAPL", required = true)
             @PathVariable String ticker
@@ -82,9 +68,9 @@ public interface StockControllerDocs {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = SectorRatioResponse.class),
+                            schema = @Schema(implementation = SectorRatioRequest.class),
                             examples = {
-                                    @ExampleObject(name = "SectorRatioResponse")
+                                    @ExampleObject(name = "SectorRatioRequest")
                             })))
     ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
             @Valid @RequestBody final SectorRatioRequest request);
@@ -96,14 +82,7 @@ public interface StockControllerDocs {
             @ApiResponse(responseCode = "500", description = "SERVER ERROR",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @Operation(summary = "배당락일이 다가오는 주식 리스트",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UpcomingDividendResponse.class),
-                            examples = {
-                                    @ExampleObject(name = "UpcomingDividendResponse")
-                            })))
+    @Operation(summary = "배당락일이 다가오는 주식 리스트")
     ResponseEntity<List<UpcomingDividendResponse>> getUpComingDividendStocks(
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
@@ -118,14 +97,7 @@ public interface StockControllerDocs {
             @ApiResponse(responseCode = "500", description = "SERVER ERROR",
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @Operation(summary = "배당수익률이 큰 주식 리스트",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StockDividendYieldResponse.class),
-                            examples = {
-                                    @ExampleObject(name = "StockDividendYieldResponse")
-                            })))
+    @Operation(summary = "배당수익률이 큰 주식 리스트")
     ResponseEntity<List<StockDividendYieldResponse>> getBiggestDividendYieldStocks(
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,

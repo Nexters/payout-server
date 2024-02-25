@@ -6,13 +6,13 @@ import java.util.Comparator;
 import java.util.List;
 
 public record MonthlyDividendResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "year")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Integer year,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "month")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Integer month,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividends")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         List<SingleMonthlyDividendResponse> dividends,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "total dividend")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double totalDividend
 ) {
     public static MonthlyDividendResponse of(int year, int month, List<SingleMonthlyDividendResponse> dividends) {

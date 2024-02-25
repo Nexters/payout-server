@@ -6,10 +6,10 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
 public record TickerShare(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker name")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         @NotEmpty
         String ticker,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "share")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         @Min(value = 1)
         Integer share
 ) {

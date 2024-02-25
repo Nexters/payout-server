@@ -21,7 +21,7 @@ public class StockBatchService {
     private final StockRepository stockRepository;
 
     /**
-     * UTC 시간대 기준 매일 새벽 3시에 모든 종목의 현재가와 거래량을 업데이트합니다.
+     * UTC 시간대 기준 매일 자정에 모든 종목의 현재가와 거래량을 업데이트합니다.
      */
     @Scheduled(cron = "${schedules.cron.stock}", zone = "UTC")
     void run() {
