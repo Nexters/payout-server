@@ -66,9 +66,11 @@ public class Stock extends BaseEntity {
 
     public void update(
             final Double price,
-            final Integer volume) {
+            final Integer volume,
+            final Sector sector) {
         this.price = price;
         this.volume = volume;
+        this.sector = sector;
     }
 
     @Override
