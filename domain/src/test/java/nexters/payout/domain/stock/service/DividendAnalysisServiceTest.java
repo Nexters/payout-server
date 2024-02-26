@@ -102,19 +102,19 @@ class DividendAnalysisServiceTest {
     void 공시된_현재_배당금_지급일이_존재하는_경우_실제_지급일을_반환한다() {
         // given
         LocalDate now = LocalDate.now();
-
         int plusDay = Math.max(now.getDayOfMonth(), now.plusDays(3).getDayOfMonth());
 
-        Dividend lastYearDividend = DividendFixture.createDividend(
+        Dividend lastYearDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
+                1.0,
                 LocalDate.now().plusDays(10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
-
-        Dividend thisYearDividend = DividendFixture.createDividend(
+        Dividend thisYearDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
-                LocalDate.of(now.getYear(), now.getMonth(), plusDay)
+                1.0,
+                LocalDate.now().plusDays(3)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
