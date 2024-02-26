@@ -1,6 +1,7 @@
 RUNNING_CONTAINER=$(docker ps | grep blue)
 NGINX_CONF="/home/nginx.conf"
 RUNNING_NGINX=$(docker ps | grep nginx)
+BATCH_CONTAINER="batch"
 
 
 if [ -z "$RUNNING_CONTAINER" ]; then
