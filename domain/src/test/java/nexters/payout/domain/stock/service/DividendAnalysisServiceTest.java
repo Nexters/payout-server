@@ -34,10 +34,10 @@ class DividendAnalysisServiceTest {
         Instant julPaymentDate = LocalDate.of(lastYear, 7, 3).atStartOfDay().toInstant(UTC);
         Instant fakePaymentDate = LocalDate.of(LocalDate.now().getYear(), 8, 3).atStartOfDay().toInstant(UTC);
 
-        Dividend janDividend = DividendFixture.createDividend(stock.getId(), janPaymentDate);
-        Dividend aprDividend = DividendFixture.createDividend(stock.getId(), aprPaymentDate);
-        Dividend julDividend = DividendFixture.createDividend(stock.getId(), julPaymentDate);
-        Dividend fakeDividend = DividendFixture.createDividend(stock.getId(), fakePaymentDate);
+        Dividend janDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), janPaymentDate);
+        Dividend aprDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), aprPaymentDate);
+        Dividend julDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), julPaymentDate);
+        Dividend fakeDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), fakePaymentDate);
 
         // when
         List<Month> actual = dividendAnalysisService.calculateDividendMonths(stock, List.of(janDividend, aprDividend, julDividend, fakeDividend));
@@ -52,7 +52,7 @@ class DividendAnalysisServiceTest {
         Stock stock = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY);
         Instant fakePaymentDate = LocalDate.of(LocalDate.now().getYear(), 8, 3).atStartOfDay().toInstant(UTC);
 
-        Dividend fakeDividend = DividendFixture.createDividend(stock.getId(), fakePaymentDate);
+        Dividend fakeDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), fakePaymentDate);
 
         // when
         List<Month> actual = dividendAnalysisService.calculateDividendMonths(stock, List.of(fakeDividend));
@@ -78,13 +78,13 @@ class DividendAnalysisServiceTest {
         // given
         LocalDate now = LocalDate.now();
 
-        Dividend pastDividend = DividendFixture.createDividend(
+        Dividend pastDividend = DividendFixture.createDividendWithPaymentDate(
                 UUID.randomUUID(),
                 LocalDate.of(now.getYear() - 1, 1, 10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
-        Dividend earlistDividend = DividendFixture.createDividend(
+        Dividend earlistDividend = DividendFixture.createDividendWithPaymentDate(
                 UUID.randomUUID(),
                 LocalDate.of(now.getYear() - 1, 3, 10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
@@ -102,19 +102,19 @@ class DividendAnalysisServiceTest {
     void 공시된_현재_배당금_지급일이_존재하는_경우_실제_지급일을_반환한다() {
         // given
         LocalDate now = LocalDate.now();
-
         int plusDay = Math.max(now.getDayOfMonth(), now.plusDays(3).getDayOfMonth());
 
-        Dividend lastYearDividend = DividendFixture.createDividend(
+        Dividend lastYearDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
+                1.0,
                 LocalDate.now().plusDays(10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
-
-        Dividend thisYearDividend = DividendFixture.createDividend(
+        Dividend thisYearDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
-                LocalDate.of(now.getYear(), now.getMonth(), plusDay)
+                1.0,
+                LocalDate.now().plusDays(3)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 

@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 public class DividendFixture {
-    public static Dividend createDividend(UUID stockId, Double dividend) {
+    public static Dividend createDividendWithPaymentDate(UUID stockId, Double dividend) {
         return new Dividend(
                 UUID.randomUUID(),
                 stockId,
@@ -17,24 +17,24 @@ public class DividendFixture {
         );
     }
 
-    public static Dividend createDividend(UUID stockId, Instant paymentDate) {
+    public static Dividend createDividendWithPaymentDate(UUID stockId, Instant exDividendDate) {
         return new Dividend(
                 UUID.randomUUID(),
                 stockId,
                 12.21,
+                exDividendDate,
                 Instant.parse("2023-12-21T00:00:00Z"),
-                paymentDate,
                 Instant.parse("2023-12-22T00:00:00Z"));
     }
 
-    public static Dividend createDividend(UUID stockId, Double dividend, Instant paymentDate) {
+    public static Dividend createDividendWithPaymentDate(UUID stockId, Double dividend, Instant paymentDate) {
         return new Dividend(
                 UUID.randomUUID(),
                 stockId,
                 dividend,
-                Instant.parse("2023-12-21T00:00:00Z"),
                 paymentDate,
-                Instant.parse("2023-12-22T00:00:00Z"));
+                paymentDate,
+                paymentDate);
     }
 
     public static Dividend createDividendWithExDividendDate(UUID stockId, Double dividend, Instant exDividendDate) {
@@ -47,7 +47,7 @@ public class DividendFixture {
                 exDividendDate);
     }
 
-    public static Dividend createDividend(UUID stockId) {
+    public static Dividend createDividendWithPaymentDate(UUID stockId) {
         return new Dividend(
                 UUID.randomUUID(),
                 stockId,

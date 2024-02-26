@@ -194,7 +194,7 @@ class StockControllerTest extends IntegrationTest {
         Double dividend = 12.0;
         Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL, price));
         Instant paymentDate = LocalDate.of(2023, 4, 5).atStartOfDay().toInstant(UTC);
-        dividendRepository.save(DividendFixture.createDividend(tsla.getId(), dividend, paymentDate));
+        dividendRepository.save(DividendFixture.createDividendWithPaymentDate(tsla.getId(), dividend, paymentDate));
 
         // when, then
         StockDetailResponse stockDetailResponse = RestAssured
