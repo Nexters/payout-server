@@ -427,7 +427,7 @@ class StockControllerTest extends IntegrationTest {
         ));
 
         Double expectedAaplDividendYield = 1.0;
-        Double expectedTslaDividendYield = 2.0;
+        Double expectedTslaDividendYield = 0.5;
 
         // when
         List<StockDividendYieldResponse> actual = RestAssured
@@ -444,9 +444,9 @@ class StockControllerTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(actual.size()).isEqualTo(2),
-                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expectedTslaDividendYield),
-                () -> assertThat(actual.get(0).ticker()).isEqualTo(tsla.getTicker()),
-                () -> assertThat(actual.get(1).dividendYield()).isEqualTo(expectedAaplDividendYield)
+                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expectedAaplDividendYield),
+                () -> assertThat(actual.get(0).ticker()).isEqualTo(aapl.getTicker()),
+                () -> assertThat(actual.get(1).dividendYield()).isEqualTo(expectedTslaDividendYield)
         );
     }
 

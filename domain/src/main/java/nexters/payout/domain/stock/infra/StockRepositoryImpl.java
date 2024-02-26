@@ -70,12 +70,12 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
     @Override
     public List<StockDividendYieldDto> findBiggestDividendYieldStock(int lastYear, int pageNumber, int pageSize) {
 
-        NumberExpression<Double> dividendYield = stock.price.divide(dividend1.dividend.sum().coalesce(0.0));
+        NumberExpression<Double> dividendYield = dividend1.dividend.sum().coalesce(1.0).divide(stock.price);
 
         return queryFactory
                 .select(Projections.constructor(StockDividendYieldDto.class, stock, dividendYield))
                 .from(stock)
-                .leftJoin(dividend1)
+                .innerJoin(dividend1)
                 .on(stock.id.eq(dividend1.stockId))
                 .where(dividend1.exDividendDate.year().eq(lastYear))
                 .groupBy(stock.id, stock.price)
