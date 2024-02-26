@@ -56,8 +56,8 @@ public class DividendAnalysisService {
         LocalDate now = InstantProvider.getNow();
 
         for (Dividend dividend : thisYearDividends) {
-            LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
-            if (paymentDate.getYear() == now.getYear() && (isCurrentOrFutureDate(paymentDate))) {
+            LocalDate exDividendDate = InstantProvider.toLocalDate(dividend.getExDividendDate());
+            if (exDividendDate.getYear() == now.getYear() && (isCurrentOrFutureDate(exDividendDate))) {
                 return Optional.of(dividend);
             }
         }
