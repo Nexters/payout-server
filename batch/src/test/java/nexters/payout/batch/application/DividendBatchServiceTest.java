@@ -47,7 +47,7 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
 
         // given
         Stock stock = stockRepository.save(StockFixture.createStock(AAPL, 12.51, 120000));
-        Dividend expected = DividendFixture.createDividend(stock.getId());
+        Dividend expected = DividendFixture.createDividendWithPaymentDate(stock.getId());
 
         List<FinancialClient.DividendData> responses = new ArrayList<>();
         responses.add(new FinancialClient.DividendData(
@@ -145,7 +145,7 @@ class DividendBatchServiceTest extends AbstractBatchServiceTest {
     void 새로운_미래_배당금_정보를_생성한다() {
         // given
         Stock stock = stockRepository.save(StockFixture.createStock(AAPL, 12.51, 120000));
-        Dividend expected = DividendFixture.createDividend(stock.getId());
+        Dividend expected = DividendFixture.createDividendWithPaymentDate(stock.getId());
         Instant expectedDate = LocalDateTime.now().plusDays(1).toInstant(UTC);
 
         List<FinancialClient.DividendData> responses = new ArrayList<>();
