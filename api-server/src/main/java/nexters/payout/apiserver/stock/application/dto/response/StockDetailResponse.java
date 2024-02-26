@@ -75,7 +75,8 @@ public record StockDetailResponse(
                 stock.getLogoUrl(),
                 dividend.getDividend(),
                 InstantProvider.toLocalDate(dividend.getExDividendDate()).withYear(thisYear),
-                InstantProvider.toLocalDate(dividend.getPaymentDate()).withYear(thisYear),
+                dividend.getPaymentDate() == null ? null :
+                        InstantProvider.toLocalDate(dividend.getPaymentDate()).withYear(thisYear),
                 dividendYield,
                 dividendMonths
         );
