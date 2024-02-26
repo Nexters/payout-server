@@ -65,7 +65,7 @@ public class StockQueryService {
 
         return dividendRepository.findAllByStockId(stock.getId())
                 .stream()
-                .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == lastYear)
+                .filter(dividend -> InstantProvider.toLocalDate(dividend.getExDividendDate()).getYear() == lastYear)
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +74,7 @@ public class StockQueryService {
 
         return dividendRepository.findAllByStockId(stock.getId())
                 .stream()
-                .filter(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()).getYear() == thisYear)
+                .filter(dividend -> InstantProvider.toLocalDate(dividend.getExDividendDate()).getYear() == thisYear)
                 .collect(Collectors.toList());
     }
 
