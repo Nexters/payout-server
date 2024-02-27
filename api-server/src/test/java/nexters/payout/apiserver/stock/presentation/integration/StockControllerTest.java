@@ -332,7 +332,7 @@ class StockControllerTest extends IntegrationTest {
     void 배당락일이_다가오는_주식_리스트를_가져온다() {
         // given
         Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 aapl.getId(),
                 25.0,
                 LocalDateTime.now().plusDays(1).toInstant(UTC)
@@ -366,12 +366,12 @@ class StockControllerTest extends IntegrationTest {
         // given
         Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
         Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 5.0));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 aapl.getId(),
                 25.0,
                 LocalDateTime.now().plusDays(2).toInstant(UTC)
         ));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 tsla.getId(),
                 30.0,
                 LocalDateTime.now().plusDays(1).toInstant(UTC)
@@ -405,22 +405,22 @@ class StockControllerTest extends IntegrationTest {
         // given
         Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 8.0));
         Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 20.0));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 aapl.getId(),
                 8.0,
                 LocalDate.of(InstantProvider.getLastYear(), 3, 1).atStartOfDay().toInstant(UTC)
         ));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 tsla.getId(),
                 5.0,
                 LocalDate.of(InstantProvider.getLastYear(), 3, 1).atStartOfDay().toInstant(UTC)
         ));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 tsla.getId(),
                 5.0,
                 LocalDate.of(InstantProvider.getLastYear(), 6, 1).atStartOfDay().toInstant(UTC)
         ));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 tsla.getId(),
                 5.0,
                 LocalDate.of(InstantProvider.getLastYear() - 1, 6, 1).atStartOfDay().toInstant(UTC)
@@ -455,7 +455,7 @@ class StockControllerTest extends IntegrationTest {
         // given
         Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
         stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 0.0));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 aapl.getId(),
                 5.0,
                 LocalDate.of(InstantProvider.getLastYear(), 3, 1).atStartOfDay().toInstant(UTC)

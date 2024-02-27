@@ -34,10 +34,10 @@ class StockDividendAnalysisServiceTest {
         Instant julPaymentDate = LocalDate.of(lastYear, 7, 3).atStartOfDay().toInstant(UTC);
         Instant fakePaymentDate = LocalDate.of(LocalDate.now().getYear(), 8, 3).atStartOfDay().toInstant(UTC);
 
-        Dividend janDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), janPaymentDate);
-        Dividend aprDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), aprPaymentDate);
-        Dividend julDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), julPaymentDate);
-        Dividend fakeDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), fakePaymentDate);
+        Dividend janDividend = DividendFixture.createDividendWithExDividendDate(stock.getId(), janPaymentDate);
+        Dividend aprDividend = DividendFixture.createDividendWithExDividendDate(stock.getId(), aprPaymentDate);
+        Dividend julDividend = DividendFixture.createDividendWithExDividendDate(stock.getId(), julPaymentDate);
+        Dividend fakeDividend = DividendFixture.createDividendWithExDividendDate(stock.getId(), fakePaymentDate);
 
         // when
         List<Month> actual = stockDividendAnalysisService.calculateDividendMonths(stock, List.of(janDividend, aprDividend, julDividend, fakeDividend));
@@ -52,7 +52,7 @@ class StockDividendAnalysisServiceTest {
         Stock stock = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY);
         Instant fakePaymentDate = LocalDate.of(LocalDate.now().getYear(), 8, 3).atStartOfDay().toInstant(UTC);
 
-        Dividend fakeDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), fakePaymentDate);
+        Dividend fakeDividend = DividendFixture.createDividendWithExDividendDate(stock.getId(), fakePaymentDate);
 
         // when
         List<Month> actual = stockDividendAnalysisService.calculateDividendMonths(stock, List.of(fakeDividend));
@@ -78,13 +78,13 @@ class StockDividendAnalysisServiceTest {
         // given
         LocalDate now = LocalDate.now();
 
-        Dividend pastDividend = DividendFixture.createDividendWithPaymentDate(
+        Dividend pastDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
                 LocalDate.of(now.getYear() - 1, 1, 10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
-        Dividend earlistDividend = DividendFixture.createDividendWithPaymentDate(
+        Dividend earlistDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
                 LocalDate.of(now.getYear() - 1, 3, 10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
@@ -104,14 +104,14 @@ class StockDividendAnalysisServiceTest {
         LocalDate now = LocalDate.now();
         int plusDay = Math.max(now.getDayOfMonth(), now.plusDays(3).getDayOfMonth());
 
-        Dividend lastYearDividend = DividendFixture.createDividendWithExDividendDate(
+        Dividend lastYearDividend = DividendFixture.createDividend(
                 UUID.randomUUID(),
                 1.0,
                 LocalDate.now().plusDays(10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
-        Dividend thisYearDividend = DividendFixture.createDividendWithExDividendDate(
+        Dividend thisYearDividend = DividendFixture.createDividend(
                 UUID.randomUUID(),
                 1.0,
                 LocalDate.now().plusDays(3)
@@ -126,5 +126,35 @@ class StockDividendAnalysisServiceTest {
 
         // then
         assertThat(actual.get()).isEqualTo(thisYearDividend);
+    }
+
+    @Test
+    void 배당수익률을_구할수있다() {
+        // given
+        Stock aapl = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY, 40.0);
+        List<Dividend> dividends = List.of(DividendFixture.createDividendWithDividend(UUID.randomUUID(), 10.0),
+                DividendFixture.createDividendWithDividend(UUID.randomUUID(), 20.0)
+        );
+        Double expected = 30.0 / 40.0;
+
+        // when
+        Double actual = stockDividendAnalysisService.calculateDividendYield(aapl, dividends);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 배당금_리스트로부터_평균_배당금을_구할수있다() {
+        // given
+        List<Dividend> dividends = List.of(DividendFixture.createDividendWithDividend(UUID.randomUUID(), 10.0),
+                DividendFixture.createDividendWithDividend(UUID.randomUUID(), 20.0)
+        );
+
+        // when
+        Double actual = stockDividendAnalysisService.calculateAverageDividend(dividends);
+
+        // then
+        assertThat(actual).isEqualTo(15.0);
     }
 }
