@@ -27,7 +27,9 @@ public class DividendBatchService {
      */
     @Scheduled(cron = "${schedules.cron.dividend.past}", zone = "UTC")
     public void updatePastDividendInfo() {
+        log.info("update past dividend start..");
         handleDividendData(financialClient.getPastDividendList());
+        log.info("update past dividend end..");
     }
 
     /**
@@ -35,8 +37,10 @@ public class DividendBatchService {
      */
     @Scheduled(cron = "${schedules.cron.dividend.future}", zone = "UTC")
     public void updateUpcomingDividendInfo() {
+        log.info("update upcoming dividend start..");
         dividendCommandService.deleteInvalidDividend();
         handleDividendData(financialClient.getUpcomingDividendList());
+        log.info("update upcoming dividend end..");
     }
 
     private void saveOrUpdateDividendData(final Stock stock, final DividendData dividendData) {
