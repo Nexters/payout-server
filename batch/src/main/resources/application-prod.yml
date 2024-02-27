@@ -24,10 +24,10 @@ spring:
 
 schedules:
   cron:
-    stock: "0 0 3 * * *"
+    stock: "0 30 * * * *"
     dividend:
-      past: "0 0 4 * * 0"
-      future: "0 0 4 * * *"
+      past: "0 10 * * * *"
+      future: "0 10 * * * *"
 
 financial:
   fmp:
