@@ -5,15 +5,15 @@ import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.stock.domain.Stock;
 
 public record SingleMonthlyDividendResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String ticker,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "logo url")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "share")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Integer share,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividend")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double dividend,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "total dividend")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double totalDividend
 ) {
     public static SingleMonthlyDividendResponse of(Stock stock, int share, Dividend dividend) {

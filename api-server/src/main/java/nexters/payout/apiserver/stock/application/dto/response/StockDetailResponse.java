@@ -12,33 +12,33 @@ import java.util.List;
 import java.util.UUID;
 
 public record StockDetailResponse(
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker and share")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         UUID stockId,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ticker name")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String ticker,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "company name")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String companyName,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector name")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String sectorName,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "exchange")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String exchange,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "industry")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String industry,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "price")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double price,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "volume")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Integer volume,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "logo url")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividend per share")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double dividendPerShare,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "ex dividend date")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         LocalDate exDividendDate,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "earliest payment date")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         LocalDate earliestPaymentDate,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividend yield")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double dividendYield,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "dividend months")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         List<Month> dividendMonths
 ) {
 
@@ -75,7 +75,8 @@ public record StockDetailResponse(
                 stock.getLogoUrl(),
                 dividend.getDividend(),
                 InstantProvider.toLocalDate(dividend.getExDividendDate()).withYear(thisYear),
-                InstantProvider.toLocalDate(dividend.getPaymentDate()).withYear(thisYear),
+                dividend.getPaymentDate() == null ? null :
+                        InstantProvider.toLocalDate(dividend.getPaymentDate()).withYear(thisYear),
                 dividendYield,
                 dividendMonths
         );

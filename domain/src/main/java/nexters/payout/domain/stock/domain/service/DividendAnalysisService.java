@@ -21,8 +21,8 @@ public class DividendAnalysisService {
         return dividends
                 .stream()
                 .filter(dividend -> stock.getId().equals(dividend.getStockId()))
-                .map(dividend -> InstantProvider.toLocalDate(dividend.getPaymentDate()))
-                .filter(localDate -> localDate.getYear() == lastYear)
+                .map(dividend -> InstantProvider.toLocalDate(dividend.getExDividendDate()))
+                .filter(exDividendDate -> exDividendDate.getYear() == lastYear)
                 .map(LocalDate::getMonth)
                 .distinct()
                 .collect(Collectors.toList());
@@ -56,8 +56,8 @@ public class DividendAnalysisService {
         LocalDate now = InstantProvider.getNow();
 
         for (Dividend dividend : thisYearDividends) {
-            LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
-            if (paymentDate.getYear() == now.getYear() && (isCurrentOrFutureDate(paymentDate))) {
+            LocalDate exDividendDate = InstantProvider.toLocalDate(dividend.getExDividendDate());
+            if (exDividendDate.getYear() == now.getYear() && (isCurrentOrFutureDate(exDividendDate))) {
                 return Optional.of(dividend);
             }
         }
@@ -65,9 +65,9 @@ public class DividendAnalysisService {
         return lastYearDividends
                 .stream()
                 .map(dividend -> {
-                    LocalDate paymentDate = InstantProvider.toLocalDate(dividend.getPaymentDate());
-                    LocalDate adjustedPaymentDate = paymentDate.withYear(now.getYear());
-                    return new AbstractMap.SimpleEntry<>(dividend, adjustedPaymentDate);
+                    LocalDate exDividendDate = InstantProvider.toLocalDate(dividend.getExDividendDate());
+                    LocalDate adjustedExDividendDate = exDividendDate.withYear(now.getYear());
+                    return new AbstractMap.SimpleEntry<>(dividend, adjustedExDividendDate);
                 })
                 .filter(date -> isCurrentOrFutureDate(date.getValue()))
                 .min(Map.Entry.comparingByValue())

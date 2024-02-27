@@ -38,5 +38,5 @@ out/
 .DS_Store
 
 **/logs
-**/db/**
+**/db/data
 domain/src/main/generated/nexters/payout/domain/stock/domain/QStock.java

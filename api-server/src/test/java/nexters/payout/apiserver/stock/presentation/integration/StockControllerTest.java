@@ -194,7 +194,7 @@ class StockControllerTest extends IntegrationTest {
         Double dividend = 12.0;
         Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL, price));
         Instant paymentDate = LocalDate.of(2023, 4, 5).atStartOfDay().toInstant(UTC);
-        dividendRepository.save(DividendFixture.createDividend(tsla.getId(), dividend, paymentDate));
+        dividendRepository.save(DividendFixture.createDividendWithPaymentDate(tsla.getId(), dividend, paymentDate));
 
         // when, then
         StockDetailResponse stockDetailResponse = RestAssured
@@ -427,7 +427,7 @@ class StockControllerTest extends IntegrationTest {
         ));
 
         Double expectedAaplDividendYield = 1.0;
-        Double expectedTslaDividendYield = 2.0;
+        Double expectedTslaDividendYield = 0.5;
 
         // when
         List<StockDividendYieldResponse> actual = RestAssured
@@ -444,9 +444,9 @@ class StockControllerTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(actual.size()).isEqualTo(2),
-                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expectedTslaDividendYield),
-                () -> assertThat(actual.get(0).ticker()).isEqualTo(tsla.getTicker()),
-                () -> assertThat(actual.get(1).dividendYield()).isEqualTo(expectedAaplDividendYield)
+                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expectedAaplDividendYield),
+                () -> assertThat(actual.get(0).ticker()).isEqualTo(aapl.getTicker()),
+                () -> assertThat(actual.get(1).dividendYield()).isEqualTo(expectedTslaDividendYield)
         );
     }
 

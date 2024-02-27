@@ -8,7 +8,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -20,4 +20,4 @@ spring:
     url: jdbc:mysql://${DB_HOSTNAME}:${DB_PORT}/${DB_DATABASE}
     user: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    baseline-version: 0
+    baseline-version: 4
