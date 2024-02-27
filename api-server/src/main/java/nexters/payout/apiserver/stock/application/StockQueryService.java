@@ -54,13 +54,13 @@ public class StockQueryService {
                 .orElseGet(() -> StockDetailResponse.from(stock));
     }
 
-    private Stock getStock(String ticker) {
+    private Stock getStock(final String ticker) {
         return stockRepository.findByTicker(ticker)
                 .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
     }
 
 
-    private List<Dividend> getLastYearDividends(Stock stock) {
+    private List<Dividend> getLastYearDividends(final Stock stock) {
         int lastYear = InstantProvider.getLastYear();
 
         return dividendRepository.findAllByStockId(stock.getId())
@@ -69,7 +69,7 @@ public class StockQueryService {
                 .collect(Collectors.toList());
     }
 
-    private List<Dividend> getThisYearDividends(Stock stock) {
+    private List<Dividend> getThisYearDividends(final Stock stock) {
         int thisYear = InstantProvider.getThisYear();
 
         return dividendRepository.findAllByStockId(stock.getId())
@@ -86,8 +86,7 @@ public class StockQueryService {
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
 
-    public List<UpcomingDividendResponse> getUpcomingDividendStocks(int pageNumber, int pageSize) {
-
+    public List<UpcomingDividendResponse> getUpcomingDividendStocks(final int pageNumber, final int pageSize) {
         return stockRepository.findUpcomingDividendStock(pageNumber, pageSize)
                 .stream()
                 .map(stockDividend -> UpcomingDividendResponse.of(
@@ -97,8 +96,7 @@ public class StockQueryService {
                 .collect(Collectors.toList());
     }
 
-    public List<StockDividendYieldResponse> getBiggestDividendStocks(int pageNumber, int pageSize) {
-
+    public List<StockDividendYieldResponse> getBiggestDividendStocks(final int pageNumber, final int pageSize) {
         return stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), pageNumber, pageSize)
                 .stream()
                 .map(stockDividendYield -> StockDividendYieldResponse.of(

@@ -43,6 +43,5 @@ public interface FinancialClient {
             Instant paymentDate,
             Instant declarationDate
     ) {
-
     }
 }

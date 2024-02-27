@@ -10,7 +10,7 @@ public record StockShareResponse(
         Integer share
 ) {
 
-    public static StockShareResponse from(StockShare stockShare) {
+    public static StockShareResponse from(final StockShare stockShare) {
         return new StockShareResponse(
                 StockResponse.from(stockShare.stock()),
                 stockShare.share()

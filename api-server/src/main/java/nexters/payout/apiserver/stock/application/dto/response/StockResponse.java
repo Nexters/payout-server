@@ -25,7 +25,7 @@ public record StockResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl
 ) {
-    public static StockResponse from(Stock stock) {
+    public static StockResponse from(final Stock stock) {
         return new StockResponse(
                 stock.getId(),
                 stock.getTicker(),

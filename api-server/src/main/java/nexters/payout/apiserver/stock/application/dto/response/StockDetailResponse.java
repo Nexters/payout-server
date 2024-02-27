@@ -42,7 +42,7 @@ public record StockDetailResponse(
         List<Month> dividendMonths
 ) {
 
-    public static StockDetailResponse from(Stock stock) {
+    public static StockDetailResponse from(final Stock stock) {
         return new StockDetailResponse(
                 stock.getId(),
                 stock.getTicker(),
@@ -61,7 +61,9 @@ public record StockDetailResponse(
         );
     }
 
-    public static StockDetailResponse of(Stock stock, Dividend dividend, List<Month> dividendMonths, Double dividendYield) {
+    public static StockDetailResponse of(
+            final Stock stock, final Dividend dividend, final List<Month> dividendMonths, final Double dividendYield
+    ) {
         int thisYear = InstantProvider.getThisYear();
         return new StockDetailResponse(
                 stock.getId(),

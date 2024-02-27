@@ -5,5 +5,4 @@ record NinjasStockLogo(
         String ticker,
         String image
 ) {
-
 }

@@ -17,7 +17,7 @@ public record UpcomingDividendResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Instant exDividendDate
 ) {
-    public static UpcomingDividendResponse of(Stock stock, Dividend dividend) {
+    public static UpcomingDividendResponse of(final Stock stock, final Dividend dividend) {
         return new UpcomingDividendResponse(
                 stock.getId(),
                 stock.getTicker(),

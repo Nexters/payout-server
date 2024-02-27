@@ -16,7 +16,7 @@ public record StockDividendYieldResponse(
         Double dividendYield
 ) {
 
-    public static StockDividendYieldResponse of(Stock stock, Double dividendYield) {
+    public static StockDividendYieldResponse of(final Stock stock, final Double dividendYield) {
         return new StockDividendYieldResponse(
                 stock.getId(),
                 stock.getTicker(),
