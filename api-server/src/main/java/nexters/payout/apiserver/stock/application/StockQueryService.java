@@ -78,8 +78,7 @@ public class StockQueryService {
         return stockRepository.findByTicker(ticker)
                 .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
     }
-
-
+    
     private List<Dividend> getLastYearDividends(final Stock stock) {
         int lastYear = InstantProvider.getLastYear();
 
