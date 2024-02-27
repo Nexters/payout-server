@@ -39,7 +39,9 @@ public enum Sector {
             .stream(values())
             .collect(Collectors.toMap(sector -> sector.name, Function.identity()));
 
-    private static final Set<String> ETC_NAMES = Set.of(FINANCIAL.name, SERVICES.name, CONGLOMERATES.name, ETC.name());
+    private static final Set<String> ETC_NAMES = Set.of(
+            INDUSTRIAL_GOODS.name, FINANCIAL.name, SERVICES.name, CONGLOMERATES.name, ETC.name()
+    );
 
     public static List<String> getNames() {
         return Arrays.stream(Sector.values())
