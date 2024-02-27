@@ -150,7 +150,7 @@ class DividendControllerTest extends IntegrationTest {
                         .mapToDouble(MonthlyDividendResponse::totalDividend)
                         .sum())
                         .isEqualTo(expected),
-                () -> assertThat(actual.get(5).dividends().size()).isEqualTo(2)
+                () -> assertThat(actual).hasSize(12)
         );
     }
 
