@@ -7,7 +7,6 @@ import nexters.payout.domain.stock.domain.Stock;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +41,7 @@ public record StockDetailResponse(
         List<Month> dividendMonths
 ) {
 
-    public static StockDetailResponse from(final Stock stock) {
+    public static StockDetailResponse from(final Stock stock, final List<Month> dividendMonths, final Double dividendYield) {
         return new StockDetailResponse(
                 stock.getId(),
                 stock.getTicker(),
@@ -56,8 +55,29 @@ public record StockDetailResponse(
                 null,
                 null,
                 null,
-                null,
-                Collections.emptyList()
+                dividendYield,
+                dividendMonths
+        );
+    }
+
+    public static StockDetailResponse of(
+            final Stock stock, final DividendResponse dividendResponse
+    ) {
+        return new StockDetailResponse(
+                stock.getId(),
+                stock.getTicker(),
+                stock.getName(),
+                stock.getSector().getName(),
+                stock.getExchange(),
+                stock.getIndustry(),
+                stock.getPrice(),
+                stock.getVolume(),
+                stock.getLogoUrl(),
+                dividendResponse.dividendPerShare(),
+                dividendResponse.exDividendDate(),
+                dividendResponse.paymentDate(),
+                dividendResponse.dividendYield(),
+                dividendResponse.dividendMonths()
         );
     }
 

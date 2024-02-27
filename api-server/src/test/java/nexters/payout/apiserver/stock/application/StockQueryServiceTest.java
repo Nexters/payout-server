@@ -16,7 +16,7 @@ import nexters.payout.domain.stock.infra.dto.StockDividendDto;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
-import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
+import nexters.payout.domain.stock.domain.service.StockDividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.infra.dto.StockDividendYieldDto;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ class StockQueryServiceTest {
     @Spy
     private SectorAnalysisService sectorAnalysisService;
     @Spy
-    private DividendAnalysisService dividendAnalysisService;
+    private StockDividendAnalysisService stockDividendAnalysisService;
 
     @Test
     void 검색된_종목_정보를_정상적으로_반환한다() {

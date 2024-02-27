@@ -5,7 +5,7 @@ import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
-import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
+import nexters.payout.domain.stock.domain.service.StockDividendAnalysisService;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -20,9 +20,9 @@ import java.util.UUID;
 import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DividendAnalysisServiceTest {
+class StockDividendAnalysisServiceTest {
 
-    DividendAnalysisService dividendAnalysisService = new DividendAnalysisService();
+    StockDividendAnalysisService stockDividendAnalysisService = new StockDividendAnalysisService();
 
     @Test
     void 작년_배당_월_리스트를_정상적으로_반환한다() {
@@ -40,7 +40,7 @@ class DividendAnalysisServiceTest {
         Dividend fakeDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), fakePaymentDate);
 
         // when
-        List<Month> actual = dividendAnalysisService.calculateDividendMonths(stock, List.of(janDividend, aprDividend, julDividend, fakeDividend));
+        List<Month> actual = stockDividendAnalysisService.calculateDividendMonths(stock, List.of(janDividend, aprDividend, julDividend, fakeDividend));
 
         // then
         assertThat(actual).isEqualTo(List.of(Month.JANUARY, Month.APRIL, Month.JULY));
@@ -55,7 +55,7 @@ class DividendAnalysisServiceTest {
         Dividend fakeDividend = DividendFixture.createDividendWithPaymentDate(stock.getId(), fakePaymentDate);
 
         // when
-        List<Month> actual = dividendAnalysisService.calculateDividendMonths(stock, List.of(fakeDividend));
+        List<Month> actual = stockDividendAnalysisService.calculateDividendMonths(stock, List.of(fakeDividend));
 
         // then
         assertThat(actual).isEmpty();
@@ -67,7 +67,7 @@ class DividendAnalysisServiceTest {
         Stock stock = StockFixture.createStock(StockFixture.AAPL, Sector.TECHNOLOGY);
 
         // when
-        List<Month> actual = dividendAnalysisService.calculateDividendMonths(stock, List.of());
+        List<Month> actual = stockDividendAnalysisService.calculateDividendMonths(stock, List.of());
 
         // then
         assertThat(actual).isEmpty();
@@ -92,7 +92,7 @@ class DividendAnalysisServiceTest {
         List<Dividend> lastYearDividends = List.of(pastDividend, earlistDividend);
 
         // when
-        Optional<Dividend> actual = dividendAnalysisService.findUpcomingDividend(lastYearDividends, Collections.emptyList());
+        Optional<Dividend> actual = stockDividendAnalysisService.findUpcomingDividend(lastYearDividends, Collections.emptyList());
 
         // then
         assertThat(actual.get()).isEqualTo(earlistDividend);
@@ -122,7 +122,7 @@ class DividendAnalysisServiceTest {
         List<Dividend> thisYearDividends = List.of(thisYearDividend);
 
         // when
-        Optional<Dividend> actual = dividendAnalysisService.findUpcomingDividend(lastYearDividends, thisYearDividends);
+        Optional<Dividend> actual = stockDividendAnalysisService.findUpcomingDividend(lastYearDividends, thisYearDividends);
 
         // then
         assertThat(actual.get()).isEqualTo(thisYearDividend);
