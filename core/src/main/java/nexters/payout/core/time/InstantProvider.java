@@ -13,7 +13,7 @@ public class InstantProvider {
         return LocalDate.ofInstant(instant, UTC);
     }
 
-    public static List<YearMonth> getNext12MonthsYearMonth() {
+    public static List<YearMonth> generateNext12Months() {
         YearMonth startYearMonth = getThisYearMonth();
         YearMonth endYearMonth = getAfterYearMonth(11);
 

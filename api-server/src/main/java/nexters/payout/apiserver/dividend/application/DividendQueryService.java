@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
@@ -32,7 +31,7 @@ public class DividendQueryService {
     private final StockRepository stockRepository;
 
     public List<MonthlyDividendResponse> getMonthlyDividends(final DividendRequest request) {
-        return InstantProvider.getNext12MonthsYearMonth()
+        return InstantProvider.generateNext12Months()
                 .stream()
                 .map(yearMonth -> MonthlyDividendResponse.of(
                                 yearMonth.getYear(),
