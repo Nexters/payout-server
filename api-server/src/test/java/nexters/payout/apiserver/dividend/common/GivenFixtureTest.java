@@ -47,7 +47,7 @@ public abstract class GivenFixtureTest {
                         eq(ticker),
                         eq(InstantProvider.getLastYear()),
                         eq(month)))
-                        .willReturn(List.of(DividendFixture.createDividendWithExDividendDate(
+                        .willReturn(List.of(DividendFixture.createDividend(
                                 stock.getId(),
                                 dividend,
                                 parseDate(InstantProvider.getLastYear(), month)
@@ -69,7 +69,7 @@ public abstract class GivenFixtureTest {
 
         List<Dividend> dividends = new ArrayList<>();
         for (int month : cycle) {
-            dividends.add(DividendFixture.createDividendWithExDividendDate(
+            dividends.add(DividendFixture.createDividend(
                     stock.getId(),
                     dividend,
                     parseDate(InstantProvider.getLastYear(), month)));

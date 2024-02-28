@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - refactor/#71
 
 jobs:
   build-and-push:

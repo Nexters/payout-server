@@ -150,7 +150,7 @@ class DividendControllerTest extends IntegrationTest {
                         .mapToDouble(MonthlyDividendResponse::totalDividend)
                         .sum())
                         .isEqualTo(expected),
-                () -> assertThat(actual.get(5).dividends().size()).isEqualTo(2)
+                () -> assertThat(actual).hasSize(12)
         );
     }
 
@@ -299,15 +299,15 @@ class DividendControllerTest extends IntegrationTest {
         Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY));
         Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL));
 
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 aapl.getId(),
                 2.5,
                 parseDate(InstantProvider.getLastYear(), 1)));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 aapl.getId(),
                 2.5,
                 parseDate(InstantProvider.getLastYear(), 6)));
-        dividendRepository.save(DividendFixture.createDividendWithExDividendDate(
+        dividendRepository.save(DividendFixture.createDividend(
                 tsla.getId(),
                 3.0,
                 parseDate(InstantProvider.getLastYear(), 6)));

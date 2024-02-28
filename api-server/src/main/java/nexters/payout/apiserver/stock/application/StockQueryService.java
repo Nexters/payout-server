@@ -11,7 +11,7 @@ import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
-import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
+import nexters.payout.domain.stock.domain.service.StockDividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
@@ -22,6 +22,7 @@ import java.time.Month;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class StockQueryService {
     private final StockRepository stockRepository;
     private final DividendRepository dividendRepository;
     private final SectorAnalysisService sectorAnalysisService;
-    private final DividendAnalysisService dividendAnalysisService;
+    private final StockDividendAnalysisService dividendAnalysisService;
 
     public List<StockResponse> searchStock(final String keyword, final Integer pageNumber, final Integer pageSize) {
         return stockRepository.findStocksByTickerOrNameWithPriority(keyword, pageNumber, pageSize)
@@ -46,21 +47,39 @@ public class StockQueryService {
         List<Dividend> lastYearDividends = getLastYearDividends(stock);
         List<Dividend> thisYearDividends = getThisYearDividends(stock);
 
+        if (lastYearDividends.isEmpty() && thisYearDividends.isEmpty()) {
+            return StockDetailResponse.of(stock, DividendResponse.noDividend());
+        }
+
         List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(stock, lastYearDividends);
         Double dividendYield = dividendAnalysisService.calculateDividendYield(stock, lastYearDividends);
+        Double dividendPerShare = dividendAnalysisService.calculateAverageDividend(
+                combinedDividends(lastYearDividends, thisYearDividends)
+        );
 
         return dividendAnalysisService.findUpcomingDividend(lastYearDividends, thisYearDividends)
-                .map(dividend -> StockDetailResponse.of(stock, dividend, dividendMonths, dividendYield))
-                .orElseGet(() -> StockDetailResponse.from(stock));
+                .map(upcomingDividend -> StockDetailResponse.of(
+                        stock,
+                        DividendResponse.fullDividendInfo(upcomingDividend, dividendYield, dividendMonths)
+                ))
+                .orElse(StockDetailResponse.of(
+                        stock,
+                        DividendResponse.withoutDividendDates(dividendPerShare, dividendYield, dividendMonths)
+                ));
     }
 
-    private Stock getStock(String ticker) {
+    private List<Dividend> combinedDividends(final List<Dividend> lastYearDividends, final List<Dividend> thisYearDividends) {
+        return Stream.of(lastYearDividends, thisYearDividends)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private Stock getStock(final String ticker) {
         return stockRepository.findByTicker(ticker)
                 .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
     }
-
-
-    private List<Dividend> getLastYearDividends(Stock stock) {
+    
+    private List<Dividend> getLastYearDividends(final Stock stock) {
         int lastYear = InstantProvider.getLastYear();
 
         return dividendRepository.findAllByStockId(stock.getId())
@@ -69,7 +88,7 @@ public class StockQueryService {
                 .collect(Collectors.toList());
     }
 
-    private List<Dividend> getThisYearDividends(Stock stock) {
+    private List<Dividend> getThisYearDividends(final Stock stock) {
         int thisYear = InstantProvider.getThisYear();
 
         return dividendRepository.findAllByStockId(stock.getId())
@@ -86,8 +105,7 @@ public class StockQueryService {
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
 
-    public List<UpcomingDividendResponse> getUpcomingDividendStocks(int pageNumber, int pageSize) {
-
+    public List<UpcomingDividendResponse> getUpcomingDividendStocks(final int pageNumber, final int pageSize) {
         return stockRepository.findUpcomingDividendStock(pageNumber, pageSize)
                 .stream()
                 .map(stockDividend -> UpcomingDividendResponse.of(
@@ -97,8 +115,7 @@ public class StockQueryService {
                 .collect(Collectors.toList());
     }
 
-    public List<StockDividendYieldResponse> getBiggestDividendStocks(int pageNumber, int pageSize) {
-
+    public List<StockDividendYieldResponse> getBiggestDividendStocks(final int pageNumber, final int pageSize) {
         return stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), pageNumber, pageSize)
                 .stream()
                 .map(stockDividendYield -> StockDividendYieldResponse.of(

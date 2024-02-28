@@ -2,6 +2,7 @@ package nexters.payout.batch.infra.fmp;
 
 import lombok.extern.slf4j.Slf4j;
 import nexters.payout.batch.application.FinancialClient;
+import nexters.payout.core.time.DateFormat;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.stock.domain.Exchange;
 import nexters.payout.domain.stock.domain.Sector;
@@ -24,6 +25,7 @@ import static nexters.payout.domain.stock.domain.Sector.ETF;
 @Slf4j
 @Service
 public class FmpFinancialClient implements FinancialClient {
+
     private final WebClient fmpWebClient;
     private final FmpProperties fmpProperties;
     private final static int MAX_LIMIT = 1000000;
@@ -118,9 +120,6 @@ public class FmpFinancialClient implements FinancialClient {
                 .block();
     }
 
-    /**
-     * 과거 배당금 관련 정보를 가져오는 메서드입니다.
-     */
     @Override
     public List<DividendData> getPastDividendList() {
 
@@ -151,9 +150,6 @@ public class FmpFinancialClient implements FinancialClient {
         return result;
     }
 
-    /**
-     * 다가오는 배당금 관련 정보를 가져오는 메서드입니다.
-     */
     @Override
     public List<DividendData> getUpcomingDividendList() {
 
@@ -177,7 +173,7 @@ public class FmpFinancialClient implements FinancialClient {
                 .uri(uriBuilder ->
                         uriBuilder
                                 .path(fmpProperties.getStockDividendCalenderPath())
-                                .queryParam("to", formatInstant(date))
+                                .queryParam("to", DateFormat.formatInstant(date))
                                 .queryParam("apikey", fmpProperties.getApiKey())
                                 .build())
                 .retrieve()
@@ -195,8 +191,8 @@ public class FmpFinancialClient implements FinancialClient {
                 .uri(uriBuilder ->
                         uriBuilder
                                 .path(fmpProperties.getStockDividendCalenderPath())
-                                .queryParam("from", formatInstant(from))
-                                .queryParam("to", formatInstant(to))
+                                .queryParam("from", DateFormat.formatInstant(from))
+                                .queryParam("to", DateFormat.formatInstant(to))
                                 .queryParam("apikey", fmpProperties.getApiKey())
                                 .build())
                 .retrieve()
@@ -207,14 +203,5 @@ public class FmpFinancialClient implements FinancialClient {
                 })
                 .collectList()
                 .block();
-    }
-
-    /**
-     * Instant를 "yyyy-MM-dd" 형식의 String으로 변환합니다.
-     */
-    private String formatInstant(Instant instant) {
-
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return formatter.format(Date.from(instant));
     }
 }

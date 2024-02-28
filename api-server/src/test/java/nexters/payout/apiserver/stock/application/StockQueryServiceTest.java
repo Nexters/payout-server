@@ -16,7 +16,7 @@ import nexters.payout.domain.stock.infra.dto.StockDividendDto;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
-import nexters.payout.domain.stock.domain.service.DividendAnalysisService;
+import nexters.payout.domain.stock.domain.service.StockDividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.infra.dto.StockDividendYieldDto;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ class StockQueryServiceTest {
     @Spy
     private SectorAnalysisService sectorAnalysisService;
     @Spy
-    private DividendAnalysisService dividendAnalysisService;
+    private StockDividendAnalysisService stockDividendAnalysisService;
 
     @Test
     void 검색된_종목_정보를_정상적으로_반환한다() {
@@ -80,7 +80,7 @@ class StockQueryServiceTest {
         Double expectedPrice = 2.0;
         Double expectedDividend = 0.5;
         Stock aapl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
-        Dividend dividend = DividendFixture.createDividendWithExDividendDate(aapl.getId(), 0.5, exDividendDate);
+        Dividend dividend = DividendFixture.createDividend(aapl.getId(), 0.5, exDividendDate);
 
         given(stockRepository.findByTicker(any())).willReturn(Optional.of(aapl));
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));
@@ -156,7 +156,7 @@ class StockQueryServiceTest {
     void 배당락일이_다가오는_주식_리스트를_가져온다() {
         // given
         Stock stock = StockFixture.createStock(AAPL, TECHNOLOGY);
-        Dividend expected = DividendFixture.createDividendWithPaymentDate(stock.getId(), LocalDateTime.now().plusDays(1).toInstant(UTC));
+        Dividend expected = DividendFixture.createDividendWithExDividendDate(stock.getId(), LocalDateTime.now().plusDays(1).toInstant(UTC));
         given(stockRepository.findUpcomingDividendStock(1, 10))
                 .willReturn(List.of(new StockDividendDto(stock, expected)));
 

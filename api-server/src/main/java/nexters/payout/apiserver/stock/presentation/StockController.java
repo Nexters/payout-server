@@ -38,7 +38,8 @@ public class StockController implements StockControllerDocs {
 
     @PostMapping("/sector-ratio")
     public ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
-            @Valid @RequestBody final SectorRatioRequest request) {
+            @Valid @RequestBody final SectorRatioRequest request
+    ) {
         return ResponseEntity.ok(stockQueryService.analyzeSectorRatio(request));
     }
 

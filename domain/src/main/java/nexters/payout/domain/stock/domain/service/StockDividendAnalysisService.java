@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @DomainService
-public class DividendAnalysisService {
+public class StockDividendAnalysisService {
     /**
      * 작년 데이터를 기반으로 배당을 주었던 월 리스트를 계산합니다.
      */
@@ -77,5 +77,13 @@ public class DividendAnalysisService {
     private boolean isCurrentOrFutureDate(final LocalDate date) {
         LocalDate now = InstantProvider.getNow();
         return date.isEqual(now) || date.isAfter(InstantProvider.getNow());
+    }
+
+    public Double calculateAverageDividend(final List<Dividend> dividends) {
+        return dividends
+                .stream()
+                .mapToDouble(Dividend::getDividend)
+                .average()
+                .orElse(0.0);
     }
 }

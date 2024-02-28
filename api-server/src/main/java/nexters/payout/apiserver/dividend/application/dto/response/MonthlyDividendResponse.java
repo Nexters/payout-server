@@ -15,18 +15,16 @@ public record MonthlyDividendResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double totalDividend
 ) {
-    public static MonthlyDividendResponse of(int year, int month, List<SingleMonthlyDividendResponse> dividends) {
-
-        dividends = dividends
-                .stream()
-                .sorted(Comparator.comparingDouble(SingleMonthlyDividendResponse::totalDividend).reversed())
-                .toList();
+    public static MonthlyDividendResponse of(
+            final int year, final int month, final List<SingleMonthlyDividendResponse> dividends
+    ) {
         return new MonthlyDividendResponse(
                 year,
                 month,
-                dividends,
-                dividends
-                        .stream()
+                dividends.stream()
+                        .sorted(Comparator.comparingDouble(SingleMonthlyDividendResponse::totalDividend).reversed())
+                        .toList(),
+                dividends.stream()
                         .mapToDouble(SingleMonthlyDividendResponse::totalDividend)
                         .sum()
         );
