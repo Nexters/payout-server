@@ -340,7 +340,7 @@ class StockControllerTest extends IntegrationTest {
         LocalDateTime expected = LocalDateTime.now().plusDays(1);
 
         // when
-        List<SingleUpcomingDividendResponse> actual = RestAssured
+        UpcomingDividendResponse actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
@@ -353,11 +353,11 @@ class StockControllerTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.size()).isEqualTo(1),
-                () -> assertThat(actual.get(0).stockId()).isEqualTo(aapl.getId()),
-                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(expected.getYear()),
-                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
-                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
+                () -> assertThat(actual.dividends().size()).isEqualTo(1),
+                () -> assertThat(actual.dividends().get(0).stockId()).isEqualTo(aapl.getId()),
+                () -> assertThat(getYear(actual.dividends().get(0).exDividendDate())).isEqualTo(expected.getYear()),
+                () -> assertThat(getMonth(actual.dividends().get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
+                () -> assertThat(getDayOfMonth(actual.dividends().get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
         );
     }
 
@@ -379,7 +379,7 @@ class StockControllerTest extends IntegrationTest {
         LocalDateTime expected = LocalDateTime.now().plusDays(1);
 
         // when
-        List<SingleUpcomingDividendResponse> actual = RestAssured
+        UpcomingDividendResponse actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
@@ -392,11 +392,11 @@ class StockControllerTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.size()).isEqualTo(2),
-                () -> assertThat(actual.get(0).stockId()).isEqualTo(tsla.getId()),
-                () -> assertThat(getYear(actual.get(0).exDividendDate())).isEqualTo(expected.getYear()),
-                () -> assertThat(getMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
-                () -> assertThat(getDayOfMonth(actual.get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
+                () -> assertThat(actual.dividends().size()).isEqualTo(2),
+                () -> assertThat(actual.dividends().get(0).stockId()).isEqualTo(tsla.getId()),
+                () -> assertThat(getYear(actual.dividends().get(0).exDividendDate())).isEqualTo(expected.getYear()),
+                () -> assertThat(getMonth(actual.dividends().get(0).exDividendDate())).isEqualTo(expected.getMonthValue()),
+                () -> assertThat(getDayOfMonth(actual.dividends().get(0).exDividendDate())).isEqualTo(expected.getDayOfMonth())
         );
     }
 
@@ -430,7 +430,7 @@ class StockControllerTest extends IntegrationTest {
         Double expectedTslaDividendYield = 0.5;
 
         // when
-        List<SingleStockDividendYieldResponse> actual = RestAssured
+        StockDividendYieldResponse actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
@@ -443,10 +443,10 @@ class StockControllerTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.size()).isEqualTo(2),
-                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expectedAaplDividendYield),
-                () -> assertThat(actual.get(0).ticker()).isEqualTo(aapl.getTicker()),
-                () -> assertThat(actual.get(1).dividendYield()).isEqualTo(expectedTslaDividendYield)
+                () -> assertThat(actual.dividends().size()).isEqualTo(2),
+                () -> assertThat(actual.dividends().get(0).dividendYield()).isEqualTo(expectedAaplDividendYield),
+                () -> assertThat(actual.dividends().get(0).ticker()).isEqualTo(aapl.getTicker()),
+                () -> assertThat(actual.dividends().get(1).dividendYield()).isEqualTo(expectedTslaDividendYield)
         );
     }
 
@@ -463,7 +463,7 @@ class StockControllerTest extends IntegrationTest {
         Double expected = 1.0;
 
         // when
-        List<SingleStockDividendYieldResponse> actual = RestAssured
+        StockDividendYieldResponse actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
@@ -476,8 +476,8 @@ class StockControllerTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.size()).isEqualTo(1),
-                () -> assertThat(actual.get(0).dividendYield()).isEqualTo(expected)
+                () -> assertThat(actual.dividends().size()).isEqualTo(1),
+                () -> assertThat(actual.dividends().get(0).dividendYield()).isEqualTo(expected)
         );
     }
 }
