@@ -1,5 +1,6 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.stock.domain.Stock;
@@ -15,14 +16,17 @@ public record SingleUpcomingDividendResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        Instant exDividendDate
+        Instant exDividendDate,
+        @JsonIgnore
+        Instant lastModifiedAt
 ) {
     public static SingleUpcomingDividendResponse of(final Stock stock, final Dividend dividend) {
         return new SingleUpcomingDividendResponse(
                 stock.getId(),
                 stock.getTicker(),
                 stock.getLogoUrl(),
-                dividend.getExDividendDate()
+                dividend.getExDividendDate(),
+                dividend.getLastModifiedAt()
         );
     }
 }
