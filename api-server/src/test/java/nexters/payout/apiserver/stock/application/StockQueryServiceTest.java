@@ -161,7 +161,7 @@ class StockQueryServiceTest {
                 .willReturn(List.of(new StockDividendDto(stock, expected)));
 
         // when
-        List<SingleUpcomingDividendResponse> actual = stockQueryService.getUpcomingDividendStocks(1, 10);
+        List<SingleUpcomingDividendResponse> actual = stockQueryService.getUpcomingDividendStocks(1, 10).dividends();
 
         // then
         assertAll(
@@ -184,7 +184,7 @@ class StockQueryServiceTest {
         Double expectedAaplDividendYield = 5.0;
 
         // when
-        List<SingleStockDividendYieldResponse> actual = stockQueryService.getBiggestDividendStocks(1, 10);
+        List<SingleStockDividendYieldResponse> actual = stockQueryService.getBiggestDividendStocks(1, 10).dividends();
 
 
         // then
