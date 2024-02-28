@@ -41,25 +41,6 @@ public record StockDetailResponse(
         List<Month> dividendMonths
 ) {
 
-    public static StockDetailResponse from(final Stock stock, final List<Month> dividendMonths, final Double dividendYield) {
-        return new StockDetailResponse(
-                stock.getId(),
-                stock.getTicker(),
-                stock.getName(),
-                stock.getSector().getName(),
-                stock.getExchange(),
-                stock.getIndustry(),
-                stock.getPrice(),
-                stock.getVolume(),
-                stock.getLogoUrl(),
-                null,
-                null,
-                null,
-                dividendYield,
-                dividendMonths
-        );
-    }
-
     public static StockDetailResponse of(
             final Stock stock, final DividendResponse dividendResponse
     ) {
@@ -74,7 +55,7 @@ public record StockDetailResponse(
                 stock.getVolume(),
                 stock.getLogoUrl(),
                 dividendResponse.dividendPerShare(),
-                dividendResponse.exDividendDate(),
+                dividendResponse.upcomingExDividendDate(),
                 dividendResponse.paymentDate(),
                 dividendResponse.dividendYield(),
                 dividendResponse.dividendMonths()
