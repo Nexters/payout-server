@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import nexters.payout.apiserver.dividend.application.dto.request.DividendRequest;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.response.*;
 import nexters.payout.core.exception.ErrorResponse;
@@ -83,7 +82,7 @@ public interface StockControllerDocs {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @Operation(summary = "배당락일이 다가오는 주식 리스트")
-    ResponseEntity<List<UpcomingDividendResponse>> getUpComingDividendStocks(
+    ResponseEntity<UpcomingDividendResponse> getUpComingDividendStocks(
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
             @Parameter(description = "page size for pagination", example = "20", required = true)
@@ -98,7 +97,7 @@ public interface StockControllerDocs {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @Operation(summary = "배당수익률이 큰 주식 리스트")
-    ResponseEntity<List<StockDividendYieldResponse>> getBiggestDividendYieldStocks(
+    ResponseEntity<StockDividendYieldResponse> getBiggestDividendYieldStocks(
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
             @Parameter(description = "page size for pagination", example = "20", required = true)

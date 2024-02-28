@@ -340,7 +340,7 @@ class StockControllerTest extends IntegrationTest {
         LocalDateTime expected = LocalDateTime.now().plusDays(1);
 
         // when
-        List<UpcomingDividendResponse> actual = RestAssured
+        List<SingleUpcomingDividendResponse> actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
@@ -379,7 +379,7 @@ class StockControllerTest extends IntegrationTest {
         LocalDateTime expected = LocalDateTime.now().plusDays(1);
 
         // when
-        List<UpcomingDividendResponse> actual = RestAssured
+        List<SingleUpcomingDividendResponse> actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
@@ -430,7 +430,7 @@ class StockControllerTest extends IntegrationTest {
         Double expectedTslaDividendYield = 0.5;
 
         // when
-        List<StockDividendYieldResponse> actual = RestAssured
+        List<SingleStockDividendYieldResponse> actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
@@ -463,7 +463,7 @@ class StockControllerTest extends IntegrationTest {
         Double expected = 1.0;
 
         // when
-        List<StockDividendYieldResponse> actual = RestAssured
+        List<SingleStockDividendYieldResponse> actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)

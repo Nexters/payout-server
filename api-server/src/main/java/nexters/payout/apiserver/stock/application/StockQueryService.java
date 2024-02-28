@@ -78,7 +78,7 @@ public class StockQueryService {
         return stockRepository.findByTicker(ticker)
                 .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
     }
-    
+
     private List<Dividend> getLastYearDividends(final Stock stock) {
         int lastYear = InstantProvider.getLastYear();
 
@@ -105,24 +105,28 @@ public class StockQueryService {
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
 
-    public List<UpcomingDividendResponse> getUpcomingDividendStocks(final int pageNumber, final int pageSize) {
-        return stockRepository.findUpcomingDividendStock(pageNumber, pageSize)
-                .stream()
-                .map(stockDividend -> UpcomingDividendResponse.of(
-                        stockDividend.stock(),
-                        stockDividend.dividend())
-                )
-                .collect(Collectors.toList());
+    public UpcomingDividendResponse getUpcomingDividendStocks(final int pageNumber, final int pageSize) {
+        return UpcomingDividendResponse.of(
+                stockRepository.findUpcomingDividendStock(pageNumber, pageSize)
+                        .stream()
+                        .map(stockDividend -> SingleUpcomingDividendResponse.of(
+                                stockDividend.stock(),
+                                stockDividend.dividend())
+                        )
+                        .collect(Collectors.toList())
+        );
     }
 
-    public List<StockDividendYieldResponse> getBiggestDividendStocks(final int pageNumber, final int pageSize) {
-        return stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), pageNumber, pageSize)
-                .stream()
-                .map(stockDividendYield -> StockDividendYieldResponse.of(
-                        stockDividendYield.stock(),
-                        stockDividendYield.dividendYield())
-                )
-                .collect(Collectors.toList());
+    public StockDividendYieldResponse getBiggestDividendStocks(final int pageNumber, final int pageSize) {
+        return StockDividendYieldResponse.of(
+                stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), pageNumber, pageSize)
+                        .stream()
+                        .map(stockDividendYield -> SingleStockDividendYieldResponse.of(
+                                stockDividendYield.stock(),
+                                stockDividendYield.dividendYield())
+                        )
+                        .collect(Collectors.toList())
+        );
     }
 
     private List<StockShare> getStockShares(final SectorRatioRequest request) {

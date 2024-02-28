@@ -4,7 +4,7 @@ import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.*;
 import nexters.payout.core.time.InstantProvider;
-import nexters.payout.apiserver.stock.application.dto.response.UpcomingDividendResponse;
+import nexters.payout.apiserver.stock.application.dto.response.SingleUpcomingDividendResponse;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
@@ -161,7 +161,7 @@ class StockQueryServiceTest {
                 .willReturn(List.of(new StockDividendDto(stock, expected)));
 
         // when
-        List<UpcomingDividendResponse> actual = stockQueryService.getUpcomingDividendStocks(1, 10);
+        List<SingleUpcomingDividendResponse> actual = stockQueryService.getUpcomingDividendStocks(1, 10);
 
         // then
         assertAll(
@@ -184,7 +184,7 @@ class StockQueryServiceTest {
         Double expectedAaplDividendYield = 5.0;
 
         // when
-        List<StockDividendYieldResponse> actual = stockQueryService.getBiggestDividendStocks(1, 10);
+        List<SingleStockDividendYieldResponse> actual = stockQueryService.getBiggestDividendStocks(1, 10);
 
 
         // then

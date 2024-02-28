@@ -44,7 +44,7 @@ public class StockController implements StockControllerDocs {
     }
 
     @GetMapping("/ex-dividend-dates/upcoming")
-    public ResponseEntity<List<UpcomingDividendResponse>> getUpComingDividendStocks(
+    public ResponseEntity<UpcomingDividendResponse> getUpComingDividendStocks(
             @RequestParam @NotNull final Integer pageNumber,
             @RequestParam @NotNull final Integer pageSize
     ) {
@@ -52,7 +52,7 @@ public class StockController implements StockControllerDocs {
     }
 
     @GetMapping("/dividend-yields/highest")
-    public ResponseEntity<List<StockDividendYieldResponse>> getBiggestDividendYieldStocks(
+    public ResponseEntity<StockDividendYieldResponse> getBiggestDividendYieldStocks(
             @RequestParam @NotNull final Integer pageNumber,
             @RequestParam @NotNull final Integer pageSize
     ) {
