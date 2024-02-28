@@ -14,9 +14,7 @@ public record SingleStockDividendYieldResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        Double dividendYield,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        Instant lastModifiedAt
+        Double dividendYield
 ) {
 
     public static SingleStockDividendYieldResponse of(final Stock stock, final Double dividendYield) {
@@ -24,8 +22,7 @@ public record SingleStockDividendYieldResponse(
                 stock.getId(),
                 stock.getTicker(),
                 stock.getLogoUrl(),
-                dividendYield,
-                stock.getLastModifiedAt()
+                dividendYield
         );
     }
 }

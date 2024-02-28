@@ -15,17 +15,14 @@ public record SingleUpcomingDividendResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        Instant exDividendDate,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        Instant lastModifiedAt
+        Instant exDividendDate
 ) {
     public static SingleUpcomingDividendResponse of(final Stock stock, final Dividend dividend) {
         return new SingleUpcomingDividendResponse(
                 stock.getId(),
                 stock.getTicker(),
                 stock.getLogoUrl(),
-                dividend.getExDividendDate(),
-                dividend.getLastModifiedAt()
+                dividend.getExDividendDate()
         );
     }
 }
