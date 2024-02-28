@@ -3,6 +3,7 @@ package nexters.payout.apiserver.stock.application.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import nexters.payout.domain.stock.domain.Stock;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public record StockDividendYieldResponse(
@@ -13,7 +14,9 @@ public record StockDividendYieldResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String logoUrl,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        Double dividendYield
+        Double dividendYield,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+        Instant lastModifiedAt
 ) {
 
     public static StockDividendYieldResponse of(final Stock stock, final Double dividendYield) {
@@ -21,7 +24,8 @@ public record StockDividendYieldResponse(
                 stock.getId(),
                 stock.getTicker(),
                 stock.getLogoUrl(),
-                dividendYield
+                dividendYield,
+                stock.getLastModifiedAt()
         );
     }
 }
