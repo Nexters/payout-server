@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import nexters.payout.apiserver.dividend.application.dto.request.DividendRequest;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.response.*;
 import nexters.payout.core.exception.ErrorResponse;
@@ -31,7 +32,7 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "티커명/회사명 검색")
     ResponseEntity<List<StockResponse>> searchStock(
-            @Parameter(description = "tickerName or companyName of stock ex) APPL, APPLE", required = true)
+            @Parameter(description = "ticker name or company name of stock ex) APPL, APPLE", required = true)
             @RequestParam @NotEmpty String ticker,
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
@@ -69,7 +70,7 @@ public interface StockControllerDocs {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = SectorRatioRequest.class),
                             examples = {
-                                    @ExampleObject(name = "SectorRatioRequest")
+                                    @ExampleObject(name = "SectorRatioRequestExample", value = "{\"tickerShares\":[{\"ticker\":\"AAPL\",\"share\":3}]}")
                             })))
     ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
             @Valid @RequestBody final SectorRatioRequest request);
