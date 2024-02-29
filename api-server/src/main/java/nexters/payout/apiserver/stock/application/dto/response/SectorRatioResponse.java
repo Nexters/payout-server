@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 public record SectorRatioResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector name")
         String sectorName,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector value")
+        String sectorValue,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "sector ratio")
         Double sectorRatio,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -21,6 +23,7 @@ public record SectorRatioResponse(
                 .stream()
                 .map(entry -> new SectorRatioResponse(
                         entry.getKey().getName(),
+                        entry.getKey().getValue(),
                         entry.getValue().ratio(),
                         entry.getValue()
                                 .stockShares()

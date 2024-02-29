@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
@@ -64,7 +63,7 @@ public class FmpFinancialClient implements FinancialClient {
                             tickerName,
                             fmpStockData.getCompanyName(),
                             fmpStockData.getExchangeShortName(),
-                            Sector.fromValue(fmpStockData.getSector()),
+                            Sector.fromName(fmpStockData.getSector()),
                             fmpStockData.getIndustry(),
                             fmpStockData.getPrice(),
                             fmpVolumeData.volume(),

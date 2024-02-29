@@ -45,17 +45,19 @@ public class StockController implements StockControllerDocs {
 
     @GetMapping("/ex-dividend-dates/upcoming")
     public ResponseEntity<UpcomingDividendResponse> getUpComingDividendStocks(
+            @RequestParam @NotEmpty final String sector,
             @RequestParam @NotNull final Integer pageNumber,
             @RequestParam @NotNull final Integer pageSize
     ) {
-        return ResponseEntity.ok(stockQueryService.getUpcomingDividendStocks(pageNumber, pageSize));
+        return ResponseEntity.ok(stockQueryService.getUpcomingDividendStocks(sector, pageNumber, pageSize));
     }
 
     @GetMapping("/dividend-yields/highest")
     public ResponseEntity<StockDividendYieldResponse> getBiggestDividendYieldStocks(
+            @RequestParam @NotEmpty final String sector,
             @RequestParam @NotNull final Integer pageNumber,
             @RequestParam @NotNull final Integer pageSize
     ) {
-        return ResponseEntity.ok(stockQueryService.getBiggestDividendStocks(pageNumber, pageSize));
+        return ResponseEntity.ok(stockQueryService.getBiggestDividendStocks(sector, pageNumber, pageSize));
     }
 }
