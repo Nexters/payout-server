@@ -33,7 +33,7 @@ public record StockResponse(
                 stock.getTicker(),
                 stock.getName(),
                 stock.getSector().getName(),
-                stock.getSector().getValue(),
+                stock.getSector().name(),
                 stock.getExchange(),
                 stock.getIndustry(),
                 stock.getPrice(),

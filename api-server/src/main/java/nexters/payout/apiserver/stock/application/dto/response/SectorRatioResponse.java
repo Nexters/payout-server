@@ -23,7 +23,7 @@ public record SectorRatioResponse(
                 .stream()
                 .map(entry -> new SectorRatioResponse(
                         entry.getKey().getName(),
-                        entry.getKey().getValue(),
+                        entry.getKey().name(),
                         entry.getValue().ratio(),
                         entry.getValue()
                                 .stockShares()

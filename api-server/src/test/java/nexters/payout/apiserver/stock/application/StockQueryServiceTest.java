@@ -132,7 +132,7 @@ class StockQueryServiceTest {
         List<SectorRatioResponse> expected = List.of(
                 new SectorRatioResponse(
                         Sector.TECHNOLOGY.getName(),
-                        Sector.TECHNOLOGY.getValue(),
+                        Sector.TECHNOLOGY.name(),
                         0.547945205479452,
                         List.of(new StockShareResponse(
                                 StockResponse.from(appl),
@@ -141,7 +141,7 @@ class StockQueryServiceTest {
                 ),
                 new SectorRatioResponse(
                         Sector.CONSUMER_CYCLICAL.getName(),
-                        Sector.CONSUMER_CYCLICAL.getValue(),
+                        Sector.CONSUMER_CYCLICAL.name(),
                         0.4520547945205479,
                         List.of(new StockShareResponse(
                                 StockResponse.from(tsla),

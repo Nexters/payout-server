@@ -74,8 +74,8 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).containsExactlyInAnyOrderElementsOf(
                         List.of(
-                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getSector().getValue(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume(), apdd.getLogoUrl()),
-                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getSector().getValue(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume(), abcd.getLogoUrl())
+                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getSector().name(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume(), apdd.getLogoUrl()),
+                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getSector().name(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume(), abcd.getLogoUrl())
                         )
                 )
         );
@@ -107,8 +107,8 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).isEqualTo(
                         List.of(
-                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getSector().getValue(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume(), apdd.getLogoUrl()),
-                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getSector().getValue(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume(), abcd.getLogoUrl())
+                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getSector().name(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume(), apdd.getLogoUrl()),
+                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getSector().name(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume(), abcd.getLogoUrl())
                         )
                 )
         );
@@ -140,8 +140,8 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).containsExactlyInAnyOrderElementsOf(
                         List.of(
-                                new StockResponse(aaaa.getId(), aaaa.getTicker(), aaaa.getName(), aaaa.getSector().getName(), aaaa.getSector().getValue(), aaaa.getExchange(), aaaa.getIndustry(), aaaa.getPrice(), aaaa.getVolume(), aaaa.getLogoUrl()),
-                                new StockResponse(dddd.getId(), dddd.getTicker(), dddd.getName(), dddd.getSector().getName(), dddd.getSector().getValue(), dddd.getExchange(), dddd.getIndustry(), dddd.getPrice(), dddd.getVolume(), dddd.getLogoUrl())
+                                new StockResponse(aaaa.getId(), aaaa.getTicker(), aaaa.getName(), aaaa.getSector().getName(), aaaa.getSector().name(), aaaa.getExchange(), aaaa.getIndustry(), aaaa.getPrice(), aaaa.getVolume(), aaaa.getLogoUrl()),
+                                new StockResponse(dddd.getId(), dddd.getTicker(), dddd.getName(), dddd.getSector().getName(), dddd.getSector().name(), dddd.getExchange(), dddd.getIndustry(), dddd.getPrice(), dddd.getVolume(), dddd.getLogoUrl())
                         )
                 )
         );
