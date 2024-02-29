@@ -1,28 +1,18 @@
 package nexters.payout.apiserver.stock.application.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import nexters.payout.domain.dividend.domain.Dividend;
-import nexters.payout.domain.stock.domain.Stock;
 
 import java.time.Instant;
-import java.util.UUID;
+import java.util.List;
 
 public record UpcomingDividendResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        UUID stockId,
+        List<SingleUpcomingDividendResponse> dividends,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        String ticker,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        String logoUrl,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        Instant exDividendDate
+        Instant lastModifiedAt
 ) {
-    public static UpcomingDividendResponse of(final Stock stock, final Dividend dividend) {
-        return new UpcomingDividendResponse(
-                stock.getId(),
-                stock.getTicker(),
-                stock.getLogoUrl(),
-                dividend.getExDividendDate()
-        );
+    public static UpcomingDividendResponse of(List<SingleUpcomingDividendResponse> dividends) {
+        return dividends.isEmpty() ? new UpcomingDividendResponse(dividends, null) :
+                new UpcomingDividendResponse(dividends, dividends.get(0).lastModifiedAt());
     }
 }

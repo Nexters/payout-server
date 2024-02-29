@@ -10,7 +10,7 @@ import java.util.List;
 
 public record DividendResponse(
         Double dividendPerShare,
-        LocalDate exDividendDate,
+        LocalDate upcomingExDividendDate,
         LocalDate paymentDate,
         Double dividendYield,
         List<Month> dividendMonths

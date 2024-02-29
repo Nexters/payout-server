@@ -32,7 +32,7 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "티커명/회사명 검색")
     ResponseEntity<List<StockResponse>> searchStock(
-            @Parameter(description = "tickerName or companyName of stock ex) APPL, APPLE", required = true)
+            @Parameter(description = "ticker name or company name of stock ex) APPL, APPLE", required = true)
             @RequestParam @NotEmpty String ticker,
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
@@ -70,7 +70,7 @@ public interface StockControllerDocs {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = SectorRatioRequest.class),
                             examples = {
-                                    @ExampleObject(name = "SectorRatioRequest")
+                                    @ExampleObject(name = "SectorRatioRequestExample", value = "{\"tickerShares\":[{\"ticker\":\"AAPL\",\"share\":3}]}")
                             })))
     ResponseEntity<List<SectorRatioResponse>> findSectorRatios(
             @Valid @RequestBody final SectorRatioRequest request);
@@ -83,7 +83,7 @@ public interface StockControllerDocs {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @Operation(summary = "배당락일이 다가오는 주식 리스트")
-    ResponseEntity<List<UpcomingDividendResponse>> getUpComingDividendStocks(
+    ResponseEntity<UpcomingDividendResponse> getUpComingDividendStocks(
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
             @Parameter(description = "page size for pagination", example = "20", required = true)
@@ -98,7 +98,7 @@ public interface StockControllerDocs {
                     content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @Operation(summary = "배당수익률이 큰 주식 리스트")
-    ResponseEntity<List<StockDividendYieldResponse>> getBiggestDividendYieldStocks(
+    ResponseEntity<StockDividendYieldResponse> getBiggestDividendYieldStocks(
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
             @Parameter(description = "page size for pagination", example = "20", required = true)
