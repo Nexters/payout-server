@@ -82,7 +82,7 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
                 .where(dividend1.exDividendDate.year().eq(lastYear).and(stock.sector.eq(sector)))
                 .groupBy(stock.id, stock.price)
                 .orderBy(dividendYield.desc())
-                .having(dividendYield.loe(MAX_DIVIDEND_YIELD))
+                .having(dividendYield.lt(MAX_DIVIDEND_YIELD))
                 .offset((long) (pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .fetch();
