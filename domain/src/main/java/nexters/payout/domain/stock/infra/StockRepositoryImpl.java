@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import nexters.payout.domain.stock.domain.QStock;
+import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.infra.dto.StockDividendDto;
 import nexters.payout.domain.stock.infra.dto.StockDividendYieldDto;
@@ -24,6 +25,7 @@ import static nexters.payout.domain.stock.domain.QStock.stock;
 @RequiredArgsConstructor
 public class StockRepositoryImpl implements StockRepositoryCustom {
 
+    private final Double MAX_DIVIDEND_YIELD = 0.9;
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -54,13 +56,13 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
     }
 
     @Override
-    public List<StockDividendDto> findUpcomingDividendStock(int pageNumber, int pageSize) {
+    public List<StockDividendDto> findUpcomingDividendStock(Sector sector, int pageNumber, int pageSize) {
 
         return queryFactory
                 .select(Projections.constructor(StockDividendDto.class, stock, dividend1))
                 .from(stock)
                 .innerJoin(dividend1).on(stock.id.eq(dividend1.stockId))
-                .where(dividend1.exDividendDate.after(LocalDateTime.now().toInstant(UTC)))
+                .where(dividend1.exDividendDate.after(LocalDateTime.now().toInstant(UTC)).and(stock.sector.eq(sector)))
                 .orderBy(dividend1.exDividendDate.asc())
                 .offset((long) (pageNumber - 1) * pageSize)
                 .limit(pageSize)
@@ -68,7 +70,7 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
     }
 
     @Override
-    public List<StockDividendYieldDto> findBiggestDividendYieldStock(int lastYear, int pageNumber, int pageSize) {
+    public List<StockDividendYieldDto> findBiggestDividendYieldStock(int lastYear, Sector sector, int pageNumber, int pageSize) {
 
         NumberExpression<Double> dividendYield = dividend1.dividend.sum().coalesce(1.0).divide(stock.price);
 
@@ -77,9 +79,10 @@ public class StockRepositoryImpl implements StockRepositoryCustom {
                 .from(stock)
                 .innerJoin(dividend1)
                 .on(stock.id.eq(dividend1.stockId))
-                .where(dividend1.exDividendDate.year().eq(lastYear))
+                .where(dividend1.exDividendDate.year().eq(lastYear).and(stock.sector.eq(sector)))
                 .groupBy(stock.id, stock.price)
                 .orderBy(dividendYield.desc())
+                .having(dividendYield.lt(MAX_DIVIDEND_YIELD))
                 .offset((long) (pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .fetch();

@@ -74,8 +74,8 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).containsExactlyInAnyOrderElementsOf(
                         List.of(
-                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume(), apdd.getLogoUrl()),
-                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume(), abcd.getLogoUrl())
+                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getSector().name(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume(), apdd.getLogoUrl()),
+                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getSector().name(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume(), abcd.getLogoUrl())
                         )
                 )
         );
@@ -107,8 +107,8 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).isEqualTo(
                         List.of(
-                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume(), apdd.getLogoUrl()),
-                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume(), abcd.getLogoUrl())
+                                new StockResponse(apdd.getId(), apdd.getTicker(), apdd.getName(), apdd.getSector().getName(), apdd.getSector().name(), apdd.getExchange(), apdd.getIndustry(), apdd.getPrice(), apdd.getVolume(), apdd.getLogoUrl()),
+                                new StockResponse(abcd.getId(), abcd.getTicker(), abcd.getName(), abcd.getSector().getName(), abcd.getSector().name(), abcd.getExchange(), abcd.getIndustry(), abcd.getPrice(), abcd.getVolume(), abcd.getLogoUrl())
                         )
                 )
         );
@@ -140,8 +140,8 @@ class StockControllerTest extends IntegrationTest {
                 () -> assertThat(actual).hasSize(2),
                 () -> assertThat(actual).containsExactlyInAnyOrderElementsOf(
                         List.of(
-                                new StockResponse(aaaa.getId(), aaaa.getTicker(), aaaa.getName(), aaaa.getSector().getName(), aaaa.getExchange(), aaaa.getIndustry(), aaaa.getPrice(), aaaa.getVolume(), aaaa.getLogoUrl()),
-                                new StockResponse(dddd.getId(), dddd.getTicker(), dddd.getName(), dddd.getSector().getName(), dddd.getExchange(), dddd.getIndustry(), dddd.getPrice(), dddd.getVolume(), dddd.getLogoUrl())
+                                new StockResponse(aaaa.getId(), aaaa.getTicker(), aaaa.getName(), aaaa.getSector().getName(), aaaa.getSector().name(), aaaa.getExchange(), aaaa.getIndustry(), aaaa.getPrice(), aaaa.getVolume(), aaaa.getLogoUrl()),
+                                new StockResponse(dddd.getId(), dddd.getTicker(), dddd.getName(), dddd.getSector().getName(), dddd.getSector().name(), dddd.getExchange(), dddd.getIndustry(), dddd.getPrice(), dddd.getVolume(), dddd.getLogoUrl())
                         )
                 )
         );
@@ -344,7 +344,7 @@ class StockControllerTest extends IntegrationTest {
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
-                .when().get("api/stocks/ex-dividend-dates/upcoming?pageNumber=1&pageSize=20")
+                .when().get("api/stocks/ex-dividend-dates/upcoming?sector=TECHNOLOGY&pageNumber=1&pageSize=20")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -383,7 +383,7 @@ class StockControllerTest extends IntegrationTest {
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
-                .when().get("api/stocks/ex-dividend-dates/upcoming?pageNumber=1&pageSize=20")
+                .when().get("api/stocks/ex-dividend-dates/upcoming?sector=TECHNOLOGY&pageNumber=1&pageSize=20")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -403,7 +403,7 @@ class StockControllerTest extends IntegrationTest {
     @Test
     void 배당_수익률이_큰_순서대로_주식_리스트를_가져온다() {
         // given
-        Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 8.0));
+        Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 10.0));
         Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 20.0));
         dividendRepository.save(DividendFixture.createDividend(
                 aapl.getId(),
@@ -426,7 +426,7 @@ class StockControllerTest extends IntegrationTest {
                 LocalDate.of(InstantProvider.getLastYear() - 1, 6, 1).atStartOfDay().toInstant(UTC)
         ));
 
-        Double expectedAaplDividendYield = 1.0;
+        Double expectedAaplDividendYield = 0.8;
         Double expectedTslaDividendYield = 0.5;
 
         // when
@@ -434,7 +434,7 @@ class StockControllerTest extends IntegrationTest {
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
-                .when().get("api/stocks/dividend-yields/highest?pageNumber=1&pageSize=20")
+                .when().get("api/stocks/dividend-yields/highest?sector=TECHNOLOGY&pageNumber=1&pageSize=20")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -457,17 +457,17 @@ class StockControllerTest extends IntegrationTest {
         stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 0.0));
         dividendRepository.save(DividendFixture.createDividend(
                 aapl.getId(),
-                5.0,
+                2.5,
                 LocalDate.of(InstantProvider.getLastYear(), 3, 1).atStartOfDay().toInstant(UTC)
         ));
-        Double expected = 1.0;
+        Double expected = 0.5;
 
         // when
         StockDividendYieldResponse actual = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
-                .when().get("api/stocks/dividend-yields/highest?pageNumber=1&pageSize=20")
+                .when().get("api/stocks/dividend-yields/highest?sector=TECHNOLOGY&pageNumber=1&pageSize=20")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -478,6 +478,35 @@ class StockControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(actual.dividends().size()).isEqualTo(1),
                 () -> assertThat(actual.dividends().get(0).dividendYield()).isEqualTo(expected)
+        );
+    }
+
+    @Test
+    void 배당_수익률이_0_9를_넘어가는_주식은_배당_수익률_계산시_포함되지_않는다() {
+        // given
+        Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 5.0));
+        stockRepository.save(StockFixture.createStock(TSLA, Sector.TECHNOLOGY, 0.0));
+        dividendRepository.save(DividendFixture.createDividend(
+                aapl.getId(),
+                10.0,
+                LocalDate.of(InstantProvider.getLastYear(), 3, 1).atStartOfDay().toInstant(UTC)
+        ));
+
+        // when
+        StockDividendYieldResponse actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .when().get("api/stocks/dividend-yields/highest?sector=TECHNOLOGY&pageNumber=1&pageSize=20")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(actual.dividends().size()).isEqualTo(0)
         );
     }
 }

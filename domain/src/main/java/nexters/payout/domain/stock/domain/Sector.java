@@ -43,6 +43,10 @@ public enum Sector {
             INDUSTRIAL_GOODS.name, FINANCIAL.name, SERVICES.name, CONGLOMERATES.name, ETC.name()
     );
 
+    private static final Set<String> ETC_VALUES = Set.of(
+            INDUSTRIAL_GOODS.name(), FINANCIAL.name(), SERVICES.name(), CONGLOMERATES.name(), ETC.name()
+    );
+
     public static List<String> getNames() {
         return Arrays.stream(Sector.values())
                 .map(it -> it.name)
@@ -50,15 +54,27 @@ public enum Sector {
                 .toList();
     }
 
-    public static Sector fromValue(String sectorName) {
-        if (sectorName == null || isEtcCategory(sectorName)) {
+    public static Sector fromName(String sectorName) {
+        if (sectorName == null || isEtcCategoryName(sectorName)) {
             return ETC;
         }
 
         return NAME_TO_SECTOR_MAP.getOrDefault(sectorName, ETC);
     }
 
-    private static boolean isEtcCategory(String value) {
+    public static Sector fromValue(String sectorValue) {
+        if (sectorValue == null || isEtcCategoryValue(sectorValue)) {
+            return ETC;
+        }
+
+        return Sector.valueOf(sectorValue);
+    }
+
+    private static boolean isEtcCategoryName(String value) {
         return ETC_NAMES.contains(value);
+    }
+
+    private static boolean isEtcCategoryValue(String value) {
+        return ETC_VALUES.contains(value);
     }
 }

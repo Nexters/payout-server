@@ -20,6 +20,8 @@ public record StockDetailResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String sectorName,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+        String sectorValue,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String exchange,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         String industry,
@@ -49,6 +51,7 @@ public record StockDetailResponse(
                 stock.getTicker(),
                 stock.getName(),
                 stock.getSector().getName(),
+                stock.getSector().name(),
                 stock.getExchange(),
                 stock.getIndustry(),
                 stock.getPrice(),
@@ -71,6 +74,7 @@ public record StockDetailResponse(
                 stock.getTicker(),
                 stock.getName(),
                 stock.getSector().getName(),
+                stock.getSector().name(),
                 stock.getExchange(),
                 stock.getIndustry(),
                 stock.getPrice(),
