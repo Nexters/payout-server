@@ -105,9 +105,9 @@ public class StockQueryService {
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
 
-    public UpcomingDividendResponse getUpcomingDividendStocks(final String sector, final int pageNumber, final int pageSize) {
+    public UpcomingDividendResponse getUpcomingDividendStocks(final Sector sector, final int pageNumber, final int pageSize) {
         return UpcomingDividendResponse.of(
-                stockRepository.findUpcomingDividendStock(Sector.fromValue(sector), pageNumber, pageSize)
+                stockRepository.findUpcomingDividendStock(sector, pageNumber, pageSize)
                         .stream()
                         .map(stockDividend -> SingleUpcomingDividendResponse.of(
                                 stockDividend.stock(),
@@ -117,9 +117,9 @@ public class StockQueryService {
         );
     }
 
-    public StockDividendYieldResponse getBiggestDividendStocks(final String sector, final int pageNumber, final int pageSize) {
+    public StockDividendYieldResponse getBiggestDividendStocks(final Sector sector, final int pageNumber, final int pageSize) {
         return StockDividendYieldResponse.of(
-                stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), Sector.fromValue(sector), pageNumber, pageSize)
+                stockRepository.findBiggestDividendYieldStock(InstantProvider.getLastYear(), sector, pageNumber, pageSize)
                         .stream()
                         .map(stockDividendYield -> SingleStockDividendYieldResponse.of(
                                 stockDividendYield.stock(),
