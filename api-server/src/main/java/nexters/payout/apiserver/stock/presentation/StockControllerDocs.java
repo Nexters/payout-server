@@ -86,7 +86,7 @@ public interface StockControllerDocs {
     @Operation(summary = "배당락일이 다가오는 주식 리스트")
     ResponseEntity<UpcomingDividendResponse> getUpComingDividendStocks(
             @Parameter(description = "sector value", example = "TECHNOLOGY", required = true)
-            @RequestParam @NotEmpty final Sector sector,
+            @RequestParam @NotNull final Sector sector,
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
             @Parameter(description = "page size for pagination", example = "20", required = true)
@@ -103,7 +103,7 @@ public interface StockControllerDocs {
     @Operation(summary = "배당수익률이 큰 주식 리스트")
     ResponseEntity<StockDividendYieldResponse> getBiggestDividendYieldStocks(
             @Parameter(description = "sector value", example = "TECHNOLOGY", required = true)
-            @RequestParam @NotEmpty final Sector sector,
+            @RequestParam @NotNull final Sector sector,
             @Parameter(description = "page number(start with 1) for pagination", example = "1", required = true)
             @RequestParam @NotNull final Integer pageNumber,
             @Parameter(description = "page size for pagination", example = "20", required = true)
