@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/nexters
+    username: test
+    password: test
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /payout-docs.html
+    query-config-enabled: true
+    enabled: true

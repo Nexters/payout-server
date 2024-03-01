@@ -1,4 +1,4 @@
-rootProject.name = 'dividend-server'
+rootProject.name = 'payout-server'
 
 include(":api-server")
 include(":batch")

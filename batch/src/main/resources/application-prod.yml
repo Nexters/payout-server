@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOSTNAME}:${DB_PORT}/${DB_DATABASE}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: jdbc:mysql://${DB_HOSTNAME}:${DB_PORT}/${DB_DATABASE}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    baseline-version: 0
+
+schedules:
+  cron:
+    stock: "0 2 * * * *"
+    dividend:
+      past: "0 4 * * * 0"
+      future: "0 4 * * * *"
+
+financial:
+  fmp:
+    api-key: ${FMP_API_KEY}
+    base-url: https://financialmodelingprep.com
+    stock-list-path: /api/v3/stock/list
+    exchange-symbols-stock-list-path: /api/v3/symbol/
+    stock-screener-path: /api/v3/stock-screener
+    stock-dividend-calender-path: /api/v3/stock_dividend_calendar
+  ninjas:
+    api-key: ${NINJAS_API_KEY}
+    base-url: https://api.api-ninjas.com
+    logo-path: /v1/logo
