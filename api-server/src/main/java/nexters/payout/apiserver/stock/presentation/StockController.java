@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.StockQueryService;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.response.*;
+import nexters.payout.domain.stock.domain.Sector;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +46,7 @@ public class StockController implements StockControllerDocs {
 
     @GetMapping("/ex-dividend-dates/upcoming")
     public ResponseEntity<UpcomingDividendResponse> getUpComingDividendStocks(
-            @RequestParam @NotEmpty final String sector,
+            @RequestParam @NotEmpty final Sector sector,
             @RequestParam @NotNull final Integer pageNumber,
             @RequestParam @NotNull final Integer pageSize
     ) {
@@ -54,7 +55,7 @@ public class StockController implements StockControllerDocs {
 
     @GetMapping("/dividend-yields/highest")
     public ResponseEntity<StockDividendYieldResponse> getBiggestDividendYieldStocks(
-            @RequestParam @NotEmpty final String sector,
+            @RequestParam @NotEmpty final Sector sector,
             @RequestParam @NotNull final Integer pageNumber,
             @RequestParam @NotNull final Integer pageSize
     ) {
