@@ -51,7 +51,7 @@ public interface StockControllerDocs {
     })
     @Operation(summary = "종목 상세 조회")
     ResponseEntity<StockDetailResponse> getStockByTicker(
-            @Parameter(description = "tickerName of stock", example = "AAPL", required = true)
+            @Parameter(description = "ticker name of stock", example = "AAPL", required = true)
             @PathVariable String ticker
     );
 
