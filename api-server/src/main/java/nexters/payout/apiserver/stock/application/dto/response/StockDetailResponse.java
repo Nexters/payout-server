@@ -5,7 +5,9 @@ import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.stock.domain.Stock;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +42,9 @@ public record StockDetailResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         Double dividendYield,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        List<Month> dividendMonths
+        List<Month> dividendMonths,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+        Instant lastModifiedAt
 ) {
 
     public static StockDetailResponse of(
@@ -61,7 +65,8 @@ public record StockDetailResponse(
                 dividendResponse.upcomingExDividendDate(),
                 dividendResponse.paymentDate(),
                 dividendResponse.dividendYield(),
-                dividendResponse.dividendMonths()
+                dividendResponse.dividendMonths(),
+                stock.getLastModifiedAt()
         );
     }
 
@@ -85,7 +90,8 @@ public record StockDetailResponse(
                 dividend.getPaymentDate() == null ? null :
                         InstantProvider.toLocalDate(dividend.getPaymentDate()).withYear(thisYear),
                 dividendYield,
-                dividendMonths
+                dividendMonths,
+                stock.getLastModifiedAt()
         );
     }
 }
