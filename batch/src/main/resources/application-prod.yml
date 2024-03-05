@@ -26,7 +26,7 @@ schedules:
   cron:
     stock: "0 0 2 * * *"
     dividend:
-      past: "0 0 4 * * 0"
+      past: "0 0 4 * * *"
       future: "0 0 4 * * *"
 
 financial:
