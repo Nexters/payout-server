@@ -102,10 +102,9 @@ class StockQueryServiceTest {
     @Test
     void 종목_상세_정보의_배당날짜를_올해기준으로_반환한다() {
         // given
-        int expectedMonth = 3;
-        int expectedDayOfMonth = 1;
+        LocalDate expectedDate = LocalDate.now().minusYears(1).plusDays(1);
         int lastYear = LocalDate.now().getYear() - 1;
-        Instant exDividendDate = LocalDate.of(lastYear, 3, 1).atStartOfDay().toInstant(UTC);
+        Instant exDividendDate = LocalDate.now().minusYears(1).plusDays(1).atStartOfDay().toInstant(UTC);
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
         Dividend dividend = DividendFixture.createDividendWithPaymentDate(appl.getId(), 0.5, exDividendDate);
 
@@ -116,7 +115,7 @@ class StockQueryServiceTest {
         StockDetailResponse actual = stockQueryService.getStockByTicker(appl.getTicker());
 
         // then
-        assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, expectedMonth, expectedDayOfMonth));
+        assertThat(actual.earliestPaymentDate()).isEqualTo(LocalDate.of(lastYear + 1, expectedDate.getMonth(), expectedDate.getDayOfMonth()));
     }
 
     @Test
