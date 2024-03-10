@@ -4,17 +4,17 @@ import lombok.RequiredArgsConstructor;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.*;
-import nexters.payout.core.exception.error.NotFoundException;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
+import nexters.payout.domain.stock.domain.exception.TickerNotFoundException;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
-import nexters.payout.domain.stock.domain.service.StockDividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
+import nexters.payout.domain.stock.domain.service.StockDividendAnalysisService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +76,7 @@ public class StockQueryService {
 
     private Stock getStock(final String ticker) {
         return stockRepository.findByTicker(ticker)
-                .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
+                .orElseThrow(() -> new TickerNotFoundException(ticker));
     }
 
     private List<Dividend> getLastYearDividends(final Stock stock) {

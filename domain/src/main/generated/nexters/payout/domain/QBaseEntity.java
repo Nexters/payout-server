@@ -21,6 +21,8 @@ public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
     public final DateTimePath<java.time.Instant> createdAt = createDateTime("createdAt", java.time.Instant.class);
 
+    public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
+
     public final DateTimePath<java.time.Instant> lastModifiedAt = createDateTime("lastModifiedAt", java.time.Instant.class);
 
     public QBaseEntity(String variable) {

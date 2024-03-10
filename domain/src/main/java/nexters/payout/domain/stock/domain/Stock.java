@@ -11,12 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Stock extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
 
     @Column(unique = true, nullable = false, length = 50)
     private String ticker;
@@ -37,11 +32,13 @@ public class Stock extends BaseEntity {
 
     private String logoUrl;
 
+    public Stock() {super(null);}
+
     public Stock(final UUID id, final String ticker, final String name,
                  final Sector sector, final String exchange, final String industry,
                  final Double price, final Integer volume, final String logoUrl) {
+        super(id);
         validateTicker(ticker);
-        this.id = id;
         this.ticker = ticker;
         this.name = name;
         this.sector = sector;
@@ -71,16 +68,6 @@ public class Stock extends BaseEntity {
         this.price = price;
         this.volume = volume;
         this.sector = sector;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Stock && this.id.equals(((Stock) obj).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     @Override
