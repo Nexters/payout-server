@@ -1,7 +1,6 @@
 package nexters.payout.domain.stock.domain.service;
 
 import nexters.payout.domain.common.config.DomainService;
-import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 
@@ -15,6 +14,9 @@ import java.util.stream.Collectors;
 @DomainService
 public class SectorAnalysisService {
 
+    /**
+     * 포트폴리오의 섹터 별 비중을 계산합니다.
+     */
     public Map<Sector, SectorInfo> calculateSectorRatios(final List<StockShare> stockShares) {
         Map<Sector, Integer> sectorCountMap = getSectorCountMap(stockShares);
         Map<Sector, List<StockShare>> sectorStockMap = getSectorStockMap(stockShares);
@@ -73,13 +75,11 @@ public class SectorAnalysisService {
             Double ratio,
             List<StockShare> stockShares
     ) {
-
     }
 
     public record StockShare(
             Stock stock,
             Integer share
     ) {
-
     }
 }

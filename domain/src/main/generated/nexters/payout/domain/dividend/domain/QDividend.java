@@ -30,7 +30,8 @@ public class QDividend extends EntityPathBase<Dividend> {
 
     public final DateTimePath<java.time.Instant> exDividendDate = createDateTime("exDividendDate", java.time.Instant.class);
 
-    public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
+    //inherited
+    public final ComparablePath<java.util.UUID> id = _super.id;
 
     //inherited
     public final DateTimePath<java.time.Instant> lastModifiedAt = _super.lastModifiedAt;

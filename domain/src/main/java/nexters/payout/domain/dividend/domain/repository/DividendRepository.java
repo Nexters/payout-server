@@ -8,8 +8,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface DividendRepository extends JpaRepository<Dividend, UUID>, DividendRepositoryCustom {
-
     List<Dividend> findAllByStockId(UUID stockId);
-
-    List<Dividend> findAllByStockIdIn(List<UUID> stockIds);
 }
