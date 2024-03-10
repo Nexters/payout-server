@@ -4,15 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nexters.payout.apiserver.dividend.application.dto.request.DividendRequest;
 import nexters.payout.apiserver.dividend.application.dto.request.TickerShare;
-import nexters.payout.apiserver.dividend.application.dto.response.SingleMonthlyDividendResponse;
 import nexters.payout.apiserver.dividend.application.dto.response.MonthlyDividendResponse;
+import nexters.payout.apiserver.dividend.application.dto.response.SingleMonthlyDividendResponse;
 import nexters.payout.apiserver.dividend.application.dto.response.SingleYearlyDividendResponse;
 import nexters.payout.apiserver.dividend.application.dto.response.YearlyDividendResponse;
-import nexters.payout.core.exception.error.NotFoundException;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Stock;
+import nexters.payout.domain.stock.domain.exception.TickerNotFoundException;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +70,7 @@ public class DividendQueryService {
 
     private Stock getStock(final String ticker) {
         return stockRepository.findByTicker(ticker)
-                .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", ticker)));
+                .orElseThrow(() -> new TickerNotFoundException(ticker));
     }
 
     private List<SingleMonthlyDividendResponse> getDividendsOfLastYearAndMonth(
@@ -80,7 +80,7 @@ public class DividendQueryService {
                 .stream()
                 .flatMap(tickerShare -> stockRepository.findByTicker(tickerShare.ticker())
                         .map(stock -> getMonthlyDividendResponse(month, tickerShare, stock))
-                        .orElseThrow(() -> new NotFoundException(String.format("not found ticker [%s]", tickerShare.ticker()))))
+                        .orElseThrow(() -> new TickerNotFoundException(tickerShare.ticker())))
                 .toList();
     }
 
