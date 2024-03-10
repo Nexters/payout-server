@@ -25,7 +25,7 @@ import static nexters.payout.domain.stock.domain.QStock.stock;
 @RequiredArgsConstructor
 public class StockRepositoryImpl implements StockRepositoryCustom {
 
-    private final Double MAX_DIVIDEND_YIELD = 0.9;
+    private static final Double MAX_DIVIDEND_YIELD = 0.9;
     private final JPAQueryFactory queryFactory;
 
     @Override
