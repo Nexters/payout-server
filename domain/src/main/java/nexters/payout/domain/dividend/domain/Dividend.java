@@ -1,23 +1,16 @@
 package nexters.payout.domain.dividend.domain;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nexters.payout.domain.BaseEntity;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Dividend extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
 
     @Column(nullable = false, updatable = false)
     private UUID stockId;
@@ -31,9 +24,13 @@ public class Dividend extends BaseEntity {
 
     private Instant declarationDate;
 
+    public Dividend() {
+        super(null);
+    }
+
     public Dividend(final UUID id, final UUID stockId, final Double dividend, final Instant exDividendDate,
                     final Instant paymentDate, final Instant declarationDate) {
-        this.id = id;
+        super(id);
         this.stockId = stockId;
         this.dividend = dividend;
         this.exDividendDate = exDividendDate;
@@ -56,16 +53,6 @@ public class Dividend extends BaseEntity {
             final UUID stockId, final Double dividend, final Instant exDividendDate,
             final Instant paymentDate, final Instant declarationDate) {
         return new Dividend(stockId, dividend, exDividendDate, paymentDate, declarationDate);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Dividend && this.id.equals(((Dividend) obj).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     @Override
