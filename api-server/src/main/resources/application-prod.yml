@@ -13,6 +13,7 @@ spring:
       hibernate:
         format_sql: true
     show-sql: false
+    open-in-view: false
 
   flyway:
     enabled: true
