@@ -80,13 +80,13 @@ class StockDividendAnalysisServiceTest {
 
         Dividend pastDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
-                LocalDate.of(now.getYear() - 1, 1, 10)
+                LocalDate.of(now.getYear(), now.getMonth().minus(1), now.getDayOfMonth())
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
         Dividend earlistDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
-                LocalDate.of(now.getYear() - 1, 3, 10)
+                LocalDate.of(now.getYear(), now.getMonth(), now.getDayOfMonth() + 1)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
         List<Dividend> lastYearDividends = List.of(pastDividend, earlistDividend);
@@ -107,7 +107,7 @@ class StockDividendAnalysisServiceTest {
         Dividend lastYearDividend = DividendFixture.createDividend(
                 UUID.randomUUID(),
                 1.0,
-                LocalDate.now().plusDays(10)
+                LocalDate.now().minusDays(10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
