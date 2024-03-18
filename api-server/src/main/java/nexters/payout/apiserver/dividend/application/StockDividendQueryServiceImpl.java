@@ -1,7 +1,7 @@
 package nexters.payout.apiserver.dividend.application;
 
 import lombok.RequiredArgsConstructor;
-import nexters.payout.apiserver.stock.application.StockDividendQuery;
+import nexters.payout.apiserver.stock.application.StockDividendQueryService;
 import nexters.payout.apiserver.stock.application.dto.response.DividendResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockDetailResponse;
 import nexters.payout.core.time.InstantProvider;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class StockDividendQueryImpl implements StockDividendQuery {
+public class StockDividendQueryServiceImpl implements StockDividendQueryService {
 
     private final StockDividendAnalysisService dividendAnalysisService;
     private final StockRepository stockRepository;

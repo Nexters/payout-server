@@ -25,7 +25,7 @@ public class StockQueryService {
 
     private final StockRepository stockRepository;
     private final SectorAnalysisService sectorAnalysisService;
-    private final StockDividendQuery stockDividendQuery;
+    private final StockDividendQueryService stockDividendQueryService;
 
     public List<StockResponse> searchStock(final String keyword, final Integer pageNumber, final Integer pageSize) {
         return stockRepository.findStocksByTickerOrNameWithPriority(keyword, pageNumber, pageSize)
@@ -35,7 +35,7 @@ public class StockQueryService {
     }
 
     public StockDetailResponse getStockByTicker(final String ticker) {
-        return stockDividendQuery.getStockByTicker(ticker);
+        return stockDividendQueryService.getStockByTicker(ticker);
     }
 
     public List<SectorRatioResponse> analyzeSectorRatio(final SectorRatioRequest request) {

@@ -1,6 +1,6 @@
 package nexters.payout.apiserver.stock.application;
 
-import nexters.payout.apiserver.dividend.application.StockDividendQueryImpl;
+import nexters.payout.apiserver.dividend.application.StockDividendQueryServiceImpl;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.*;
@@ -58,7 +58,7 @@ class StockQueryServiceTest {
 
     @BeforeEach
     void setUp() {
-        StockDividendQueryImpl stockDividendQuery = new StockDividendQueryImpl(stockDividendAnalysisService, stockRepository, dividendRepository);
+        StockDividendQueryServiceImpl stockDividendQuery = new StockDividendQueryServiceImpl(stockDividendAnalysisService, stockRepository, dividendRepository);
         stockQueryService = new StockQueryService(stockRepository, sectorAnalysisService, stockDividendQuery);
     }
 
