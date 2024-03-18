@@ -86,7 +86,7 @@ class StockDividendAnalysisServiceTest {
 
         Dividend earlistDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
-                LocalDate.of(now.getYear(), now.getMonth(), now.getDayOfMonth() + 1)
+                LocalDate.of(now.getYear(), now.getMonth(), now.getDayOfMonth())
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
         List<Dividend> lastYearDividends = List.of(pastDividend, earlistDividend);
