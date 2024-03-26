@@ -1,5 +1,6 @@
 package nexters.payout.apiserver.stock.application;
 
+import nexters.payout.apiserver.dividend.application.StockDividendQueryServiceImpl;
 import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.*;
@@ -19,9 +20,9 @@ import nexters.payout.domain.stock.domain.repository.StockRepository;
 import nexters.payout.domain.stock.domain.service.StockDividendAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.infra.dto.StockDividendYieldDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -45,9 +46,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class StockQueryServiceTest {
 
-    @InjectMocks
     private StockQueryService stockQueryService;
-
     @Mock
     private StockRepository stockRepository;
     @Mock
@@ -56,6 +55,12 @@ class StockQueryServiceTest {
     private SectorAnalysisService sectorAnalysisService;
     @Spy
     private StockDividendAnalysisService stockDividendAnalysisService;
+
+    @BeforeEach
+    void setUp() {
+        StockDividendQueryServiceImpl stockDividendQuery = new StockDividendQueryServiceImpl(stockDividendAnalysisService, stockRepository, dividendRepository);
+        stockQueryService = new StockQueryService(stockRepository, sectorAnalysisService, stockDividendQuery);
+    }
 
     @Test
     void 검색된_종목_정보를_정상적으로_반환한다() {

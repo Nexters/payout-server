@@ -5,24 +5,18 @@ import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest
 import nexters.payout.apiserver.stock.application.dto.request.TickerShare;
 import nexters.payout.apiserver.stock.application.dto.response.*;
 import nexters.payout.core.time.InstantProvider;
-import nexters.payout.domain.dividend.domain.Dividend;
-import nexters.payout.domain.dividend.domain.repository.DividendRepository;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
-import nexters.payout.domain.stock.domain.exception.TickerNotFoundException;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
-import nexters.payout.domain.stock.domain.service.StockDividendAnalysisService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Month;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +24,8 @@ import java.util.stream.Stream;
 public class StockQueryService {
 
     private final StockRepository stockRepository;
-    private final DividendRepository dividendRepository;
     private final SectorAnalysisService sectorAnalysisService;
-    private final StockDividendAnalysisService dividendAnalysisService;
+    private final StockDividendQueryService stockDividendQueryService;
 
     public List<StockResponse> searchStock(final String keyword, final Integer pageNumber, final Integer pageSize) {
         return stockRepository.findStocksByTickerOrNameWithPriority(keyword, pageNumber, pageSize)
@@ -42,59 +35,7 @@ public class StockQueryService {
     }
 
     public StockDetailResponse getStockByTicker(final String ticker) {
-        Stock stock = getStock(ticker);
-
-        List<Dividend> lastYearDividends = getLastYearDividends(stock);
-        List<Dividend> thisYearDividends = getThisYearDividends(stock);
-
-        if (lastYearDividends.isEmpty() && thisYearDividends.isEmpty()) {
-            return StockDetailResponse.of(stock, DividendResponse.noDividend());
-        }
-
-        List<Month> dividendMonths = dividendAnalysisService.calculateDividendMonths(stock, lastYearDividends);
-        Double dividendYield = dividendAnalysisService.calculateDividendYield(stock, lastYearDividends);
-        Double dividendPerShare = dividendAnalysisService.calculateAverageDividend(
-                combinedDividends(lastYearDividends, thisYearDividends)
-        );
-
-        return dividendAnalysisService.findUpcomingDividend(lastYearDividends, thisYearDividends)
-                .map(upcomingDividend -> StockDetailResponse.of(
-                        stock,
-                        DividendResponse.fullDividendInfo(upcomingDividend, dividendYield, dividendMonths)
-                ))
-                .orElse(StockDetailResponse.of(
-                        stock,
-                        DividendResponse.withoutDividendDates(dividendPerShare, dividendYield, dividendMonths)
-                ));
-    }
-
-    private List<Dividend> combinedDividends(final List<Dividend> lastYearDividends, final List<Dividend> thisYearDividends) {
-        return Stream.of(lastYearDividends, thisYearDividends)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-    }
-
-    private Stock getStock(final String ticker) {
-        return stockRepository.findByTicker(ticker)
-                .orElseThrow(() -> new TickerNotFoundException(ticker));
-    }
-
-    private List<Dividend> getLastYearDividends(final Stock stock) {
-        int lastYear = InstantProvider.getLastYear();
-
-        return dividendRepository.findAllByStockId(stock.getId())
-                .stream()
-                .filter(dividend -> InstantProvider.toLocalDate(dividend.getExDividendDate()).getYear() == lastYear)
-                .collect(Collectors.toList());
-    }
-
-    private List<Dividend> getThisYearDividends(final Stock stock) {
-        int thisYear = InstantProvider.getThisYear();
-
-        return dividendRepository.findAllByStockId(stock.getId())
-                .stream()
-                .filter(dividend -> InstantProvider.toLocalDate(dividend.getExDividendDate()).getYear() == thisYear)
-                .collect(Collectors.toList());
+        return stockDividendQueryService.getStockByTicker(ticker);
     }
 
     public List<SectorRatioResponse> analyzeSectorRatio(final SectorRatioRequest request) {
