@@ -1,9 +1,13 @@
 package nexters.payout.domain.portfolio.domain;
 
+import jakarta.persistence.Entity;
+import lombok.Getter;
 import nexters.payout.domain.BaseEntity;
 
 import java.util.UUID;
 
+@Entity
+@Getter
 public class PortfolioStock extends BaseEntity {
 
     private UUID portfolioId;
