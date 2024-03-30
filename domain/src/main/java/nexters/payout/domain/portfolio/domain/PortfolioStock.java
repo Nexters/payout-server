@@ -1,4 +1,4 @@
-package nexters.payout.domain.portfolio;
+package nexters.payout.domain.portfolio.domain;
 
 import nexters.payout.domain.BaseEntity;
 
