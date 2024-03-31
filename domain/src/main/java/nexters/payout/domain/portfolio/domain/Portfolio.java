@@ -31,13 +31,10 @@ public class Portfolio extends BaseEntity {
         this.expireAt = expireAt;
     }
 
-    private Portfolio(final Instant expireAt) {
+    public Portfolio(final Instant expireAt, List<PortfolioStock> stocks) {
         super(null);
+        this.stocks = stocks;
         this.expireAt = expireAt;
-    }
-
-    public static Portfolio create(final Instant expireAt) {
-        return new Portfolio(expireAt);
     }
 
     public boolean isExpired() {
