@@ -1,14 +1,16 @@
 package nexters.payout.domain.portfolio.domain;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
 import lombok.Getter;
-import nexters.payout.domain.BaseEntity;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Entity
+@Embeddable
 @Getter
-public class PortfolioStock extends BaseEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class PortfolioStock {
 
     private UUID portfolioId;
     private UUID stockId;
@@ -16,14 +18,12 @@ public class PortfolioStock extends BaseEntity {
 
 
     public PortfolioStock(final UUID id, final UUID portfolioId, final UUID stockId, final Integer shares) {
-        super(id);
         this.portfolioId = portfolioId;
         this.stockId = stockId;
         this.shares = shares;
     }
 
     private PortfolioStock(final UUID portfolioId, final UUID stockId, final Integer shares) {
-        super(null);
         this.portfolioId = portfolioId;
         this.stockId = stockId;
         this.shares = shares;
