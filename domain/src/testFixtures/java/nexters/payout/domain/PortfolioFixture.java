@@ -13,6 +13,6 @@ public class PortfolioFixture {
     }
 
     public static PortfolioStock createPortfolioStock(UUID portfolioId, UUID stockId, Integer shares) {
-        return new PortfolioStock(UUID.randomUUID(), portfolioId, stockId, shares);
+        return new PortfolioStock(UUID.randomUUID(), stockId, shares);
     }
 }

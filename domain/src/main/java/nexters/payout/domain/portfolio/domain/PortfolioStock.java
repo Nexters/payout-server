@@ -12,19 +12,16 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PortfolioStock {
 
-    private UUID portfolioId;
     private UUID stockId;
     private Integer shares;
 
 
-    public PortfolioStock(final UUID id, final UUID portfolioId, final UUID stockId, final Integer shares) {
-        this.portfolioId = portfolioId;
+    public PortfolioStock(final UUID id, final UUID stockId, final Integer shares) {
         this.stockId = stockId;
         this.shares = shares;
     }
 
-    private PortfolioStock(final UUID portfolioId, final UUID stockId, final Integer shares) {
-        this.portfolioId = portfolioId;
+    private PortfolioStock(final UUID stockId, final Integer shares) {
         this.stockId = stockId;
         this.shares = shares;
     }
