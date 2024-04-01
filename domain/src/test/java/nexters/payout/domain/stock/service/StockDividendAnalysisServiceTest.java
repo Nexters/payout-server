@@ -81,7 +81,7 @@ class StockDividendAnalysisServiceTest {
 
         Dividend pastDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
-                LocalDate.of(now.getYear(), now.getMonth().minus(1), now.getDayOfMonth())
+                LocalDate.of(now.getYear(), now.getMonth().minus(1), 1)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
