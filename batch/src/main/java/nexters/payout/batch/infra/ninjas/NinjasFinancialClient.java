@@ -1,7 +1,7 @@
 package nexters.payout.batch.infra.ninjas;
 
 import lombok.extern.slf4j.Slf4j;
-import nexters.payout.batch.application.StockLogo;
+import nexters.payout.batch.application.client.StockLogo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

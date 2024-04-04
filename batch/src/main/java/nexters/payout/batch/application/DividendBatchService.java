@@ -3,7 +3,8 @@ package nexters.payout.batch.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import nexters.payout.batch.application.FinancialClient.DividendData;
+import nexters.payout.batch.application.client.FinancialClient;
+import nexters.payout.batch.application.client.FinancialClient.DividendData;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.application.DividendCommandService;
 import nexters.payout.domain.stock.domain.Stock;
