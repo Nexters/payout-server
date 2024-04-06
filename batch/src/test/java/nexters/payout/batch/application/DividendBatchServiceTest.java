@@ -1,5 +1,6 @@
 package nexters.payout.batch.application;
 
+import nexters.payout.batch.application.client.FinancialClient;
 import nexters.payout.batch.common.AbstractBatchServiceTest;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;

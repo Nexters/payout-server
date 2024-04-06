@@ -1,9 +1,6 @@
 package nexters.payout.domain.portfolio.domain;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import lombok.Getter;
 import nexters.payout.domain.BaseEntity;
 
@@ -17,23 +14,18 @@ import java.util.UUID;
 @Getter
 public class Portfolio extends BaseEntity {
 
-    @ElementCollection
-    @CollectionTable(name = "portfolio_stock", joinColumns = @JoinColumn(name = "portfolio_id"))
-    private List<PortfolioStock> stocks = new ArrayList<>();
+    @Embedded
+    private PortfolioStocks portfolioStocks;
+
     private Instant expireAt;
 
     public Portfolio() {
         super(null);
     }
 
-    public Portfolio(final UUID id, final Instant expireAt) {
-        super(id);
-        this.expireAt = expireAt;
-    }
-
     public Portfolio(final Instant expireAt, List<PortfolioStock> stocks) {
         super(null);
-        this.stocks = stocks;
+        this.portfolioStocks = new PortfolioStocks(stocks);
         this.expireAt = expireAt;
     }
 

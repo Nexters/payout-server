@@ -2,17 +2,17 @@ package nexters.payout.domain;
 
 import nexters.payout.domain.portfolio.domain.Portfolio;
 import nexters.payout.domain.portfolio.domain.PortfolioStock;
+import nexters.payout.domain.portfolio.domain.PortfolioStocks;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public class PortfolioFixture {
 
-    public static Portfolio createPortfolio(Instant expireAt) {
-        return new Portfolio(UUID.randomUUID(), expireAt);
-    }
+    public static UUID STOCK_ID = UUID.randomUUID();
 
-    public static PortfolioStock createPortfolioStock(UUID portfolioId, UUID stockId, Integer shares) {
-        return new PortfolioStock(UUID.randomUUID(), stockId, shares);
+    public static Portfolio createPortfolio(Instant expireAt, List<PortfolioStock> stocks) {
+        return new Portfolio(expireAt, stocks);
     }
 }

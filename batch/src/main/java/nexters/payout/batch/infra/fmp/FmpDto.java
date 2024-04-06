@@ -3,7 +3,7 @@ package nexters.payout.batch.infra.fmp;
 
 import lombok.Getter;
 import lombok.Setter;
-import nexters.payout.batch.application.FinancialClient.DividendData;
+import nexters.payout.batch.application.client.FinancialClient.DividendData;
 import nexters.payout.core.time.DateFormat;
 
 @Getter

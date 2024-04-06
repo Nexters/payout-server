@@ -15,18 +15,8 @@ public class PortfolioStock {
     private UUID stockId;
     private Integer shares;
 
-
-    public PortfolioStock(final UUID id, final UUID stockId, final Integer shares) {
+    public PortfolioStock(final UUID stockId, final Integer shares) {
         this.stockId = stockId;
         this.shares = shares;
-    }
-
-    private PortfolioStock(final UUID stockId, final Integer shares) {
-        this.stockId = stockId;
-        this.shares = shares;
-    }
-
-    public PortfolioStock create(final UUID portfolioId, final UUID stockId, final Integer shares) {
-        return new PortfolioStock(portfolioId, stockId, shares);
     }
 }
