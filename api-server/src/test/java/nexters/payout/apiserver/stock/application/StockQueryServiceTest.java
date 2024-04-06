@@ -111,7 +111,7 @@ class StockQueryServiceTest {
         int lastYear = LocalDate.now().getYear() - 1;
         Instant exDividendDate = LocalDate.now().minusYears(1).plusDays(1).atStartOfDay().toInstant(UTC);
         Stock appl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
-        Dividend dividend = DividendFixture.createDividendWithPaymentDate(appl.getId(), 0.5, exDividendDate);
+        Dividend dividend = DividendFixture.createDividendWithExDividendDate(appl.getId(), 0.5, exDividendDate);
 
         given(stockRepository.findByTicker(any())).willReturn(Optional.of(appl));
         given(dividendRepository.findAllByStockId(any())).willReturn(List.of(dividend));

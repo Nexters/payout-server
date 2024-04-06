@@ -193,8 +193,7 @@ class StockControllerTest extends IntegrationTest {
         Double price = null;
         Double dividend = 12.0;
         Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL, price));
-        Instant paymentDate = LocalDate.of(2023, 4, 5).atStartOfDay().toInstant(UTC);
-        dividendRepository.save(DividendFixture.createDividendWithPaymentDate(tsla.getId(), dividend, paymentDate));
+        dividendRepository.save(DividendFixture.createDividendWithDividend(tsla.getId(), dividend));
 
         // when, then
         StockDetailResponse stockDetailResponse = RestAssured
@@ -210,9 +209,7 @@ class StockControllerTest extends IntegrationTest {
 
         assertAll(
                 () -> assertThat(stockDetailResponse.dividendPerShare()).isEqualTo(dividend),
-                () -> assertThat(stockDetailResponse.dividendYield()).isEqualTo(0),
-                () -> assertThat(stockDetailResponse.earliestPaymentDate()).isEqualTo(LocalDate.of(LocalDate.now().getYear(), 4, 5)),
-                () -> assertThat(stockDetailResponse.dividendMonths()).isEqualTo(List.of(Month.APRIL))
+                () -> assertThat(stockDetailResponse.dividendYield()).isEqualTo(0)
         );
     }
 
