@@ -6,6 +6,7 @@ import nexters.payout.domain.portfolio.domain.Portfolio;
 import nexters.payout.domain.portfolio.domain.repository.PortfolioRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class PortfolioBatchService {
 
     private final PortfolioRepository portfolioRepository;
@@ -21,7 +23,7 @@ public class PortfolioBatchService {
     @Scheduled(cron = "${schedules.cron.portfolio}", zone = "UTC")
     void deletePortfolio() {
         log.info("delete portfolio start..");
-        portfolioRepository.deleteAllById(getExpiredPortfolioIds());
+        portfolioRepository.deleteAllByIdInQuery(getExpiredPortfolioIds());
         log.info("delete portfolio end..");
     }
 
