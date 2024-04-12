@@ -5,9 +5,7 @@ import lombok.Getter;
 import nexters.payout.domain.BaseEntity;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 @Entity
