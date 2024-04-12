@@ -6,6 +6,7 @@ import nexters.payout.domain.BaseEntity;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 
 @Entity
@@ -19,6 +20,12 @@ public class Portfolio extends BaseEntity {
 
     public Portfolio() {
         super(null);
+    }
+
+    public Portfolio(final UUID id, final Instant expireAt, List<PortfolioStock> stocks) {
+        super(id);
+        this.portfolioStocks = new PortfolioStocks(stocks);
+        this.expireAt = expireAt;
     }
 
     public Portfolio(final Instant expireAt, List<PortfolioStock> stocks) {
