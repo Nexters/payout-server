@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nexters.payout.apiserver.portfolio.application.PortfolioQueryService;
 import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioRequest;
+import nexters.payout.apiserver.portfolio.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.PortfolioResponse;
+import nexters.payout.apiserver.portfolio.application.dto.response.YearlyDividendResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,5 +25,15 @@ public class PortfolioController implements PortfolioControllerDocs {
     @PostMapping
     public ResponseEntity<PortfolioResponse> createPortfolio(@RequestBody @Valid final PortfolioRequest portfolioRequest) {
         return ResponseEntity.ok(portfolioQueryService.createPortfolio(portfolioRequest));
+    }
+
+    @GetMapping("/{id}/monthly")
+    public ResponseEntity<List<MonthlyDividendResponse>> getMonthlyDividends(@PathVariable("id") final UUID portfolioId) {
+        return ResponseEntity.ok(portfolioQueryService.getMonthlyDividends(portfolioId));
+    }
+
+    @GetMapping("/{id}/yearly")
+    public ResponseEntity<YearlyDividendResponse> getYearlyDividends(@PathVariable("id") final UUID portfolioId) {
+        return ResponseEntity.ok(portfolioQueryService.getYearlyDividends(portfolioId));
     }
 }
