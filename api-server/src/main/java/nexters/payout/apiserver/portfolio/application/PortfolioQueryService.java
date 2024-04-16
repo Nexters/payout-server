@@ -42,8 +42,9 @@ public class PortfolioQueryService {
         List<PortfolioStock> portfolioStocks =
                 request.tickerShares()
                         .stream().map(tickerShare -> new PortfolioStock(
-                                stockRepository.findByTicker(tickerShare.ticker()).orElseThrow(
-                                        () -> new TickerNotFoundException(tickerShare.ticker())).getId(),
+                                stockRepository.findByTicker(tickerShare.ticker())
+                                        .orElseThrow(() -> new TickerNotFoundException(tickerShare.ticker()))
+                                        .getId(),
                                 tickerShare.share()))
                         .toList();
 

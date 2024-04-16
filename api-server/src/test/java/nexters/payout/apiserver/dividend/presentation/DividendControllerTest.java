@@ -7,7 +7,7 @@ import nexters.payout.apiserver.dividend.application.dto.request.DividendRequest
 import nexters.payout.apiserver.dividend.application.dto.request.TickerShare;
 import nexters.payout.apiserver.dividend.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.dividend.application.dto.response.YearlyDividendResponse;
-import nexters.payout.apiserver.stock.common.IntegrationTest;
+import nexters.payout.apiserver.dividend.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.DividendFixture;
