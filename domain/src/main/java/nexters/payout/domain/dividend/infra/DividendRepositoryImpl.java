@@ -52,6 +52,18 @@ public class DividendRepositoryImpl implements DividendRepositoryCustom {
     }
 
     @Override
+    public List<Dividend> findAllByIdAndYearAndMonth(UUID id, Integer year, Integer month) {
+
+        return queryFactory
+                .selectFrom(dividend1)
+                .innerJoin(stock).on(dividend1.stockId.eq(stock.id))
+                .where(dividend1.exDividendDate.year().eq(year)
+                        .and(dividend1.exDividendDate.month().eq(month))
+                        .and(stock.id.eq(id)))
+                .fetch();
+    }
+
+    @Override
     public List<Dividend> findAllByTickerAndYear(String ticker, Integer year) {
 
         return queryFactory
@@ -59,6 +71,17 @@ public class DividendRepositoryImpl implements DividendRepositoryCustom {
                 .innerJoin(stock).on(dividend1.stockId.eq(stock.id))
                 .where(dividend1.exDividendDate.year().eq(year)
                         .and(stock.ticker.eq(ticker)))
+                .fetch();
+    }
+
+    @Override
+    public List<Dividend> findAllByIdAndYear(UUID id, Integer year) {
+
+        return queryFactory
+                .selectFrom(dividend1)
+                .innerJoin(stock).on(dividend1.stockId.eq(stock.id))
+                .where(dividend1.exDividendDate.year().eq(year)
+                        .and(stock.id.eq(id)))
                 .fetch();
     }
 
@@ -73,4 +96,6 @@ public class DividendRepositoryImpl implements DividendRepositoryCustom {
                         .and(dividend1.createdAt.dayOfMonth().eq(InstantProvider.getDayOfMonth(createdAt))))
                 .execute();
     }
+
+
 }
