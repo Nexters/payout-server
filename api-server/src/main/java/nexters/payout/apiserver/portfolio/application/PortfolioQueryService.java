@@ -2,12 +2,9 @@ package nexters.payout.apiserver.portfolio.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nexters.payout.apiserver.portfolio.application.dto.response.MonthlyDividendResponse;
-import nexters.payout.apiserver.portfolio.application.dto.response.SingleYearlyDividendResponse;
-import nexters.payout.apiserver.portfolio.application.dto.response.YearlyDividendResponse;
-import nexters.payout.apiserver.portfolio.application.dto.response.SingleMonthlyDividendResponse;
 import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioRequest;
-import nexters.payout.apiserver.portfolio.application.dto.response.PortfolioResponse;
+import nexters.payout.apiserver.portfolio.application.dto.response.*;
+import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
 import nexters.payout.domain.dividend.domain.repository.DividendRepository;
@@ -15,14 +12,19 @@ import nexters.payout.domain.portfolio.domain.Portfolio;
 import nexters.payout.domain.portfolio.domain.PortfolioStock;
 import nexters.payout.domain.portfolio.domain.exception.PortfolioNotFoundException;
 import nexters.payout.domain.portfolio.domain.repository.PortfolioRepository;
+import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
 import nexters.payout.domain.stock.domain.exception.StockIdNotFoundException;
 import nexters.payout.domain.stock.domain.exception.TickerNotFoundException;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,24 +38,33 @@ public class PortfolioQueryService {
     private final StockRepository stockRepository;
     private final PortfolioRepository portfolioRepository;
     private final DividendRepository dividendRepository;
+    private final SectorAnalysisService sectorAnalysisService;
 
     public PortfolioResponse createPortfolio(final PortfolioRequest request) {
 
         List<PortfolioStock> portfolioStocks =
                 request.tickerShares()
-                        .stream().map(tickerShare -> new PortfolioStock(
-                                stockRepository.findByTicker(tickerShare.ticker())
-                                        .orElseThrow(() -> new TickerNotFoundException(tickerShare.ticker()))
-                                        .getId(),
-                                tickerShare.share()))
+                        .stream()
+                        .map(tickerShare -> new PortfolioStock(
+                                getStockByTicker(tickerShare.ticker()).getId(),
+                                tickerShare.share())
+                        )
                         .toList();
 
-        return new PortfolioResponse(portfolioRepository.save(
-                new Portfolio(
-                        InstantProvider.getExpireAt(),
-                        portfolioStocks
-                )).getId()
+        return new PortfolioResponse(
+                portfolioRepository.save(new Portfolio(InstantProvider.getExpireAt(), portfolioStocks))
+                        .getId()
         );
+    }
+
+    public List<SectorRatioResponse> analyzeSectorRatio(final UUID portfolioId) {
+        List<PortfolioStock> portfolioStocks = getPortfolio(portfolioId).portfolioStocks();
+        List<StockShare> stockShares = portfolioStocks.stream()
+                .map(ps -> new StockShare(getStock(ps.getStockId()), ps.getShares()))
+                .toList();
+        Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
+
+        return SectorRatioResponse.fromMap(sectorInfoMap);
     }
 
     @Transactional(readOnly = true)
@@ -64,24 +75,36 @@ public class PortfolioQueryService {
                                 yearMonth.getYear(),
                                 yearMonth.getMonthValue(),
                                 getDividendsOfLastYearAndMonth(
-                                        portfolioRepository.findById(id)
-                                                .orElseThrow(() -> new PortfolioNotFoundException(id))
-                                                .getPortfolioStocks().getPortfolioStocks(),
-                                        yearMonth.getMonthValue())
+                                        getPortfolio(id).portfolioStocks(),
+                                        yearMonth.getMonthValue()
+                                )
                         )
                 )
                 .collect(Collectors.toList());
     }
 
+    private Stock getStockByTicker(String ticker) {
+        return stockRepository.findByTicker(ticker)
+                .orElseThrow(() -> new TickerNotFoundException(ticker));
+    }
+
+    private Stock getStock(UUID stockId) {
+        return stockRepository.findById(stockId).orElseThrow(() -> new StockIdNotFoundException(stockId));
+    }
+
+    private Portfolio getPortfolio(UUID id) {
+        return portfolioRepository.findById(id)
+                .orElseThrow(() -> new PortfolioNotFoundException(id));
+    }
+
     @Transactional(readOnly = true)
     public YearlyDividendResponse getYearlyDividends(final UUID id) {
 
-        List<SingleYearlyDividendResponse> dividends = portfolioRepository.findById(id)
-                .orElseThrow(() -> new PortfolioNotFoundException(id))
-                .getPortfolioStocks().getPortfolioStocks()
-                .stream().map(portfolioStock -> {
-                    Stock stock = stockRepository.findById(portfolioStock.getStockId())
-                            .orElseThrow(() -> new StockIdNotFoundException(portfolioStock.getStockId()));
+        List<SingleYearlyDividendResponse> dividends = getPortfolio(id)
+                .portfolioStocks()
+                .stream()
+                .map(portfolioStock -> {
+                    Stock stock = getStock(portfolioStock.getStockId());
                     return SingleYearlyDividendResponse.of(
                             stock, portfolioStock.getShares(), getYearlyDividend(stock.getId())
                     );

@@ -1,16 +1,15 @@
 package nexters.payout.domain.portfolio.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 import nexters.payout.domain.BaseEntity;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 
 @Entity
-@Getter
 public class Portfolio extends BaseEntity {
 
     @Embedded
@@ -32,6 +31,10 @@ public class Portfolio extends BaseEntity {
         super(null);
         this.portfolioStocks = new PortfolioStocks(stocks);
         this.expireAt = expireAt;
+    }
+
+    public List<PortfolioStock> portfolioStocks() {
+        return Collections.unmodifiableList(portfolioStocks.stockShares());
     }
 
     public boolean isExpired() {

@@ -25,7 +25,7 @@ public class PortfolioStocks {
         portfolioStocks = stocks;
     }
 
-    public List<PortfolioStock> getPortfolioStocks() {
+    public List<PortfolioStock> stockShares() {
         return Collections.unmodifiableList(portfolioStocks);
     }
 }
