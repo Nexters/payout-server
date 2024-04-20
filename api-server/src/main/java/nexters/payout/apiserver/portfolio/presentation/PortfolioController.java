@@ -8,6 +8,8 @@ import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioReque
 import nexters.payout.apiserver.portfolio.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.PortfolioResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.YearlyDividendResponse;
+import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
+import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +37,10 @@ public class PortfolioController implements PortfolioControllerDocs {
     @GetMapping("/{id}/yearly")
     public ResponseEntity<YearlyDividendResponse> getYearlyDividends(@PathVariable("id") final UUID portfolioId) {
         return ResponseEntity.ok(portfolioQueryService.getYearlyDividends(portfolioId));
+    }
+
+    @GetMapping("/{id}/sector-ratio")
+    public ResponseEntity<List<SectorRatioResponse>> getSectorRatios(@PathVariable("id") final UUID portfolioId) {
+        return ResponseEntity.ok(portfolioQueryService.analyzeSectorRatio(portfolioId));
     }
 }
