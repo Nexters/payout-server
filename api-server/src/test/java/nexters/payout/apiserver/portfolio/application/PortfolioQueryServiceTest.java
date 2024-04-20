@@ -1,23 +1,27 @@
 package nexters.payout.apiserver.portfolio.application;
 
-import nexters.payout.apiserver.portfolio.application.dto.request.TickerShare;
 import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioRequest;
+import nexters.payout.apiserver.portfolio.application.dto.request.TickerShare;
 import nexters.payout.apiserver.portfolio.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.PortfolioResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.YearlyDividendResponse;
 import nexters.payout.apiserver.portfolio.common.GivenFixtureTest;
+import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
+import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
+import nexters.payout.apiserver.stock.application.dto.response.StockShareResponse;
 import nexters.payout.core.time.InstantProvider;
-import nexters.payout.domain.PortfolioFixture;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.portfolio.domain.Portfolio;
 import nexters.payout.domain.portfolio.domain.PortfolioStock;
 import nexters.payout.domain.portfolio.domain.repository.PortfolioRepository;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
+import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -27,13 +31,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static nexters.payout.domain.PortfolioFixture.createPortfolio;
+import static nexters.payout.domain.StockFixture.*;
 import static nexters.payout.domain.stock.domain.Sector.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static nexters.payout.domain.StockFixture.*;
 
 @ExtendWith(MockitoExtension.class)
 class PortfolioQueryServiceTest extends GivenFixtureTest {
@@ -44,6 +49,9 @@ class PortfolioQueryServiceTest extends GivenFixtureTest {
     @InjectMocks
     private PortfolioQueryService portfolioQueryService;
 
+    @Spy
+    private SectorAnalysisService sectorAnalysisService;
+
     @Test
     void 포트폴리오를_생성한다() {
         // given
@@ -52,7 +60,7 @@ class PortfolioQueryServiceTest extends GivenFixtureTest {
         given(stockRepository.findByTicker(eq(AAPL))).willReturn(Optional.of(appl));
         given(stockRepository.findByTicker(eq(TSLA))).willReturn(Optional.of(tsla));
 
-        given(portfolioRepository.save(any())).willReturn(PortfolioFixture.createPortfolio(
+        given(portfolioRepository.save(any())).willReturn(createPortfolio(
                         UUID.fromString("67221662-c2f7-4f35-9447-6a65ca88d5ea"),
                         InstantProvider.getExpireAt(),
                         List.of(
@@ -69,6 +77,34 @@ class PortfolioQueryServiceTest extends GivenFixtureTest {
         // then
         assertThat(actual.id()).isEqualTo(UUID.fromString(expected));
     }
+
+    @Test
+    void 섹터_정보를_정상적으로_반환한다() {
+        // given
+        Stock aapl = StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 2.0);
+        UUID portfolioId = UUID.randomUUID();
+        given(portfolioRepository.findById(portfolioId)).willReturn(Optional.of(
+                createPortfolio(
+                        List.of(new PortfolioStock(aapl.getId(), 2))
+                ))
+        );
+        given(stockRepository.findById(any())).willReturn(Optional.of(aapl));
+
+        List<SectorRatioResponse> expected = List.of(
+                new SectorRatioResponse(
+                        Sector.TECHNOLOGY.getName(),
+                        Sector.TECHNOLOGY.name(),
+                        1.0, List.of(new StockShareResponse(StockResponse.from(aapl), 2))
+                )
+        );
+
+        // when
+        List<SectorRatioResponse> actual = portfolioQueryService.analyzeSectorRatio(portfolioId);
+
+        // then
+        assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+    }
+
 
     @Test
     void 사용자의_월간_배당금_정보를_가져온다() {
@@ -125,7 +161,7 @@ class PortfolioQueryServiceTest extends GivenFixtureTest {
         portfolioStocks.add(new PortfolioStock(tsla.getId(), 1));
         portfolioStocks.add(new PortfolioStock(sbux.getId(), 1));
 
-        Portfolio portfolio = PortfolioFixture.createPortfolio(
+        Portfolio portfolio = createPortfolio(
                 id,
                 LocalDate.now().plusMonths(1).atStartOfDay().toInstant(ZoneOffset.UTC),
                 portfolioStocks
@@ -145,7 +181,7 @@ class PortfolioQueryServiceTest extends GivenFixtureTest {
         portfolioStocks.add(new PortfolioStock(tsla.getId(), 1));
         portfolioStocks.add(new PortfolioStock(sbux.getId(), 1));
 
-        Portfolio portfolio = PortfolioFixture.createPortfolio(
+        Portfolio portfolio = createPortfolio(
                 id,
                 LocalDate.now().plusMonths(1).atStartOfDay().toInstant(ZoneOffset.UTC),
                 portfolioStocks

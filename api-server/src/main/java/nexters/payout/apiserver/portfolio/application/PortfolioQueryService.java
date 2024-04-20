@@ -59,7 +59,8 @@ public class PortfolioQueryService {
 
     public List<SectorRatioResponse> analyzeSectorRatio(final UUID portfolioId) {
         List<PortfolioStock> portfolioStocks = getPortfolio(portfolioId).portfolioStocks();
-        List<StockShare> stockShares = portfolioStocks.stream()
+        List<StockShare> stockShares = portfolioStocks
+                .stream()
                 .map(ps -> new StockShare(getStock(ps.getStockId()), ps.getShares()))
                 .toList();
         Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
