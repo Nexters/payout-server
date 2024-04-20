@@ -13,18 +13,14 @@ public class PortfolioFixture {
     public static UUID STOCK_ID = UUID.randomUUID();
 
     public static Portfolio createPortfolio(UUID id, Instant expireAt, List<PortfolioStock> stocks) {
-        return new Portfolio(
-                id,
-                expireAt,
-                stocks
-        );
+        return new Portfolio(id, expireAt, stocks);
     }
 
     public static Portfolio createPortfolio(Instant expireAt, List<PortfolioStock> stocks) {
-        return new Portfolio(
-                UUID.randomUUID(),
-                expireAt,
-                stocks
-        );
+        return new Portfolio(UUID.randomUUID(), expireAt, stocks);
+    }
+
+    public static Portfolio createPortfolio(List<PortfolioStock> stocks) {
+        return new Portfolio(UUID.randomUUID(), Instant.now(), stocks);
     }
 }

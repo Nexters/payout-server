@@ -6,6 +6,7 @@ import io.restassured.http.ContentType;
 import nexters.payout.apiserver.portfolio.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioRequest;
 import nexters.payout.apiserver.portfolio.application.dto.request.TickerShare;
+import nexters.payout.apiserver.portfolio.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.YearlyDividendResponse;
 import nexters.payout.apiserver.portfolio.common.IntegrationTest;
 import nexters.payout.core.exception.ErrorResponse;
@@ -17,11 +18,15 @@ import nexters.payout.domain.portfolio.domain.Portfolio;
 import nexters.payout.domain.portfolio.domain.PortfolioStock;
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static nexters.payout.domain.StockFixture.AAPL;
 import static nexters.payout.domain.StockFixture.TSLA;
@@ -102,6 +107,42 @@ public class PortfolioControllerTest extends IntegrationTest {
                 .statusCode(SC_BAD_REQUEST)
                 .extract()
                 .as(ErrorResponse.class);
+    }
+
+    @Test
+    void 사용자의_섹터_비중을_분석한다() {
+        // given
+        Stock tsla = stockRepository.save(StockFixture.createStock(TSLA, Sector.CONSUMER_CYCLICAL, 10.0));
+        Stock aapl = stockRepository.save(StockFixture.createStock(AAPL, Sector.TECHNOLOGY, 20.0));
+        Portfolio portfolio = portfolioRepository.save(PortfolioFixture.createPortfolio(
+                        List.of(new PortfolioStock(tsla.getId(), 1), new PortfolioStock(aapl.getId(), 1))
+                )
+        );
+
+        // when
+        List<SectorRatioResponse> actual = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(request())
+                .when().get(String.format("api/portfolios/%s/sector-ratio", portfolio.getId()))
+                .then().log().all()
+                .statusCode(SC_OK)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        List<SectorRatioResponse> sorted = actual.stream()
+                .sorted(Comparator.comparing(SectorRatioResponse::sectorRatio))
+                .toList();
+        // then
+        assertAll(
+                () -> assertThat(sorted).hasSize(2),
+                () -> assertThat(sorted.get(0).sectorRatio()).isCloseTo(0.33, Offset.offset(0.01)),
+                () -> assertThat(sorted.get(0).sectorName()).isEqualTo(Sector.CONSUMER_CYCLICAL.getName()),
+                () -> assertThat(sorted.get(1).sectorRatio()).isCloseTo(0.66, Offset.offset(0.01)),
+                () -> assertThat(sorted.get(1).sectorName()).isEqualTo(Sector.TECHNOLOGY.getName())
+        );
     }
 
     @Test
