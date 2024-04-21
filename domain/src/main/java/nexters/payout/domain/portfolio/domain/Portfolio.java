@@ -20,7 +20,7 @@ public class Portfolio extends BaseEntity {
     private Integer hits;
 
     @Version
-    private Long version = 1L;
+    private Long version = 0L;
 
     public Portfolio() {
         super(null);
