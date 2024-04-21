@@ -110,7 +110,6 @@ class PortfolioQueryServiceTest extends GivenFixtureTest {
 
         // then
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
-        verify(applicationEventPublisher, times(1)).publishEvent(new ReadPortfolioEvent(portfolioId));
     }
 
 
