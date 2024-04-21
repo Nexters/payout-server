@@ -45,8 +45,8 @@ public class PortfolioController implements PortfolioControllerDocs {
     @GetMapping("/{id}/sector-ratio")
     public ResponseEntity<List<SectorRatioResponse>> getSectorRatios(@PathVariable("id") final UUID portfolioId) {
         List<SectorRatioResponse> result = portfolioQueryService.analyzeSectorRatio(portfolioId);
-        log.info(String.format("publish read portfolio event [%s]", portfolioId));
         applicationEventPublisher.publishEvent(new ReadPortfolioEvent(portfolioId));
+        log.info(String.format("publish read portfolio event [%s]", portfolioId));
         return ResponseEntity.ok(result);
     }
 }
