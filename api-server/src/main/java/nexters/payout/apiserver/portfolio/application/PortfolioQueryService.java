@@ -62,9 +62,6 @@ public class PortfolioQueryService {
                 .map(ps -> new StockShare(getStock(ps.getStockId()), ps.getShares()))
                 .toList();
         Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
-
-        log.info(String.format("publish read portfolio event [%s]", portfolioId));
-
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
 
