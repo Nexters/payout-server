@@ -17,6 +17,8 @@ public class Portfolio extends BaseEntity {
 
     private Instant expireAt;
 
+    private Integer hits;
+
     public Portfolio() {
         super(null);
     }
@@ -25,12 +27,14 @@ public class Portfolio extends BaseEntity {
         super(id);
         this.portfolioStocks = new PortfolioStocks(stocks);
         this.expireAt = expireAt;
+        this.hits = 0;
     }
 
     public Portfolio(final Instant expireAt, List<PortfolioStock> stocks) {
         super(null);
         this.portfolioStocks = new PortfolioStocks(stocks);
         this.expireAt = expireAt;
+        this.hits = 0;
     }
 
     public List<PortfolioStock> portfolioStocks() {
