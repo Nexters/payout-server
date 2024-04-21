@@ -66,6 +66,7 @@ public class PortfolioQueryService {
         Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
 
         applicationEventPublisher.publishEvent(new ReadPortfolioEvent(portfolioId));
+        log.info(String.format("publish read portfolio event [%s]", portfolioId));
 
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }

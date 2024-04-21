@@ -19,6 +19,9 @@ public class Portfolio extends BaseEntity {
 
     private Integer hits;
 
+    @Version
+    private Long version;
+
     public Portfolio() {
         super(null);
     }
