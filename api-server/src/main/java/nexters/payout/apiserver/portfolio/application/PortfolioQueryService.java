@@ -45,10 +45,7 @@ public class PortfolioQueryService {
         List<PortfolioStock> portfolioStocks =
                 request.tickerShares()
                         .stream()
-                        .map(tickerShare -> new PortfolioStock(
-                                getStockByTicker(tickerShare.ticker()).getId(),
-                                tickerShare.share())
-                        )
+                        .map(it -> new PortfolioStock(getStockByTicker(it.ticker()).getId(), it.share()))
                         .toList();
 
         return new PortfolioResponse(
@@ -57,6 +54,7 @@ public class PortfolioQueryService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<SectorRatioResponse> analyzeSectorRatio(final UUID portfolioId) {
         List<PortfolioStock> portfolioStocks = getPortfolio(portfolioId).portfolioStocks();
         List<StockShare> stockShares = portfolioStocks
@@ -64,7 +62,6 @@ public class PortfolioQueryService {
                 .map(ps -> new StockShare(getStock(ps.getStockId()), ps.getShares()))
                 .toList();
         Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
-
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
 

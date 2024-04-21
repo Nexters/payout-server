@@ -5,6 +5,7 @@ import nexters.payout.apiserver.portfolio.application.dto.request.TickerShare;
 import nexters.payout.apiserver.portfolio.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.PortfolioResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.YearlyDividendResponse;
+import nexters.payout.apiserver.portfolio.application.handler.ReadPortfolioEvent;
 import nexters.payout.apiserver.portfolio.common.GivenFixtureTest;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.apiserver.stock.application.dto.response.StockResponse;
@@ -23,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -39,12 +41,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PortfolioQueryServiceTest extends GivenFixtureTest {
 
     @Mock
     private PortfolioRepository portfolioRepository;
+
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @InjectMocks
     private PortfolioQueryService portfolioQueryService;
