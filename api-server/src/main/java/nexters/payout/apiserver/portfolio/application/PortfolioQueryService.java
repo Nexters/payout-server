@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioRequest;
 import nexters.payout.apiserver.portfolio.application.dto.response.*;
+import nexters.payout.apiserver.portfolio.application.handler.ReadPortfolioEvent;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -20,6 +21,7 @@ import nexters.payout.domain.stock.domain.repository.StockRepository;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,16 +41,14 @@ public class PortfolioQueryService {
     private final PortfolioRepository portfolioRepository;
     private final DividendRepository dividendRepository;
     private final SectorAnalysisService sectorAnalysisService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public PortfolioResponse createPortfolio(final PortfolioRequest request) {
 
         List<PortfolioStock> portfolioStocks =
                 request.tickerShares()
                         .stream()
-                        .map(tickerShare -> new PortfolioStock(
-                                getStockByTicker(tickerShare.ticker()).getId(),
-                                tickerShare.share())
-                        )
+                        .map(it -> new PortfolioStock(getStockByTicker(it.ticker()).getId(), it.share()))
                         .toList();
 
         return new PortfolioResponse(
@@ -64,6 +64,8 @@ public class PortfolioQueryService {
                 .map(ps -> new StockShare(getStock(ps.getStockId()), ps.getShares()))
                 .toList();
         Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
+
+        applicationEventPublisher.publishEvent(new ReadPortfolioEvent(portfolioId));
 
         return SectorRatioResponse.fromMap(sectorInfoMap);
     }
