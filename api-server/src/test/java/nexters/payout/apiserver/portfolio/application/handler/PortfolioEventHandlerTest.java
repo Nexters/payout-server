@@ -58,7 +58,7 @@ class PortfolioEventHandlerTest extends IntegrationTest {
 
         // when
         for (int i = 0; i < threadCount; i++) {
-            Thread thread = new Thread(new ReadPortfolioTask(portfolio.getId()));
+            Thread thread = new Thread(new ReadPortfolioTask(portfolio.getId(), latch));
             thread.start();
         }
         latch.await();
@@ -100,9 +100,11 @@ class PortfolioEventHandlerTest extends IntegrationTest {
     class ReadPortfolioTask implements Runnable {
 
         private UUID id;
+        private final CountDownLatch latch;
 
-        public ReadPortfolioTask(UUID id) {
+        public ReadPortfolioTask(UUID id, CountDownLatch latch) {
             this.id = id;
+            this.latch = latch;
         }
 
         @Override
@@ -116,6 +118,8 @@ class PortfolioEventHandlerTest extends IntegrationTest {
                     .statusCode(SC_OK)
                     .extract()
                     .as(new TypeRef<>(){});
+
+            latch.countDown();
         }
     }
 }
