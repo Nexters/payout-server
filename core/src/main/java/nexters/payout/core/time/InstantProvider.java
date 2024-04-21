@@ -42,6 +42,10 @@ public class InstantProvider {
         return getNow().minusDays(1).atStartOfDay(ZoneId.of("UTC")).toInstant();
     }
 
+    public static Instant getExpireAt() {
+        return getNow().plusMonths(1).atStartOfDay(ZoneId.of("UTC")).toInstant();
+    }
+
     public static Integer getYear(Instant date) {
         return ZonedDateTime.ofInstant(date, UTC).getYear();
     }
