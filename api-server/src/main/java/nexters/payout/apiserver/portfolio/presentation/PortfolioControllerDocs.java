@@ -12,6 +12,7 @@ import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioReque
 import nexters.payout.apiserver.portfolio.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.PortfolioResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.YearlyDividendResponse;
+import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.core.exception.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,4 +72,16 @@ public interface PortfolioControllerDocs {
             @Parameter(description = "portfolio id", example = "bf5ffb6d-ae70-4171-8c86-b27c8ab2efbb", required = true)
             @PathVariable("id") final UUID portfolioId
     );
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "SUCCESS"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "SERVER ERROR",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @Operation(summary = "섹터 비중 분석")
+    ResponseEntity<List<SectorRatioResponse>> getSectorRatios(@PathVariable("id") final UUID portfolioId);
 }
