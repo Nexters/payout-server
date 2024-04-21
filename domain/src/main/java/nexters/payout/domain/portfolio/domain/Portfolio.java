@@ -1,6 +1,7 @@
 package nexters.payout.domain.portfolio.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import nexters.payout.domain.BaseEntity;
 
 import java.time.Instant;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 
 @Entity
+@Getter
 public class Portfolio extends BaseEntity {
 
     @Embedded
