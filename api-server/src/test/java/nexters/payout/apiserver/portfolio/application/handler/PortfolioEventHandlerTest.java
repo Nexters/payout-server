@@ -15,7 +15,6 @@ import nexters.payout.domain.stock.domain.Stock;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -97,9 +96,9 @@ class PortfolioEventHandlerTest extends IntegrationTest {
         return zonedDateTime.toInstant();
     }
 
-    class ReadPortfolioTask implements Runnable {
+    static class ReadPortfolioTask implements Runnable {
 
-        private UUID id;
+        private final UUID id;
         private final CountDownLatch latch;
 
         public ReadPortfolioTask(UUID id, CountDownLatch latch) {
@@ -109,17 +108,21 @@ class PortfolioEventHandlerTest extends IntegrationTest {
 
         @Override
         public void run() {
-            RestAssured
-                    .given()
-                    .log().all()
-                    .contentType(ContentType.JSON)
-                    .when().get(String.format("api/portfolios/%s/sector-ratio", id))
-                    .then().log().all()
-                    .statusCode(SC_OK)
-                    .extract()
-                    .as(new TypeRef<>(){});
-
-            latch.countDown();
+            try {
+                RestAssured
+                        .given()
+                        .log().all()
+                        .contentType(ContentType.JSON)
+                        .when().get(String.format("api/portfolios/%s/sector-ratio", id))
+                        .then().log().all()
+                        .statusCode(SC_OK)
+                        .extract()
+                        .as(new TypeRef<>(){});
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                latch.countDown();
+            }
         }
     }
 }

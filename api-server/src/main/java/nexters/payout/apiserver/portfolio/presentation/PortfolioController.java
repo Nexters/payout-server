@@ -8,10 +8,12 @@ import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioReque
 import nexters.payout.apiserver.portfolio.application.dto.response.MonthlyDividendResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.PortfolioResponse;
 import nexters.payout.apiserver.portfolio.application.dto.response.YearlyDividendResponse;
-import nexters.payout.apiserver.stock.application.dto.request.SectorRatioRequest;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import nexters.payout.apiserver.portfolio.application.handler.ReadPortfolioEvent;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class PortfolioController implements PortfolioControllerDocs {
 
     private final PortfolioQueryService portfolioQueryService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @PostMapping
     public ResponseEntity<PortfolioResponse> createPortfolio(@RequestBody @Valid final PortfolioRequest portfolioRequest) {
@@ -41,6 +44,8 @@ public class PortfolioController implements PortfolioControllerDocs {
 
     @GetMapping("/{id}/sector-ratio")
     public ResponseEntity<List<SectorRatioResponse>> getSectorRatios(@PathVariable("id") final UUID portfolioId) {
-        return ResponseEntity.ok(portfolioQueryService.analyzeSectorRatio(portfolioId));
+        List<SectorRatioResponse> result = portfolioQueryService.analyzeSectorRatio(portfolioId);
+        applicationEventPublisher.publishEvent(new ReadPortfolioEvent(portfolioId));
+        return ResponseEntity.ok(result);
     }
 }

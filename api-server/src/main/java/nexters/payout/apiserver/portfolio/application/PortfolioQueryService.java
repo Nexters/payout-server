@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nexters.payout.apiserver.portfolio.application.dto.request.PortfolioRequest;
 import nexters.payout.apiserver.portfolio.application.dto.response.*;
-import nexters.payout.apiserver.portfolio.application.handler.ReadPortfolioEvent;
 import nexters.payout.apiserver.stock.application.dto.response.SectorRatioResponse;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -21,7 +20,6 @@ import nexters.payout.domain.stock.domain.repository.StockRepository;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.SectorInfo;
 import nexters.payout.domain.stock.domain.service.SectorAnalysisService.StockShare;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +39,6 @@ public class PortfolioQueryService {
     private final PortfolioRepository portfolioRepository;
     private final DividendRepository dividendRepository;
     private final SectorAnalysisService sectorAnalysisService;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     public PortfolioResponse createPortfolio(final PortfolioRequest request) {
 
@@ -57,6 +54,7 @@ public class PortfolioQueryService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<SectorRatioResponse> analyzeSectorRatio(final UUID portfolioId) {
         List<PortfolioStock> portfolioStocks = getPortfolio(portfolioId).portfolioStocks();
         List<StockShare> stockShares = portfolioStocks
@@ -65,7 +63,6 @@ public class PortfolioQueryService {
                 .toList();
         Map<Sector, SectorInfo> sectorInfoMap = sectorAnalysisService.calculateSectorRatios(stockShares);
 
-        applicationEventPublisher.publishEvent(new ReadPortfolioEvent(portfolioId));
         log.info(String.format("publish read portfolio event [%s]", portfolioId));
 
         return SectorRatioResponse.fromMap(sectorInfoMap);
