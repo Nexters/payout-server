@@ -41,6 +41,10 @@ public class Portfolio extends BaseEntity {
         return Collections.unmodifiableList(portfolioStocks.stockShares());
     }
 
+    public void incrementHits() {
+        hits++;
+    }
+
     public boolean isExpired() {
         return expireAt.isAfter(Instant.now());
     }
