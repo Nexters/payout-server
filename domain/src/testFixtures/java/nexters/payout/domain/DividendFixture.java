@@ -28,14 +28,14 @@ public class DividendFixture {
                 Instant.parse("2023-12-22T00:00:00Z"));
     }
 
-    public static Dividend createDividendWithPaymentDate(UUID stockId, Double dividend, Instant paymentDate) {
+    public static Dividend createDividendWithExDividendDate(UUID stockId, Double dividend, Instant exDividendDate) {
         return new Dividend(
                 UUID.randomUUID(),
                 stockId,
                 dividend,
-                paymentDate,
-                paymentDate,
-                paymentDate);
+                exDividendDate,
+                exDividendDate,
+                exDividendDate);
     }
 
     public static Dividend createDividend(UUID stockId, Double dividend, Instant exDividendDate) {

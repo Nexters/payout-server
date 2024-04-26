@@ -1,7 +1,7 @@
 package nexters.payout.batch.infra.fmp;
 
 import lombok.extern.slf4j.Slf4j;
-import nexters.payout.batch.application.FinancialClient;
+import nexters.payout.batch.application.client.FinancialClient;
 import nexters.payout.core.time.DateFormat;
 import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.stock.domain.Exchange;

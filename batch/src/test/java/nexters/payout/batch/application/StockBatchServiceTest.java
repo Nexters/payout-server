@@ -1,5 +1,6 @@
 package nexters.payout.batch.application;
 
+import nexters.payout.batch.application.client.FinancialClient;
 import nexters.payout.batch.common.AbstractBatchServiceTest;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.stock.domain.Stock;
@@ -23,7 +24,7 @@ class StockBatchServiceTest extends AbstractBatchServiceTest {
         given(financialClient.getLatestStockList()).willReturn(List.of(stockData));
 
         // when
-        stockBatchService.run();
+        stockBatchService.updateStock();
 
         // then
         Stock actual = stockRepository.findByTicker(stock.getTicker()).get();

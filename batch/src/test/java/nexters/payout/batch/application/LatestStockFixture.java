@@ -2,7 +2,7 @@ package nexters.payout.batch.application;
 
 import nexters.payout.domain.stock.domain.Exchange;
 import nexters.payout.domain.stock.domain.Sector;
-import nexters.payout.batch.application.FinancialClient.StockData;
+import nexters.payout.batch.application.client.FinancialClient.StockData;
 
 public class LatestStockFixture {
     public static StockData createStockData(String ticker, Double price, Integer volume) {

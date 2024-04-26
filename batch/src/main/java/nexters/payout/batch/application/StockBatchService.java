@@ -2,7 +2,9 @@ package nexters.payout.batch.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nexters.payout.batch.application.FinancialClient.StockData;
+import nexters.payout.batch.application.client.FinancialClient;
+import nexters.payout.batch.application.client.FinancialClient.StockData;
+import nexters.payout.batch.application.client.StockLogo;
 import nexters.payout.domain.stock.application.StockCommandService;
 import nexters.payout.domain.stock.domain.repository.StockRepository;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +26,7 @@ public class StockBatchService {
      * UTC 시간대 기준 매일 자정에 모든 종목의 현재가와 거래량을 업데이트합니다.
      */
     @Scheduled(cron = "${schedules.cron.stock}", zone = "UTC")
-    void run() {
+    void updateStock() {
         log.info("update stock start..");
         List<StockData> stockList = financialClient.getLatestStockList();
 

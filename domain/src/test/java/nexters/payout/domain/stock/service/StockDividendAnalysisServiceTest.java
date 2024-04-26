@@ -1,5 +1,6 @@
 package nexters.payout.domain.stock.service;
 
+import nexters.payout.core.time.InstantProvider;
 import nexters.payout.domain.DividendFixture;
 import nexters.payout.domain.StockFixture;
 import nexters.payout.domain.dividend.domain.Dividend;
@@ -76,18 +77,17 @@ class StockDividendAnalysisServiceTest {
     @Test
     void 공시된_현재_배당금_지급일이_없는_경우_과거데이터를_기반으로_가까운_지급일을_계산한다() {
         // given
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.ofInstant(Instant.now(), UTC);
 
         Dividend pastDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
-                LocalDate.of(now.getYear() - 1, 1, 10)
+                LocalDate.of(now.getYear(), now.getMonth().minus(1), 1)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 
         Dividend earlistDividend = DividendFixture.createDividendWithExDividendDate(
                 UUID.randomUUID(),
-                LocalDate.of(now.getYear() - 1, 3, 10)
-                        .atStartOfDay(ZoneId.systemDefault()).toInstant()
+                LocalDate.of(now.getYear(), now.getMonth(), now.getDayOfMonth()).atStartOfDay().toInstant(UTC)
         );
         List<Dividend> lastYearDividends = List.of(pastDividend, earlistDividend);
 
@@ -107,7 +107,7 @@ class StockDividendAnalysisServiceTest {
         Dividend lastYearDividend = DividendFixture.createDividend(
                 UUID.randomUUID(),
                 1.0,
-                LocalDate.now().plusDays(10)
+                LocalDate.now().minusDays(10)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
 

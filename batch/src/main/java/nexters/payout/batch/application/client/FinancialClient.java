@@ -1,4 +1,4 @@
-package nexters.payout.batch.application;
+package nexters.payout.batch.application.client;
 
 import nexters.payout.domain.stock.domain.Sector;
 import nexters.payout.domain.stock.domain.Stock;
@@ -24,11 +24,11 @@ public interface FinancialClient {
             Integer volume,
             Integer avgVolume
     ) {
-        Stock toDomain() {
+        public Stock toDomain() {
             return new Stock(ticker, name, sector, exchange, industry, price, volume, null);
         }
 
-        Stock toDomain(String logoUrl) {
+        public Stock toDomain(String logoUrl) {
             return new Stock(ticker, name, sector, exchange, industry, price, volume, logoUrl);
         }
     }
